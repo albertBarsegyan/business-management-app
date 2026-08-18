@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=Instrument+Sans:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F5F6F8; color: #16161A; font-family: "Instrument Sans", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #2C6CF6; text-decoration: none; }
+  a:hover { color: #1B4FCB; }
+  :focus-visible { outline: 2px solid #2C6CF6; outline-offset: 2px; border-radius: 4px; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #D5D9DE; border-radius: 6px; border: 3px solid #F5F6F8; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
+</style>
+</helmet>
+
+<div data-screen-label="Day calendar" style="display: flex; height: 100vh; min-height: 820px; overflow: hidden;">
+
+  <aside style="width: {{ sidebarWidth }}; flex: 0 0 auto; background: #14141A; display: flex; flex-direction: column; overflow: hidden;">
+    <div style="height: 56px; flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.07);">
+      <span style="width: 26px; height: 26px; flex: 0 0 auto; border-radius: 7px; background: #FFC935; display: inline-flex; align-items: center; justify-content: center; font-family: 'Familjen Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: #17170F;">Z</span>
+      <sc-if value="{{ expanded }}" hint-placeholder-val="{{ true }}">
+        <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; color: #FFFFFF;">Zhamo</span>
+      </sc-if>
+      <button onClick="{{ toggleSidebar }}" title="Collapse sidebar" style="margin-left: auto; width: 24px; height: 24px; flex: 0 0 auto; border: 0; border-radius: 5px; background: rgba(255,255,255,0.07); color: #A7ADB8; cursor: pointer; font-size: 12px; font-family: inherit;">{{ collapseGlyph }}</button>
+    </div>
+
+    <nav style="flex: 1 1 auto; overflow-y: auto; padding: 10px 8px; display: flex; flex-direction: column; gap: 2px;">
+      <sc-for list="{{ nav }}" as="item" hint-placeholder-count="14">
+        <div title="{{ item.label }}" style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 8px; border-radius: 6px; cursor: pointer; position: relative; background: {{ item.bg }}; color: {{ item.color }}; font-size: 13px; font-weight: {{ item.weight }}; border-top: {{ item.divider }};">
+          <span style="position: absolute; left: -8px; top: 7px; bottom: 7px; width: 3px; border-radius: 0 2px 2px 0; background: {{ item.marker }};"></span>
+          <span style="width: 20px; height: 20px; flex: 0 0 auto; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; background: {{ item.tileBg }}; color: {{ item.tileColor }};">{{ item.mono }}</span>
+          <sc-if value="{{ expanded }}" hint-placeholder-val="{{ true }}">
+            <span style="white-space: nowrap; overflow: hidden;">{{ item.label }}</span>
+          </sc-if>
+          <sc-if value="{{ item.showCount }}" hint-placeholder-val="{{ false }}">
+            <span style="margin-left: auto; height: 18px; min-width: 18px; padding: 0 5px; border-radius: 9px; background: #FFC935; color: #17170F; font-size: 10.5px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">{{ item.count }}</span>
+          </sc-if>
+        </div>
+      </sc-for>
+    </nav>
+
+    <div style="flex: 0 0 auto; border-top: 1px solid rgba(255,255,255,0.07); padding: 12px 10px 14px; display: flex; flex-direction: column; gap: 10px; background: #1A1A21;">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <span style="width: 28px; height: 28px; flex: 0 0 auto; border-radius: 50%; background: oklch(0.64 0.16 350); color: #FFFFFF; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;">LS</span>
+        <sc-if value="{{ expanded }}" hint-placeholder-val="{{ true }}">
+          <span style="display: flex; flex-direction: column; overflow: hidden;">
+            <span style="font-size: 12.5px; font-weight: 600; color: #FFFFFF; white-space: nowrap;">Lilit Sargsyan</span>
+            <span style="font-size: 11px; color: #7C818B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">lilit@studioaram.am</span>
+          </span>
+          <span title="Log out" style="margin-left: auto; width: 24px; height: 24px; flex: 0 0 auto; border-radius: 5px; background: rgba(255,255,255,0.06); color: #A7ADB8; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">⏻</span>
+        </sc-if>
+      </div>
+      <button style="height: 36px; width: 100%; border: 0; border-radius: 6px; background: {{ accent }}; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; overflow: hidden;">{{ adminLabel }}</button>
+    </div>
+  </aside>
+
+  <div style="width: 232px; flex: 0 0 auto; background: #FFFFFF; border-right: 1px solid #E6E8EB; display: flex; flex-direction: column; overflow-y: auto;">
+    <div style="padding: 14px; border-bottom: 1px solid #E6E8EB; display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -0.01em;">August 2026</span>
+        <span style="display: flex; gap: 4px;">
+          <span style="width: 20px; height: 20px; border: 1px solid #E6E8EB; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: #5B6069; cursor: pointer;">‹</span>
+          <span style="width: 20px; height: 20px; border: 1px solid #E6E8EB; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: #5B6069; cursor: pointer;">›</span>
+        </span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;">
+        <sc-for list="{{ weekdayLabels }}" as="d" hint-placeholder-count="7">
+          <span style="height: 18px; display: inline-flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.06em; color: #A9AEB6;">{{ d }}</span>
+        </sc-for>
+        <sc-for list="{{ monthDays }}" as="d" hint-placeholder-count="35">
+          <span style="height: 28px; border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; background: {{ d.bg }}; color: {{ d.color }}; font-size: 11.5px; font-weight: {{ d.weight }};">
+            {{ d.n }}
+            <span style="height: 3px; width: {{ d.load }}; border-radius: 2px; background: {{ d.loadColor }};"></span>
+          </span>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="padding: 14px; border-bottom: 1px solid #E6E8EB; display: flex; flex-direction: column; gap: 8px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #A9AEB6;">Quick actions</span>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <sc-for list="{{ quickActions }}" as="q" hint-placeholder-count="5">
+          <div style="border: 1px solid #E6E8EB; border-radius: 8px; padding: 9px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; grid-column: {{ q.span }}; background: #FFFFFF;" style-hover="border-color: #16161A; background: #FAFBFC;">
+            <span style="width: 22px; height: 22px; border-radius: 6px; background: #FEF6E0; color: #8A6A05; font-family: 'IBM Plex Mono', monospace; font-size: 10px; display: inline-flex; align-items: center; justify-content: center;">{{ q.mono }}</span>
+            <span style="font-size: 12px; font-weight: 500; line-height: 1.3;">{{ q.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+      <div onClick="{{ toggleFavorites }}" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #A9AEB6;">Favorites</span>
+        <span style="font-size: 10px; color: #A9AEB6;">{{ favGlyph }}</span>
+      </div>
+      <sc-if value="{{ favoritesOpen }}" hint-placeholder-val="{{ true }}">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <sc-for list="{{ favorites }}" as="f" hint-placeholder-count="3">
+            <span style="display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 8px; border-radius: 6px; font-size: 12.5px; color: #16161A; cursor: pointer;" style-hover="background: #F5F6F8;">
+              <span style="color: #FFC935; font-size: 11px;">★</span>{{ f }}
+            </span>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <main style="flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; background: #F5F6F8;">
+    <div style="height: 56px; flex: 0 0 auto; background: #FFFFFF; border-bottom: 1px solid #E6E8EB; display: flex; align-items: center; gap: 12px; padding: 0 16px;">
+      <button style="height: 32px; padding: 0 13px; border: 1px solid #D5D9DE; border-radius: 6px; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="border-color: #16161A;">Today</button>
+      <div style="display: flex; gap: 4px;">
+        <button style="width: 28px; height: 28px; border: 1px solid #E6E8EB; border-radius: 6px; background: #FFFFFF; color: #5B6069; cursor: pointer; font-size: 12px;">‹</button>
+        <button style="width: 28px; height: 28px; border: 1px solid #E6E8EB; border-radius: 6px; background: #FFFFFF; color: #5B6069; cursor: pointer; font-size: 12px;">›</button>
+      </div>
+      <h1 style="margin: 0; font-family: 'Familjen Grotesk', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; white-space: nowrap;">13 August, Thursday</h1>
+      <span style="font-size: 12px; color: #8A9099; white-space: nowrap;">{{ dayMeta }}</span>
+
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+        <button style="height: 32px; padding: 0 12px; border: 0; border-radius: 6px; background: #FFC935; color: #17170F; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;">Sell <span style="font-size: 9px; opacity: 0.7;">▾</span></button>
+        <span style="height: 32px; padding: 0 10px; border: 1px solid #E6E8EB; border-radius: 6px; display: inline-flex; align-items: center; font-size: 12.5px; color: #5B6069; cursor: pointer;">AMD ֏</span>
+        <div style="display: inline-flex; padding: 2px; background: #EDEFF2; border-radius: 7px;">
+          <span style="height: 26px; padding: 0 13px; border-radius: 5px; background: #FFFFFF; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center;">Day</span>
+          <span style="height: 26px; padding: 0 13px; border-radius: 5px; font-size: 12.5px; color: #5B6069; display: inline-flex; align-items: center; cursor: pointer;">Week</span>
+        </div>
+        <span title="Filter" style="width: 32px; height: 32px; border: 1px solid #E6E8EB; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; color: #5B6069; cursor: pointer;">⌗</span>
+        <span title="Zoom" style="height: 32px; padding: 0 8px; border: 1px solid #E6E8EB; border-radius: 6px; display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: #5B6069;">− <span style="width: 44px; height: 3px; border-radius: 2px; background: #E6E8EB; position: relative;"><span style="position: absolute; left: 0; top: 0; bottom: 0; width: 26px; border-radius: 2px; background: #16161A;"></span></span> +</span>
+        <button onClick="{{ toggleDay }}" style="height: 32px; padding: 0 12px; border: 1px solid #D5D9DE; border-radius: 6px; background: #FFFFFF; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;" style-hover="border-color: #16161A;">{{ switcherLabel }}</button>
+      </div>
+    </div>
+
+    <div style="flex: 1 1 auto; overflow: auto; padding: 14px 16px 24px;">
+      <div style="min-width: 900px; background: #FFFFFF; border: 1px solid #E6E8EB; border-radius: 8px; overflow: hidden;">
+
+        <div style="display: grid; grid-template-columns: 56px repeat(4, 1fr) 56px; border-bottom: 1px solid #E6E8EB; background: #FAFBFC; position: sticky; top: 0; z-index: 3;">
+          <span style="border-right: 1px solid #E6E8EB;"></span>
+          <sc-for list="{{ team }}" as="m" hint-placeholder-count="4">
+            <div style="padding: 10px 12px; border-right: 1px solid #E6E8EB; display: flex; align-items: center; gap: 9px; min-width: 0;">
+              <span style="width: 30px; height: 30px; flex: 0 0 auto; border-radius: 50%; background: {{ m.color }}; color: #FFFFFF; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;">{{ m.initials }}</span>
+              <span style="display: flex; flex-direction: column; min-width: 0;">
+                <span style="font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ m.name }}</span>
+                <span style="font-size: 11.5px; color: #8A9099; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ m.role }} · {{ m.hours }}</span>
+              </span>
+            </div>
+          </sc-for>
+          <span></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 56px repeat(4, 1fr) 56px; position: relative;">
+          <div style="border-right: 1px solid #E6E8EB; background: #FAFBFC;">
+            <sc-for list="{{ slots }}" as="s" hint-placeholder-count="26">
+              <div style="height: 34px; display: flex; align-items: flex-start; justify-content: flex-end; padding: 2px 8px 0 0; border-bottom: 1px solid {{ s.line }};">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: {{ s.labelColor }};">{{ s.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="position: relative; border-right: 1px solid #E6E8EB;">
+            <sc-for list="{{ slots }}" as="s" hint-placeholder-count="26">
+              <div style="height: 34px; border-bottom: 1px solid {{ s.line }}; background: {{ s.fill }};"></div>
+            </sc-for>
+            <sc-if value="{{ showAppointments }}" hint-placeholder-val="{{ true }}">
+              <div style="position: absolute; left: 4px; right: 4px; top: 34px; height: 49px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 5px 8px; overflow: hidden; cursor: pointer;">
+                <div style="display: flex; align-items: baseline; gap: 6px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350);">09:30</span><span style="font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Anahit Grigoryan</span></div>
+                <div style="font-size: 11.5px; color: #5B6069; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Men's cut &amp; beard trim · 45 min · 7 500 ֏</div>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 136px; height: 32px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 0 8px; display: flex; align-items: center; gap: 6px; overflow: hidden; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350); flex: 0 0 auto;">11:00</span>
+                <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">Gor Hakobyan</span>
+                <span style="font-size: 11.5px; color: #5B6069; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">· Fade &amp; wash</span>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 272px; height: 66px; border-radius: 6px; border: 1px dashed #C9CDD3; background: repeating-linear-gradient(135deg, #F7F8FA 0 6px, #EFF1F4 6px 12px); padding: 6px 8px; display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 11.5px; font-weight: 600; color: #5B6069;">Technical break</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: #8A9099;">13:00 – 14:00 · lunch</span>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 374px; height: 49px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 5px 8px; overflow: hidden; cursor: pointer;">
+                <div style="display: flex; align-items: baseline; gap: 6px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350);">14:30</span><span style="font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Vahe Manukyan</span></div>
+                <div style="font-size: 11.5px; color: #5B6069; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Men's cut · 45 min · 6 000 ֏</div>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 544px; height: 32px; border-radius: 6px; border: 1px dashed #EF4444; background: #FFF7F7; padding: 0 8px; display: flex; align-items: center; gap: 6px; overflow: hidden; cursor: pointer;">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #EF4444; flex: 0 0 auto;"></span>
+                <span style="font-size: 12px; font-weight: 600; color: #C7302F; text-decoration: line-through; white-space: nowrap;">Narek Poghosyan</span>
+                <span style="font-size: 11px; color: #C7302F; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">· no-show</span>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="position: relative; border-right: 1px solid #E6E8EB;">
+            <sc-for list="{{ slots }}" as="s" hint-placeholder-count="26">
+              <div style="height: 34px; border-bottom: 1px solid {{ s.line }}; background: {{ s.fillLate }};"></div>
+            </sc-for>
+            <sc-if value="{{ showAppointments }}" hint-placeholder-val="{{ true }}">
+              <div style="position: absolute; left: 4px; right: 4px; top: 68px; height: 202px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 7px 9px; display: flex; flex-direction: column; gap: 4px; cursor: pointer;">
+                <div style="display: flex; align-items: baseline; gap: 6px;"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350);">10:00 – 13:00</span></div>
+                <span style="font-size: 13px; font-weight: 600;">Sona Avagyan</span>
+                <span style="font-size: 11.5px; color: #5B6069; line-height: 1.4;">Balayage + toning + blow-dry<br />180 min · 42 000 ֏</span>
+                <span style="margin-top: auto; display: inline-flex; align-items: center; gap: 5px;"><span style="height: 19px; padding: 0 7px; border-radius: 5px; background: #E7F8EE; color: #17753C; font-size: 10.5px; font-weight: 600; display: inline-flex; align-items: center;">Arrived</span><span style="height: 19px; padding: 0 7px; border-radius: 5px; background: #FFFFFF; border: 1px solid #E6E8EB; color: #5B6069; font-size: 10.5px; display: inline-flex; align-items: center;">Prepaid 15 000 ֏</span></span>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 340px; height: 100px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 6px 9px; display: flex; flex-direction: column; gap: 3px; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350);">14:00 – 15:30</span>
+                <span style="font-size: 12.5px; font-weight: 600;">Mane Hovhannisyan</span>
+                <span style="font-size: 11.5px; color: #5B6069;">Root touch-up · 90 min · 18 000 ֏</span>
+              </div>
+              <div style="position: absolute; left: 4px; width: 52%; top: 476px; height: 66px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.88 0.06 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 5px 7px; overflow: hidden; z-index: 1; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: oklch(0.5 0.13 350);">16:00</span>
+                <div style="font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Elen Karapetyan</div>
+                <div style="font-size: 11px; color: #5B6069; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Toning · 60 min</div>
+              </div>
+              <div style="position: absolute; right: 4px; width: 52%; top: 510px; height: 49px; border-radius: 6px; background: #FFFFFF; border: 1px solid oklch(0.82 0.09 350); border-left: 3px solid oklch(0.64 0.16 350); box-shadow: -3px 0 0 rgba(255,255,255,0.9); padding: 5px 7px; overflow: hidden; z-index: 2; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: oklch(0.5 0.13 350);">16:30</span>
+                <div style="font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Ani Melkonyan</div>
+                <div style="font-size: 11px; color: #C7302F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Overlaps · 45 min</div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="position: relative; border-right: 1px solid #E6E8EB;">
+            <sc-for list="{{ slots }}" as="s" hint-placeholder-count="26">
+              <div style="height: 34px; border-bottom: 1px solid {{ s.line }}; background: {{ s.fill }};"></div>
+            </sc-for>
+            <sc-if value="{{ showAppointments }}" hint-placeholder-val="{{ true }}">
+              <div style="position: absolute; left: 4px; right: 4px; top: 0; height: 66px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 6px 9px; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350);">09:00 – 10:00</span>
+                <div style="font-size: 12.5px; font-weight: 600;">Gayane Sargsyan</div>
+                <div style="font-size: 11.5px; color: #5B6069;">Gel manicure · 9 000 ֏</div>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 204px; height: 134px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 6px 9px; display: flex; flex-direction: column; gap: 3px; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350);">12:00 – 14:00</span>
+                <span style="font-size: 12.5px; font-weight: 600;">Nune Baghdasaryan</span>
+                <span style="font-size: 11.5px; color: #5B6069;">Nail extension + design<br />120 min · 16 000 ֏</span>
+                <span style="margin-top: auto; height: 19px; width: fit-content; padding: 0 7px; border-radius: 5px; background: #FEF6E0; color: #8A6A05; font-size: 10.5px; font-weight: 600; display: inline-flex; align-items: center;">Pending</span>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 442px; height: 66px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 6px 9px; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350);">15:30 – 16:30</span>
+                <div style="font-size: 12.5px; font-weight: 600;">Arpine Ghazaryan</div>
+                <div style="font-size: 11.5px; color: #5B6069;">Classic pedicure · 11 000 ֏</div>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 748px; height: 32px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 0 8px; display: flex; align-items: center; gap: 6px; overflow: hidden; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350); flex: 0 0 auto;">20:00</span>
+                <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">Lusine Petrosyan</span>
+                <span style="font-size: 11.5px; color: #5B6069; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">· Express manicure</span>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="position: relative; border-right: 1px solid #E6E8EB;">
+            <sc-for list="{{ slots }}" as="s" hint-placeholder-count="26">
+              <div style="height: 34px; border-bottom: 1px solid {{ s.line }}; background: {{ s.fillMorning }};"></div>
+            </sc-for>
+            <sc-if value="{{ showAppointments }}" hint-placeholder-val="{{ true }}">
+              <div style="position: absolute; left: 4px; right: 4px; top: 238px; height: 32px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 0 8px; display: flex; align-items: center; gap: 6px; overflow: hidden; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350); flex: 0 0 auto;">12:30</span>
+                <span style="font-size: 12px; font-weight: 600; white-space: nowrap;">Aram Jr.</span>
+                <span style="font-size: 11.5px; color: #5B6069; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">· Kids cut</span>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 272px; height: 49px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 5px 8px; overflow: hidden; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350);">13:00</span>
+                <div style="font-size: 12.5px; font-weight: 600;">Hayk Barseghyan</div>
+                <div style="font-size: 11.5px; color: #5B6069;">Beard sculpt · 45 min · 5 000 ֏</div>
+              </div>
+              <div style="position: absolute; left: 4px; right: 4px; top: 612px; height: 66px; border-radius: 6px; background: oklch(0.975 0.018 350); border: 1px solid oklch(0.9 0.05 350); border-left: 3px solid oklch(0.64 0.16 350); padding: 6px 9px; cursor: pointer;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: oklch(0.5 0.13 350);">18:00 – 19:00</span>
+                <div style="font-size: 12.5px; font-weight: 600;">Suren Ghukasyan</div>
+                <div style="font-size: 11.5px; color: #5B6069;">Cut &amp; beard · 60 min · 9 500 ֏</div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="background: #FAFBFC; border-left: 1px solid #E6E8EB;">
+            <sc-for list="{{ slots }}" as="s" hint-placeholder-count="26">
+              <div style="height: 34px; display: flex; align-items: flex-start; padding: 2px 0 0 8px; border-bottom: 1px solid {{ s.line }};">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: {{ s.labelColor }};">{{ s.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="position: absolute; left: 56px; right: 56px; top: 442px; height: 0; z-index: 4; pointer-events: none;">
+            <span style="position: absolute; left: 0; right: 0; top: 0; height: 1px; background: #EF4444;"></span>
+            <span style="position: absolute; left: -46px; top: -8px; height: 17px; padding: 0 5px; border-radius: 4px; background: #EF4444; color: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; display: inline-flex; align-items: center;">15:32</span>
+          </div>
+
+          <sc-if value="{{ showEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="position: absolute; left: 56px; right: 56px; top: 120px; display: flex; justify-content: center; z-index: 5;">
+              <div style="max-width: 440px; background: #FFFFFF; border: 1px solid #E6E8EB; border-radius: 8px; box-shadow: 0 8px 32px rgba(20,20,26,0.1); padding: 30px 28px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+                <span style="width: 44px; height: 44px; border-radius: 11px; background: #FEF6E0; color: #8A6A05; display: inline-flex; align-items: center; justify-content: center; font-family: 'Familjen Grotesk', sans-serif; font-size: 22px; font-weight: 700;">+</span>
+                <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: 30px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 700;">The day is yours to fill</span>
+                <span style="font-size: 13.5px; color: #5B6069; line-height: 1.55; max-width: 38ch;">Click any free slot to book someone in, or send your booking link and let clients fill it themselves.</span>
+                <span style="display: flex; gap: 8px; margin-top: 4px;">
+                  <button style="height: 36px; padding: 0 15px; border: 0; border-radius: 6px; background: #FFC935; color: #17170F; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;">Schedule first client</button>
+                  <button style="height: 36px; padding: 0 15px; border: 1px solid #D5D9DE; border-radius: 6px; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;">Copy booking link</button>
+                </span>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;oklch(0.64 0.16 350)&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;oklch(0.64 0.16 350)&quot;,&quot;oklch(0.64 0.16 225)&quot;,&quot;oklch(0.64 0.16 155)&quot;,&quot;oklch(0.64 0.16 45)&quot;],&quot;section&quot;:&quot;Vertical&quot;}}">
+class Component extends DCLogic {
+  state = { collapsed: false, empty: false, favoritesOpen: true };
+
+  renderVals() {
+    const accent = this.props.accent ?? "oklch(0.64 0.16 350)";
+    const expanded = !this.state.collapsed;
+    const navItems = [
+      ["Reports", "RP", false], ["Team", "TM", false], ["Clients", "CL", false],
+      ["Online booking", "OB", false], ["Services", "SV", false], ["Products", "PR", false],
+      ["Finance", "FN", false], ["Payroll", "PY", false], ["Notifications", "NT", true],
+      ["Loyalty", "LY", false], ["Resources", "RS", false], ["Integrations", "IN", false],
+      ["Settings", "ST", false, true], ["Billing", "BL", false]
+    ];
+    const nav = navItems.map(([label, mono, badge, divider]) => {
+      const active = label === "Reports";
+      return {
+        label, mono, showCount: !!badge, count: "3",
+        bg: active ? "rgba(255,255,255,0.1)" : "transparent",
+        color: active ? "#FFFFFF" : "#A7ADB8",
+        weight: active ? "600" : "400",
+        marker: active ? accent : "transparent",
+        tileBg: active ? accent : "rgba(255,255,255,0.07)",
+        tileColor: active ? "#FFFFFF" : "#7C818B",
+        divider: divider ? "1px solid rgba(255,255,255,0.08)" : "0"
+      };
+    });
+
+    const loads = { 3: 0.4, 4: 0.9, 5: 0.6, 6: 0.3, 7: 0.75, 10: 0.5, 11: 0.85, 12: 1, 13: 0.7, 14: 0.45, 17: 0.6, 18: 0.95, 19: 0.4, 20: 0.8, 21: 0.55, 24: 0.35, 25: 0.7, 26: 0.9, 27: 0.5 };
+    const monthDays = [];
+    for (let i = -5; i <= 31; i++) {
+      const out = i < 1 || i > 31;
+      const n = out ? (i < 1 ? 26 + i + 5 : i - 31) : i;
+      const today = i === 13;
+      const load = loads[i] || 0;
+      monthDays.push({
+        n: String(n),
+        bg: today ? "#16161A" : "transparent",
+        color: today ? "#FFFFFF" : out ? "#C9CDD3" : "#16161A",
+        weight: today ? "700" : "400",
+        load: load ? Math.round(6 + load * 12) + "px" : "0px",
+        loadColor: today ? "#FFC935" : load > 0.75 ? accent : load > 0.4 ? "oklch(0.8 0.09 350)" : "#DFE2E6"
+      });
+    }
+
+    const slots = [];
+    for (let m = 540; m < 1320; m += 30) {
+      const h = Math.floor(m / 60), mm = m % 60;
+      const onHour = mm === 0;
+      slots.push({
+        label: onHour ? String(h).padStart(2, "0") + ":00" : "",
+        labelColor: "#8A9099",
+        line: onHour ? "#E6E8EB" : "#F2F3F5",
+        fill: "#FFFFFF",
+        fillLate: m >= 1200 ? "#F7F8FA" : "#FFFFFF",
+        fillMorning: m < 720 ? "#F7F8FA" : "#FFFFFF"
+      });
+    }
+
+    return {
+      accent, expanded, nav, monthDays, slots,
+      sidebarWidth: expanded ? "232px" : "64px",
+      collapseGlyph: expanded ? "«" : "»",
+      adminLabel: expanded ? "Administration" : "⚙",
+      dayMeta: "14 appointments · 186 000 ֏ booked · 71% occupancy",
+      switcherLabel: this.state.empty ? "Show a busy day" : "Show day one",
+      showAppointments: !this.state.empty,
+      showEmpty: this.state.empty,
+      favoritesOpen: this.state.favoritesOpen,
+      favGlyph: this.state.favoritesOpen ? "▾" : "▸",
+      favorites: ["Studio Aram — Kentron", "Waiting list (4)", "August payroll"],
+      weekdayLabels: ["M", "T", "W", "T", "F", "S", "S"],
+      quickActions: [
+        { label: "Product sale", mono: "PS", span: "auto" },
+        { label: "New payment", mono: "NP", span: "auto" },
+        { label: "Service list", mono: "SL", span: "auto" },
+        { label: "Product catalog", mono: "PC", span: "auto" },
+        { label: "Waiting list · 4", mono: "WL", span: "span 2" }
+      ],
+      team: [
+        { name: "Karen Sahakyan", role: "Barber", hours: "09:00–20:00", initials: "KS", color: "oklch(0.64 0.16 350)" },
+        { name: "Mariam Petrosyan", role: "Colourist", hours: "10:00–20:00", initials: "MP", color: "oklch(0.64 0.16 285)" },
+        { name: "Anna Hakobyan", role: "Nail technician", hours: "09:00–22:00", initials: "AH", color: "oklch(0.64 0.16 225)" },
+        { name: "Davit Melkonyan", role: "Barber", hours: "12:00–22:00", initials: "DM", color: "oklch(0.64 0.16 45)" }
+      ],
+      toggleSidebar: () => this.setState(s => ({ collapsed: !s.collapsed })),
+      toggleDay: () => this.setState(s => ({ empty: !s.empty })),
+      toggleFavorites: () => this.setState(s => ({ favoritesOpen: !s.favoritesOpen }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

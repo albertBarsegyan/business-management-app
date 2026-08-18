@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=Instrument+Sans:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F5F6F8; color: #16161A; font-family: "Instrument Sans", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #2C6CF6; text-decoration: none; }
+  a:hover { color: #1B4FCB; }
+  :focus-visible { outline: 2px solid #2C6CF6; outline-offset: 2px; border-radius: 4px; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #D5D9DE; border-radius: 6px; border: 3px solid #F5F6F8; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; } }
+</style>
+</helmet>
+
+<div data-screen-label="Branding page builder" style="display: flex; height: 100vh; min-height: 840px; overflow: hidden;">
+
+  <aside style="width: 216px; flex: 0 0 auto; background: #14141A; display: flex; flex-direction: column;">
+    <div style="height: 56px; flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.07);">
+      <span style="width: 26px; height: 26px; border-radius: 7px; background: #FFC935; display: inline-flex; align-items: center; justify-content: center; font-family: 'Familjen Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: #17170F;">Z</span>
+      <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; color: #FFFFFF;">Zhamo</span>
+    </div>
+    <nav style="flex: 1 1 auto; overflow-y: auto; padding: 10px 8px; display: flex; flex-direction: column; gap: 2px;">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="9">
+        <div style="display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 8px 0 {{ n.indent }}; border-radius: 6px; cursor: pointer; position: relative; background: {{ n.bg }}; color: {{ n.color }}; font-size: {{ n.size }}; font-weight: {{ n.weight }};" style-hover="background: rgba(255,255,255,0.06);">
+          <span style="position: absolute; left: -8px; top: 7px; bottom: 7px; width: 3px; border-radius: 0 2px 2px 0; background: {{ n.marker }};"></span>
+          <sc-if value="{{ n.showTile }}" hint-placeholder-val="{{ true }}">
+            <span style="width: 20px; height: 20px; flex: 0 0 auto; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 10px; background: {{ n.tileBg }}; color: {{ n.tileColor }};">{{ n.mono }}</span>
+          </sc-if>
+          <span style="white-space: nowrap;">{{ n.label }}</span>
+        </div>
+      </sc-for>
+    </nav>
+    <div style="flex: 0 0 auto; border-top: 1px solid rgba(255,255,255,0.07); padding: 12px 10px 14px; display: flex; flex-direction: column; gap: 10px; background: #1A1A21;">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <span style="width: 28px; height: 28px; border-radius: 50%; background: {{ accent }}; color: #FFFFFF; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;">LS</span>
+        <span style="display: flex; flex-direction: column; overflow: hidden;">
+          <span style="font-size: 12.5px; font-weight: 600; color: #FFFFFF;">Lilit Sargsyan</span>
+          <span style="font-size: 11px; color: #7C818B;">Owner</span>
+        </span>
+      </div>
+      <button style="height: 36px; border: 0; border-radius: 6px; background: {{ accent }}; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;">Administration</button>
+    </div>
+  </aside>
+
+  <main style="flex: 1 1 auto; min-width: 0; overflow-x: auto; display: flex; flex-direction: column; background: #F5F6F8;">
+
+    <div style="height: 56px; flex: 0 0 auto; min-width: 1024px; white-space: nowrap; background: #FFFFFF; border-bottom: 1px solid #E6E8EB; display: flex; align-items: center; gap: 12px; padding: 0 18px;">
+      <h1 style="margin: 0; font-family: 'Familjen Grotesk', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap;">Branding page</h1>
+      <span style="height: 28px; padding: 0 4px 0 10px; border: 1px solid #E6E8EB; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: #5B6069;">
+        zhamo.am/studio-aram
+        <span title="Copy link" style="width: 20px; height: 20px; border-radius: 4px; background: #F1F2F4; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: #5B6069; cursor: pointer;">⧉</span>
+      </span>
+      <span style="height: 22px; padding: 0 9px; border-radius: 6px; background: {{ statusBg }}; color: {{ statusColor }}; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center;">{{ statusLabel }}</span>
+
+      <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+        <div style="display: inline-flex; padding: 2px; background: #EDEFF2; border-radius: 7px;">
+          <sc-for list="{{ devices }}" as="d" hint-placeholder-count="2">
+            <span onClick="{{ d.pick }}" style="height: 26px; padding: 0 13px; border-radius: 5px; background: {{ d.bg }}; color: {{ d.color }}; font-size: 12.5px; font-weight: {{ d.weight }}; display: inline-flex; align-items: center; cursor: pointer;">{{ d.label }}</span>
+          </sc-for>
+        </div>
+        <button style="height: 32px; padding: 0 13px; border: 1px solid #D5D9DE; border-radius: 6px; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;" style-hover="border-color: #16161A;">View live</button>
+        <button onClick="{{ publish }}" style="height: 32px; padding: 0 15px; border: 0; border-radius: 6px; background: {{ publishBg }}; color: {{ publishColor }}; font-family: inherit; font-size: 13px; font-weight: 600; cursor: {{ publishCursor }};">{{ publishLabel }}</button>
+      </div>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 268px minmax(440px, 1fr) 316px; min-width: 1024px;">
+
+      <div style="border-right: 1px solid #E6E8EB; background: #FFFFFF; overflow-y: auto; display: flex; flex-direction: column;">
+        <div style="padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid #EEF0F2; position: sticky; top: 0; background: #FFFFFF; z-index: 2;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #A9AEB6;">Templates — 7</span>
+          <span style="font-size: 11.5px; color: #8A9099; line-height: 1.45;">Layout only. Your accent, logo and content carry across every switch.</span>
+        </div>
+        <sc-for list="{{ templates }}" as="t" hint-placeholder-count="7">
+          <div onClick="{{ t.pick }}" style="padding: 12px 14px; border-bottom: 1px solid #EEF0F2; display: flex; flex-direction: column; gap: 9px; cursor: pointer; background: {{ t.rowBg }};" style-hover="background: #FAFBFC;">
+            <div style="height: 92px; border-radius: 7px; border: 1.5px solid {{ t.thumbBorder }}; background: {{ t.thumbBg }}; overflow: hidden; display: flex; flex-direction: column; padding: 7px; gap: 5px;">
+              <span style="height: {{ t.thumbCover }}; border-radius: 4px; background: {{ t.thumbCoverBg }}; flex: 0 0 auto;"></span>
+              <span style="height: 9px; width: {{ t.thumbTitleW }}; border-radius: 3px; background: {{ t.thumbInk }}; flex: 0 0 auto;"></span>
+              <span style="display: flex; gap: 4px; flex: 1 1 auto; min-height: 0;">
+                <sc-for list="{{ t.thumbCols }}" as="col" hint-placeholder-count="2">
+                  <span style="flex: {{ col.flex }}; display: flex; flex-direction: column; gap: 3px;">
+                    <sc-for list="{{ col.bars }}" as="b" hint-placeholder-count="3">
+                      <span style="height: {{ b.h }}; width: {{ b.w }}; border-radius: 3px; background: {{ b.bg }};"></span>
+                    </sc-for>
+                  </span>
+                </sc-for>
+              </span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 7px;">
+              <span style="font-size: 13px; font-weight: 600;">{{ t.name }}</span>
+              <span style="font-size: 11px; color: #8A9099;">{{ t.kicker }}</span>
+              <sc-if value="{{ t.selected }}" hint-placeholder-val="{{ false }}">
+                <span style="margin-left: auto; width: 18px; height: 18px; border-radius: 50%; background: #FFC935; color: #17170F; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">✓</span>
+              </sc-if>
+            </div>
+            <span style="font-size: 11.5px; color: #5B6069; line-height: 1.45;">{{ t.bestFor }}</span>
+            <span style="font-size: 11px; color: #A9AEB6;">Needs: {{ t.needs }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="min-width: 0; overflow-y: auto; background: #EDEFF2; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px; align-self: stretch;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A9099;">Live preview · {{ templateName }} · {{ deviceLabel }}</span>
+          <span style="margin-left: auto; font-size: 11.5px; color: #8A9099;">Real page, real content — nothing here is a mockup.</span>
+        </div>
+
+        <div style="width: {{ frameWidth }}; max-width: 100%; flex: 0 0 auto; border-radius: {{ frameRadius }}; overflow: hidden; border: 1px solid #DDE0E4; background: {{ pageBg }}; box-shadow: 0 12px 40px rgba(20,20,26,0.12);">
+
+          <div style="height: {{ coverHeight }}; background: {{ coverBg }}; display: flex; align-items: flex-end; justify-content: space-between; padding: 12px 16px;">
+            <sc-if value="{{ hasCover }}" hint-placeholder-val="{{ true }}">
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.85);">cover · 1600×900</span>
+            </sc-if>
+            <sc-if value="{{ isEditorial }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: 40px; line-height: 1; letter-spacing: -0.03em; font-weight: 700; color: #FFFFFF; max-width: 60%;">Studio Aram</span>
+            </sc-if>
+          </div>
+
+          <div style="padding: {{ headerPad }}; display: flex; gap: 14px; align-items: flex-start; background: {{ pageBg }};">
+            <span style="width: 48px; height: 48px; flex: 0 0 auto; margin-top: {{ logoLift }}; border-radius: 12px; background: {{ logoBg }}; border: 1px solid {{ logoBorder }}; display: inline-flex; align-items: center; justify-content: center; font-family: 'Familjen Grotesk', sans-serif; font-size: 19px; font-weight: 700; color: {{ accent }};">A</span>
+            <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+              <sc-if value="{{ showHeroName }}" hint-placeholder-val="{{ true }}">
+                <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: {{ heroSize }}; line-height: 1.04; letter-spacing: -0.026em; font-weight: 700; color: {{ inkStrong }};">Studio Aram</span>
+              </sc-if>
+              <span style="font-size: 12.5px; color: {{ inkMuted }};">Barbershop · 12 Abovyan St, Kentron, Yerevan</span>
+              <span style="display: flex; flex-wrap: wrap; gap: 9px; font-size: 12px;">
+                <span style="color: {{ ratingColor }}; font-weight: 600;">★ 4.9</span>
+                <span style="color: {{ inkMuted }};">218 reviews</span>
+                <span style="color: {{ openColor }}; font-weight: 600;">Open till 22:00</span>
+              </span>
+            </div>
+            <button style="margin-left: auto; flex: 0 0 auto; height: 40px; padding: 0 18px; border: 0; border-radius: 8px; background: #FFC935; color: #17170F; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;">Book now</button>
+          </div>
+
+          <sc-if value="{{ showTrustRow }}" hint-placeholder-val="{{ false }}">
+            <div style="margin: 0 16px 14px; padding: 12px 14px; border-radius: 8px; background: {{ trustBg }}; border: 1px solid {{ trustBorder }}; display: flex; flex-wrap: wrap; gap: 18px;">
+              <sc-for list="{{ trustItems }}" as="t" hint-placeholder-count="3">
+                <span style="display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-size: 12.5px; font-weight: 600; color: {{ inkStrong }};">{{ t.k }}</span>
+                  <span style="font-size: 11.5px; color: {{ inkMuted }};">{{ t.v }}</span>
+                </span>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ galleryFirst }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 0 16px 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+              <sc-for list="{{ galleryTiles }}" as="g" hint-placeholder-count="6">
+                <span style="aspect-ratio: 1 / 1; border-radius: 7px; background: {{ g.bg }}; display: flex; align-items: flex-end; padding: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; color: rgba(255,255,255,0.8);">{{ g.label }}</span>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ sectionsOn.services }}" hint-placeholder-val="{{ true }}">
+            <div style="padding: 0 16px 18px; display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between; padding-top: 4px; border-top: 1px solid {{ hairline }};">
+                <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: {{ sectionSize }}; letter-spacing: -0.02em; font-weight: 700; color: {{ inkStrong }}; padding-top: 12px;">{{ servicesHeading }}</span>
+                <span style="font-size: 11.5px; color: {{ inkMuted }};">{{ servicesMeta }}</span>
+              </div>
+
+              <sc-if value="{{ servicesList }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; flex-direction: column;">
+                  <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+                    <div style="min-height: 52px; padding: 11px 0; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid {{ hairline }};">
+                      <span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;">
+                        <span style="font-size: 13.5px; font-weight: 500; color: {{ inkStrong }};">{{ s.name }}</span>
+                        <span style="font-size: 11.5px; color: {{ inkMuted }};">{{ s.meta }}</span>
+                      </span>
+                      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{ inkStrong }};">{{ s.price }}</span>
+                      <button style="height: 34px; padding: 0 13px; border: 1px solid {{ ghostBorder }}; border-radius: 7px; background: transparent; color: {{ inkStrong }}; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;">Book</button>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ servicesCards }}" hint-placeholder-val="{{ false }}">
+                <div style="display: grid; grid-template-columns: repeat({{ cardCols }}, 1fr); gap: 8px;">
+                  <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+                    <div style="border: 1px solid {{ hairline }}; border-radius: 9px; overflow: hidden; background: {{ cardBg }};">
+                      <span style="display: block; height: 66px; background: {{ s.thumb }};"></span>
+                      <span style="display: flex; flex-direction: column; gap: 3px; padding: 10px;">
+                        <span style="font-size: 13px; font-weight: 600; color: {{ inkStrong }};">{{ s.name }}</span>
+                        <span style="font-size: 11.5px; color: {{ inkMuted }};">{{ s.meta }}</span>
+                        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: {{ inkStrong }};">{{ s.price }}</span>
+                      </span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ servicesTable }}" hint-placeholder-val="{{ false }}">
+                <div style="border: 1px solid {{ hairline }}; border-radius: 8px; overflow: hidden;">
+                  <div style="display: grid; grid-template-columns: 1fr 84px 96px 78px; height: 32px; align-items: center; padding: 0 12px; gap: 8px; background: {{ tableHeadBg }}; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: {{ inkMuted }};">
+                    <span>Service</span><span>Duration</span><span>Price</span><span></span>
+                  </div>
+                  <sc-for list="{{ services }}" as="s" hint-placeholder-count="4">
+                    <div style="display: grid; grid-template-columns: 1fr 84px 96px 78px; min-height: 42px; align-items: center; padding: 0 12px; gap: 8px; border-top: 1px solid {{ hairline }}; font-size: 12.5px; color: {{ inkStrong }};">
+                      <span>{{ s.name }}</span>
+                      <span style="color: {{ inkMuted }};">{{ s.duration }}</span>
+                      <span style="font-family: 'IBM Plex Mono', monospace;">{{ s.price }}</span>
+                      <span style="justify-self: end; height: 28px; padding: 0 11px; border: 1px solid {{ ghostBorder }}; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; cursor: pointer;">Book</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ servicesTimetable }}" hint-placeholder-val="{{ false }}">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <div style="display: flex; gap: 5px; overflow-x: auto;">
+                    <sc-for list="{{ weekStrip }}" as="d" hint-placeholder-count="7">
+                      <span style="min-width: 54px; flex: 0 0 auto; padding: 7px 0; border-radius: 8px; border: 1px solid {{ d.border }}; background: {{ d.bg }}; color: {{ d.color }}; display: flex; flex-direction: column; align-items: center; gap: 1px;">
+                        <span style="font-size: 10px; opacity: 0.75;">{{ d.dow }}</span>
+                        <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: 15px; font-weight: 700;">{{ d.day }}</span>
+                      </span>
+                    </sc-for>
+                  </div>
+                  <sc-for list="{{ classes }}" as="c" hint-placeholder-count="4">
+                    <div style="min-height: 48px; padding: 9px 12px; border: 1px solid {{ hairline }}; border-radius: 8px; display: flex; align-items: center; gap: 12px; background: {{ cardBg }};">
+                      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: {{ inkStrong }}; flex: 0 0 auto;">{{ c.time }}</span>
+                      <span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;">
+                        <span style="font-size: 13px; font-weight: 600; color: {{ inkStrong }};">{{ c.name }}</span>
+                        <span style="font-size: 11.5px; color: {{ inkMuted }};">{{ c.who }}</span>
+                      </span>
+                      <span style="font-size: 11.5px; font-weight: 600; color: {{ c.spotsColor }};">{{ c.spots }}</span>
+                      <span style="height: 30px; padding: 0 12px; border-radius: 6px; background: #FFC935; color: #17170F; font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; cursor: pointer;">Join</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ sectionsOn.team }}" hint-placeholder-val="{{ true }}">
+            <div style="padding: 0 16px 18px; display: flex; flex-direction: column; gap: 10px;">
+              <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: {{ sectionSize }}; letter-spacing: -0.02em; font-weight: 700; color: {{ inkStrong }}; padding-top: 12px; border-top: 1px solid {{ hairline }};">{{ teamHeading }}</span>
+              <div style="display: grid; grid-template-columns: repeat({{ teamCols }}, 1fr); gap: 8px;">
+                <sc-for list="{{ team }}" as="m" hint-placeholder-count="3">
+                  <div style="border: 1px solid {{ hairline }}; border-radius: 9px; padding: 12px; display: flex; flex-direction: column; gap: 7px; background: {{ cardBg }};">
+                    <span style="width: 40px; height: 40px; border-radius: 50%; background: {{ m.photo }}; display: inline-flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; color: rgba(255,255,255,0.85);">PHOTO</span>
+                    <span style="display: flex; flex-direction: column; gap: 2px;">
+                      <span style="font-size: 13px; font-weight: 600; color: {{ inkStrong }};">{{ m.name }}</span>
+                      <span style="font-size: 11.5px; color: {{ inkMuted }};">{{ m.role }}</span>
+                      <span style="font-size: 11.5px; color: {{ ratingColor }}; font-weight: 600;">★ {{ m.rating }}</span>
+                    </span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ showReview }}" hint-placeholder-val="{{ true }}">
+            <div style="padding: 0 16px 18px;">
+              <div style="padding: 16px; border-radius: 9px; background: {{ quoteBg }}; border-left: 3px solid {{ accent }}; display: flex; flex-direction: column; gap: 8px;">
+                <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: {{ quoteSize }}; line-height: 1.25; letter-spacing: -0.018em; font-weight: 700; color: {{ inkStrong }};">“Best fade in Kentron, and they always run on time.”</span>
+                <span style="font-size: 11.5px; color: {{ inkMuted }};">Gor H. · verified visit, 29 July 2026</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ sectionsOn.hours }}" hint-placeholder-val="{{ true }}">
+            <div style="padding: 0 16px 20px; display: grid; grid-template-columns: {{ hoursCols }}; gap: 10px;">
+              <div style="display: flex; flex-direction: column; gap: 7px; padding-top: 12px; border-top: 1px solid {{ hairline }};">
+                <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: {{ sectionSize }}; letter-spacing: -0.02em; font-weight: 700; color: {{ inkStrong }};">Hours &amp; address</span>
+                <sc-for list="{{ hours }}" as="h" hint-placeholder-count="3">
+                  <span style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; font-size: 12.5px;">
+                    <span style="color: {{ inkMuted }};">{{ h.d }}</span>
+                    <span style="font-family: 'IBM Plex Mono', monospace; color: {{ inkStrong }};">{{ h.t }}</span>
+                  </span>
+                </sc-for>
+                <span style="font-size: 12.5px; color: {{ inkMuted }}; line-height: 1.5;">12 Abovyan St, Kentron<br />+374 10 543 220</span>
+              </div>
+              <span style="min-height: 120px; border-radius: 9px; background: {{ mapBg }}; border: 1px solid {{ hairline }}; margin-top: 12px; display: flex; align-items: flex-end; padding: 9px; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: {{ inkMuted }};">MAP · pinned location</span>
+            </div>
+          </sc-if>
+
+          <div style="padding: 12px 16px; background: {{ footerBg }}; border-top: 1px solid {{ hairline }}; display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 11.5px; color: {{ inkMuted }};">Powered by Zhamo</span>
+            <span style="margin-left: auto; height: 36px; padding: 0 16px; border-radius: 8px; background: #FFC935; color: #17170F; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; cursor: pointer;">Book now</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-left: 1px solid #E6E8EB; background: #FFFFFF; overflow-y: auto; display: flex; flex-direction: column;">
+        <div style="padding: 14px 16px 12px; border-bottom: 1px solid #EEF0F2; display: flex; flex-direction: column; gap: 3px; position: sticky; top: 0; background: #FFFFFF; z-index: 2;">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #A9AEB6;">Editing — {{ templateName }}</span>
+          <span style="font-size: 11.5px; color: #8A9099;">{{ templateHero }}</span>
+        </div>
+
+        <div style="padding: 14px 16px; border-bottom: 1px solid #EEF0F2; display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-size: 12.5px; font-weight: 600;">Brand</span>
+          <div style="display: flex; gap: 8px;">
+            <span style="width: 52px; height: 52px; flex: 0 0 auto; border-radius: 9px; border: 1px dashed #D5D9DE; background: #FAFBFC; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; font-size: 9.5px; color: #8A9099;">
+              <span style="font-size: 13px; color: #16161A;">A</span>logo
+            </span>
+            <span style="flex: 1; height: 52px; border-radius: 9px; border: 1px dashed #D5D9DE; background: {{ coverBg }}; display: flex; align-items: flex-end; padding: 6px 8px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; color: rgba(255,255,255,0.9);">replace cover</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 7px;">
+            <span style="font-size: 12px; color: #5B6069;">Accent — inherited from your vertical</span>
+            <div style="display: flex; gap: 6px;">
+              <sc-for list="{{ accentSwatches }}" as="a" hint-placeholder-count="5">
+                <span onClick="{{ a.pick }}" style="width: 30px; height: 30px; border-radius: 7px; background: {{ a.hex }}; border: 2px solid {{ a.border }}; cursor: pointer;"></span>
+              </sc-for>
+            </div>
+          </div>
+          <label style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 12px; font-weight: 500; color: #5B6069;">Page address</span>
+            <span style="display: flex; height: 32px; border: 1px solid #D5D9DE; border-radius: 6px; overflow: hidden;">
+              <span style="padding: 0 8px; border-right: 1px solid #E6E8EB; background: #FAFBFC; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; display: inline-flex; align-items: center; color: #8A9099;">zhamo.am/</span>
+              <input value="studio-aram" style="flex: 1; min-width: 0; border: 0; padding: 0 9px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; outline: none;" />
+            </span>
+          </label>
+        </div>
+
+        <div style="padding: 14px 16px; border-bottom: 1px solid #EEF0F2; display: flex; flex-direction: column; gap: 9px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <span style="font-size: 12.5px; font-weight: 600;">Sections</span>
+            <span style="font-size: 11px; color: #A9AEB6;">drag to reorder</span>
+          </div>
+          <sc-for list="{{ sectionRows }}" as="s" hint-placeholder-count="6">
+            <div style="height: 38px; padding: 0 10px; border: 1px solid #E6E8EB; border-radius: 7px; display: flex; align-items: center; gap: 9px; background: {{ s.bg }};" style-hover="border-color: #16161A;">
+              <span style="color: #C9CDD3; font-size: 12px; cursor: grab;">⠿</span>
+              <span style="font-size: 12.5px; color: {{ s.labelColor }};">{{ s.label }}</span>
+              <sc-if value="{{ s.locked }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size: 10.5px; color: #A9AEB6;">required</span>
+              </sc-if>
+              <span onClick="{{ s.toggle }}" style="margin-left: auto; width: 32px; height: 19px; flex: 0 0 auto; border-radius: 10px; background: {{ s.toggleBg }}; position: relative; display: inline-block; cursor: pointer;"><span style="position: absolute; top: 2px; left: {{ s.knob }}; width: 15px; height: 15px; border-radius: 50%; background: #FFFFFF;"></span></span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="padding: 14px 16px; border-bottom: 1px solid #EEF0F2; display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-size: 12.5px; font-weight: 600;">Booking rules on this page</span>
+          <sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <span style="width: 32px; height: 19px; flex: 0 0 auto; border-radius: 10px; background: {{ r.bg }}; position: relative; display: inline-block; cursor: pointer;"><span style="position: absolute; top: 2px; left: {{ r.knob }}; width: 15px; height: 15px; border-radius: 50%; background: #FFFFFF;"></span></span>
+              <span style="display: flex; flex-direction: column; gap: 1px;">
+                <span style="font-size: 12.5px;">{{ r.label }}</span>
+                <span style="font-size: 11px; color: #A9AEB6;">{{ r.meta }}</span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="padding: 14px 16px 20px; display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-size: 12.5px; font-weight: 600;">Before you publish</span>
+          <sc-for list="{{ checks }}" as="c" hint-placeholder-count="3">
+            <div style="display: flex; gap: 9px; align-items: flex-start;">
+              <span style="width: 16px; height: 16px; flex: 0 0 auto; margin-top: 1px; border-radius: 50%; background: {{ c.bg }}; color: #FFFFFF; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">{{ c.glyph }}</span>
+              <span style="font-size: 12px; line-height: 1.45; color: {{ c.color }};">{{ c.text }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div style="background: #FFFFFF; border-top: 1px solid #E6E8EB; padding: 56px 40px 88px; display: flex; justify-content: center;">
+  <div style="width: 100%; max-width: 1180px; display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: center; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8A9099;">
+        <span>Template catalogue</span><span style="color: #C9CDD3;">/</span><a href="Zhamo Index.dc.html">All screens</a><span style="color: #C9CDD3;">/</span><a href="Zhamo 06 Booking Widget.dc.html">Booking widget</a>
+      </div>
+      <h2 style="margin: 0; font-family: 'Familjen Grotesk', sans-serif; font-size: 52px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 700; max-width: 22ch;">Seven templates, one booking flow.</h2>
+      <p style="margin: 0; max-width: 70ch; font-size: 15px; line-height: 1.6; color: #5B6069;">A template decides the wrapper only: cover treatment, hero size, how services are listed, and which proof element carries the page. The five-step booking flow underneath never changes, so a template switch can never break a booking — and an owner can switch on a Tuesday afternoon without re-entering a single service.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px;">
+      <sc-for list="{{ catalogue }}" as="c" hint-placeholder-count="7">
+        <div style="border: 1px solid #E6E8EB; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="height: 8px; background: {{ c.stripe }};"></div>
+          <div style="padding: 18px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+              <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: 24px; letter-spacing: -0.02em; font-weight: 700;">{{ c.name }}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #A9AEB6;">{{ c.kicker }}</span>
+            </div>
+            <sc-for list="{{ c.specs }}" as="s" hint-placeholder-count="5">
+              <div style="display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding-bottom: 8px; border-bottom: 1px dashed #EEF0F2;">
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: #A9AEB6; padding-top: 2px;">{{ s.k }}</span>
+                <span style="font-size: 12.5px; line-height: 1.5; color: #16161A;">{{ s.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="border: 1px solid #E6E8EB; border-radius: 10px; padding: 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; background: #FAFBFC;">
+      <sc-for list="{{ principles }}" as="p" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 13px; font-weight: 600;">{{ p.k }}</span>
+          <span style="font-size: 12.5px; line-height: 1.55; color: #5B6069;">{{ p.v }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;oklch(0.64 0.16 350)&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;oklch(0.64 0.16 350)&quot;,&quot;oklch(0.64 0.16 225)&quot;,&quot;oklch(0.64 0.16 155)&quot;,&quot;oklch(0.64 0.16 45)&quot;],&quot;section&quot;:&quot;Brand&quot;}}">
+class Component extends DCLogic {
+  state = {
+    template: "editorial",
+    device: "desktop",
+    published: false,
+    accent: "oklch(0.64 0.16 350)",
+    sections: { services: true, team: true, reviews: true, gallery: true, hours: true, about: false }
+  };
+
+  renderVals() {
+    const st = this.state;
+    const accent = st.accent;
+    const T = st.template;
+    const dark = T === "dark";
+
+    const ink = dark ? "#FFFFFF" : "#16161A";
+    const inkMuted = dark ? "rgba(255,255,255,0.58)" : "#5B6069";
+    const hairline = dark ? "rgba(255,255,255,0.12)" : "#EEF0F2";
+    const pageBg = dark ? "#15151B" : "#FFFFFF";
+    const cardBg = dark ? "#1C1C23" : "#FFFFFF";
+
+    const cover = (a, b) => "repeating-linear-gradient(135deg, " + a + " 0 9px, " + b + " 9px 18px)";
+    const coverPrimary = cover("oklch(0.5 0.1 350)", "oklch(0.43 0.1 350)");
+
+    const specByTemplate = {
+      minimal:    { name: "Minimal",     coverH: "0px",   hero: "34px", sectionSize: "19px", services: "list",      gallery: false, review: true,  trust: false, teamCols: 3, cardCols: 3, editorial: false, heroName: true },
+      editorial:  { name: "Editorial",   coverH: "196px", hero: "34px", sectionSize: "21px", services: "list",      gallery: false, review: true,  trust: false, teamCols: 3, cardCols: 3, editorial: true,  heroName: false },
+      dark:       { name: "Dark studio", coverH: "150px", hero: "32px", sectionSize: "19px", services: "list",      gallery: true,  review: true,  trust: false, teamCols: 3, cardCols: 3, editorial: false, heroName: true },
+      grid:       { name: "Photo grid",  coverH: "96px",  hero: "28px", sectionSize: "18px", services: "cards",     gallery: true,  review: false, trust: false, teamCols: 3, cardCols: 3, editorial: false, heroName: true },
+      clinic:     { name: "Clinic",      coverH: "84px",  hero: "30px", sectionSize: "19px", services: "table",     gallery: false, review: true,  trust: true,  teamCols: 3, cardCols: 3, editorial: false, heroName: true },
+      storefront: { name: "Storefront",  coverH: "72px",  hero: "30px", sectionSize: "19px", services: "table",     gallery: false, review: false, trust: true,  teamCols: 2, cardCols: 2, editorial: false, heroName: true },
+      timetable:  { name: "Timetable",   coverH: "110px", hero: "30px", sectionSize: "19px", services: "timetable", gallery: false, review: true,  trust: false, teamCols: 3, cardCols: 3, editorial: false, heroName: true }
+    };
+    const s = specByTemplate[T];
+
+    const templateMeta = {
+      minimal: { kicker: "Type-led", bestFor: "Barbershops, self-employed masters, anyone with no photos yet", needs: "Nothing — zero images", hero: "No cover. Name at 34px, hours and address right under it." },
+      editorial: { kicker: "Photo hero", bestFor: "Hair salons, brow & lash studios, one strong photo", needs: "1 cover photo, 1600×900", hero: "Full-bleed cover with the name set over it." },
+      dark: { kicker: "Dark canvas", bestFor: "Tattoo studios, nail bars, late-night barbers", needs: "Cover + logo on transparent", hero: "Dark surface, accent-lit rows, gallery strip." },
+      grid: { kicker: "Gallery first", bestFor: "Nails, colourists, makeup — the work sells itself", needs: "6+ square photos", hero: "Short header, then a 3×2 gallery before anything else." },
+      clinic: { kicker: "Trust-led", bestFor: "Dental, medical, physio, diagnostics", needs: "Licence + insurance text", hero: "Calm header, credentials row, price table." },
+      storefront: { kicker: "Price list", bestFor: "Auto service, dry cleaning, repair, consumer services", needs: "Address, phone and hours", hero: "Hours and phone above the fold, map beside them." },
+      timetable: { kicker: "Class schedule", bestFor: "Fitness studios, dance, schools, group classes", needs: "A recurring class schedule", hero: "This-week strip, then classes with spots left." }
+    };
+
+    const thumb = (id) => {
+      const sel = T === id;
+      const inkBar = dark && id === "dark" ? "rgba(255,255,255,0.5)" : "#D8DCE1";
+      const bg = id === "dark" ? "#1C1C23" : "#FFFFFF";
+      const ci = id === "dark" ? "rgba(255,255,255,0.45)" : "#D8DCE1";
+      const covers = {
+        minimal: "0px", editorial: "34px", dark: "26px", grid: "16px", clinic: "14px", storefront: "12px", timetable: "20px"
+      };
+      const cols = {
+        minimal: [{ flex: "1", bars: [{ h: "7px", w: "100%", bg: ci }, { h: "7px", w: "84%", bg: ci }, { h: "7px", w: "92%", bg: ci }] }],
+        editorial: [{ flex: "1", bars: [{ h: "8px", w: "100%", bg: ci }, { h: "8px", w: "70%", bg: ci }] }, { flex: "1", bars: [{ h: "8px", w: "90%", bg: ci }, { h: "8px", w: "60%", bg: ci }] }],
+        dark: [{ flex: "1", bars: [{ h: "8px", w: "100%", bg: ci }, { h: "8px", w: "78%", bg: ci }, { h: "8px", w: "88%", bg: ci }] }],
+        grid: [{ flex: "1", bars: [{ h: "15px", w: "100%", bg: accent }, { h: "15px", w: "100%", bg: ci }] }, { flex: "1", bars: [{ h: "15px", w: "100%", bg: ci }, { h: "15px", w: "100%", bg: accent }] }, { flex: "1", bars: [{ h: "15px", w: "100%", bg: accent }, { h: "15px", w: "100%", bg: ci }] }],
+        clinic: [{ flex: "1", bars: [{ h: "6px", w: "100%", bg: ci }, { h: "6px", w: "100%", bg: ci }, { h: "6px", w: "100%", bg: ci }, { h: "6px", w: "100%", bg: ci }] }],
+        storefront: [{ flex: "2", bars: [{ h: "6px", w: "100%", bg: ci }, { h: "6px", w: "100%", bg: ci }, { h: "6px", w: "100%", bg: ci }, { h: "6px", w: "100%", bg: ci }] }, { flex: "1", bars: [{ h: "30px", w: "100%", bg: ci }] }],
+        timetable: [{ flex: "1", bars: [{ h: "10px", w: "100%", bg: ci }, { h: "10px", w: "100%", bg: accent }, { h: "10px", w: "100%", bg: ci }] }]
+      };
+      return {
+        thumbBorder: sel ? "#FFC935" : "#E6E8EB",
+        thumbBg: bg,
+        thumbCover: covers[id],
+        thumbCoverBg: id === "minimal" ? "transparent" : coverPrimary,
+        thumbInk: id === "editorial" ? accent : inkBar,
+        thumbTitleW: id === "editorial" ? "62%" : "48%",
+        thumbCols: cols[id],
+        rowBg: sel ? "#FFFDF6" : "#FFFFFF",
+        selected: sel
+      };
+    };
+
+    const sectionRow = (key, label, locked) => {
+      const on = locked ? true : st.sections[key];
+      return {
+        label, locked: !!locked,
+        bg: on ? "#FFFFFF" : "#FAFBFC",
+        labelColor: on ? "#16161A" : "#A9AEB6",
+        toggleBg: on ? "#22C55E" : "#D5D9DE",
+        knob: on ? "15px" : "2px",
+        toggle: () => { if (!locked) this.setState(p => ({ sections: Object.assign({}, p.sections, { [key]: !p.sections[key] }) })); }
+      };
+    };
+
+    const svcSets = {
+      default: [
+        { name: "Men's cut & beard trim", meta: "45 min · with wash", duration: "45 min", price: "7 500 ֏", thumb: cover("oklch(0.6 0.09 350)", "oklch(0.53 0.09 350)") },
+        { name: "Men's haircut", meta: "45 min", duration: "45 min", price: "6 000 ֏", thumb: cover("oklch(0.62 0.06 300)", "oklch(0.55 0.06 300)") },
+        { name: "Beard sculpt", meta: "30 min", duration: "30 min", price: "5 000 ֏", thumb: cover("oklch(0.6 0.07 60)", "oklch(0.53 0.07 60)") },
+        { name: "Head shave & hot towel", meta: "30 min", duration: "30 min", price: "5 500 ֏", thumb: cover("oklch(0.58 0.08 200)", "oklch(0.51 0.08 200)") }
+      ],
+      clinic: [
+        { name: "Consultation & X-ray", meta: "40 min · Dr. Sargsyan", duration: "40 min", price: "8 000 ֏", thumb: coverPrimary },
+        { name: "Professional hygiene", meta: "60 min", duration: "60 min", price: "22 000 ֏", thumb: coverPrimary },
+        { name: "Filling, one tooth", meta: "45 min", duration: "45 min", price: "from 25 000 ֏", thumb: coverPrimary },
+        { name: "Whitening course", meta: "90 min", duration: "90 min", price: "68 000 ֏", thumb: coverPrimary }
+      ],
+      storefront: [
+        { name: "Full interior detail", meta: "180 min", duration: "180 min", price: "24 000 ֏", thumb: coverPrimary },
+        { name: "Wash & wax", meta: "60 min", duration: "60 min", price: "8 000 ֏", thumb: coverPrimary },
+        { name: "Tyre change, 4 wheels", meta: "45 min", duration: "45 min", price: "6 000 ֏", thumb: coverPrimary },
+        { name: "Headlight polish", meta: "40 min", duration: "40 min", price: "9 000 ֏", thumb: coverPrimary }
+      ]
+    };
+    const services = T === "clinic" ? svcSets.clinic : T === "storefront" ? svcSets.storefront : svcSets.default;
+
+    return {
+      accent,
+      nav: [
+        ["Reports", "RP", 0], ["Team", "TM", 0], ["Clients", "CL", 0],
+        ["Online booking", "OB", 0, true],
+        ["Branding page", "", 1, false, true],
+        ["Booking settings", "", 1],
+        ["Services", "SV", 0], ["Finance", "FN", 0], ["Loyalty", "LY", 0]
+      ].map(([label, mono, depth, expanded, active]) => ({
+        label, mono,
+        indent: depth ? "38px" : "8px",
+        size: depth ? "12.5px" : "13px",
+        showTile: !depth,
+        bg: active ? "rgba(255,255,255,0.1)" : expanded ? "rgba(255,255,255,0.05)" : "transparent",
+        color: active || expanded ? "#FFFFFF" : "#A7ADB8",
+        weight: active ? "600" : "400",
+        marker: active ? accent : "transparent",
+        tileBg: expanded ? accent : "rgba(255,255,255,0.07)",
+        tileColor: expanded ? "#FFFFFF" : "#7C818B"
+      })),
+
+      statusLabel: st.published ? "Published · live" : "Draft — 4 unpublished changes",
+      statusBg: st.published ? "#E7F8EE" : "#FEF6E0",
+      statusColor: st.published ? "#17753C" : "#8A6A05",
+      publishLabel: st.published ? "Published" : "Publish changes",
+      publishBg: st.published ? "#EDEFF2" : "#FFC935",
+      publishColor: st.published ? "#A9AEB6" : "#17170F",
+      publishCursor: st.published ? "default" : "pointer",
+      publish: () => this.setState(p => ({ published: !p.published })),
+
+      devices: [
+        { key: "desktop", label: "Desktop" },
+        { key: "phone", label: "Phone" }
+      ].map(d => ({
+        label: d.label,
+        bg: st.device === d.key ? "#FFFFFF" : "transparent",
+        color: st.device === d.key ? "#16161A" : "#5B6069",
+        weight: st.device === d.key ? "600" : "400",
+        pick: () => this.setState({ device: d.key })
+      })),
+      deviceLabel: st.device === "phone" ? "390 px" : "1280 px",
+      frameWidth: st.device === "phone" ? "390px" : "100%",
+      frameRadius: st.device === "phone" ? "18px" : "10px",
+
+      templates: ["minimal", "editorial", "dark", "grid", "clinic", "storefront", "timetable"].map(id => Object.assign({
+        name: specByTemplate[id].name,
+        kicker: templateMeta[id].kicker,
+        bestFor: templateMeta[id].bestFor,
+        needs: templateMeta[id].needs,
+        pick: () => this.setState({ template: id, published: false })
+      }, thumb(id))),
+
+      templateName: s.name,
+      templateHero: templateMeta[T].hero,
+
+      pageBg, cardBg, hairline, inkStrong: ink, inkMuted,
+      ratingColor: dark ? "#FFC935" : "#8A6A05",
+      openColor: dark ? "#5FD68C" : "#17753C",
+      ghostBorder: dark ? "rgba(255,255,255,0.22)" : "#D5D9DE",
+      quoteBg: dark ? "#1C1C23" : "oklch(0.98 0.012 350)",
+      quoteSize: T === "editorial" ? "22px" : "17px",
+      tableHeadBg: dark ? "#1C1C23" : "#FAFBFC",
+      mapBg: dark ? "#1C1C23" : "#F1F2F4",
+      footerBg: dark ? "#101016" : "#FAFBFC",
+      trustBg: dark ? "#1C1C23" : "oklch(0.98 0.012 225)",
+      trustBorder: dark ? "rgba(255,255,255,0.12)" : "oklch(0.9 0.04 225)",
+      logoBg: dark ? "#22222A" : "#FFFFFF",
+      logoBorder: dark ? "rgba(255,255,255,0.14)" : "#E6E8EB",
+
+      coverHeight: s.coverH,
+      coverBg: T === "minimal" ? "transparent" : coverPrimary,
+      hasCover: T !== "minimal",
+      isEditorial: s.editorial,
+      showHeroName: s.heroName,
+      heroSize: s.hero,
+      sectionSize: s.sectionSize,
+      headerPad: T === "minimal" ? "26px 16px 14px" : "14px 16px 14px",
+      logoLift: T === "minimal" ? "0px" : "-28px",
+
+      galleryFirst: T === "grid" && st.sections.gallery,
+      galleryTiles: [1, 2, 3, 4, 5, 6].map(i => ({
+        bg: cover("oklch(" + (0.52 + (i % 3) * 0.05) + " 0.09 " + (330 + i * 8) + ")", "oklch(" + (0.45 + (i % 3) * 0.05) + " 0.09 " + (330 + i * 8) + ")"),
+        label: i === 1 ? "1200×1200" : ""
+      })),
+
+      showTrustRow: s.trust,
+      trustItems: T === "clinic"
+        ? [{ k: "Licence AM-4471", v: "Ministry of Health" }, { k: "Insurance", v: "Sil, Ingo, Reso" }, { k: "12 doctors", v: "avg. 14 years" }]
+        : [{ k: "Open till 20:00", v: "Mon–Sat" }, { k: "+374 10 543 220", v: "call for urgent jobs" }, { k: "Free pickup", v: "within Kentron" }],
+
+      sectionsOn: st.sections,
+      servicesHeading: T === "timetable" ? "This week's classes" : T === "storefront" ? "Price list" : "Services",
+      servicesMeta: T === "timetable" ? "18 classes" : services.length + " of 24 shown",
+      servicesList: s.services === "list",
+      servicesCards: s.services === "cards",
+      servicesTable: s.services === "table",
+      servicesTimetable: s.services === "timetable",
+      cardCols: String(s.cardCols),
+      services,
+
+      weekStrip: [["Mon", "18"], ["Tue", "19"], ["Wed", "20"], ["Thu", "21"], ["Fri", "22"], ["Sat", "23"], ["Sun", "24"]].map(([dow, day], i) => ({
+        dow, day,
+        border: i === 0 ? accent : hairline,
+        bg: i === 0 ? accent : cardBg,
+        color: i === 0 ? "#FFFFFF" : ink
+      })),
+      classes: [
+        { time: "07:30", name: "Reformer, level 2", who: "Ani Melkonyan · 50 min", spots: "3 spots", spotsColor: dark ? "#FFC935" : "#8A6A05" },
+        { time: "09:00", name: "Mat pilates", who: "Ani Melkonyan · 55 min", spots: "8 spots", spotsColor: dark ? "#5FD68C" : "#17753C" },
+        { time: "18:30", name: "Reformer, beginners", who: "Tigran A. · 50 min", spots: "1 spot", spotsColor: "#C7302F" },
+        { time: "20:00", name: "Stretch & release", who: "Ani Melkonyan · 45 min", spots: "6 spots", spotsColor: dark ? "#5FD68C" : "#17753C" }
+      ],
+
+      teamHeading: T === "clinic" ? "Doctors" : T === "timetable" ? "Trainers" : "The team",
+      teamCols: String(s.teamCols),
+      team: [
+        { name: "Karen Sahakyan", role: "Barber · 9 years", rating: "4.9", photo: cover("oklch(0.55 0.09 350)", "oklch(0.48 0.09 350)") },
+        { name: "Davit Melkonyan", role: "Barber · 4 years", rating: "4.8", photo: cover("oklch(0.55 0.08 285)", "oklch(0.48 0.08 285)") },
+        { name: "Mariam Petrosyan", role: "Colourist", rating: "5.0", photo: cover("oklch(0.55 0.08 225)", "oklch(0.48 0.08 225)") }
+      ],
+      showReview: s.review && st.sections.reviews,
+      hoursCols: st.device === "phone" ? "1fr" : "1fr 1fr",
+      hours: [{ d: "Mon–Fri", t: "09:00 – 22:00" }, { d: "Saturday", t: "10:00 – 20:00" }, { d: "Sunday", t: "closed" }],
+
+      accentSwatches: ["oklch(0.64 0.16 350)", "oklch(0.64 0.16 285)", "oklch(0.64 0.16 225)", "oklch(0.64 0.16 155)", "oklch(0.64 0.16 45)"].map(hex => ({
+        hex,
+        border: accent === hex ? "#16161A" : "transparent",
+        pick: () => this.setState({ accent: hex, published: false })
+      })),
+
+      sectionRows: [
+        sectionRow("cover", "Cover & name", true),
+        sectionRow("services", "Services"),
+        sectionRow("team", "Team"),
+        sectionRow("reviews", "Reviews"),
+        sectionRow("gallery", "Gallery"),
+        sectionRow("hours", "Hours, address & map")
+      ],
+
+      rules: [
+        { label: "Accept online bookings", meta: "off = the page shows a phone number instead", bg: "#22C55E", knob: "15px" },
+        { label: "Require SMS confirmation", meta: "one 4-digit code, no account", bg: "#22C55E", knob: "15px" },
+        { label: "Show prices publicly", meta: "off = \"from\" prices only", bg: "#22C55E", knob: "15px" },
+        { label: "Take deposits", meta: "20% on services over 20 000 ֏", bg: "#D5D9DE", knob: "2px" }
+      ],
+
+      checks: [
+        { glyph: "✓", bg: "#22C55E", color: "#16161A", text: "24 services and 4 team members are visible to clients." },
+        { glyph: "✓", bg: "#22C55E", color: "#16161A", text: "Hours match your work schedule — no bookable slot is outside them." },
+        { glyph: "!", bg: "#F59E0B", color: "#8A6A05", text: T === "grid" ? "Photo grid wants 6 photos; you have 4. Two tiles will render empty." : "No cancellation policy text yet — clients see the default 2-hour rule." }
+      ],
+
+      catalogue: ["minimal", "editorial", "dark", "grid", "clinic", "storefront", "timetable"].map(id => ({
+        name: specByTemplate[id].name,
+        kicker: templateMeta[id].kicker,
+        stripe: id === "dark" ? "#15151B" : id === "minimal" ? "#16161A" : id === "clinic" ? "oklch(0.64 0.16 225)" : id === "storefront" ? "oklch(0.64 0.16 45)" : id === "timetable" ? "oklch(0.64 0.16 155)" : accent,
+        specs: [
+          { k: "Best for", v: templateMeta[id].bestFor },
+          { k: "Needs", v: templateMeta[id].needs },
+          { k: "Hero", v: templateMeta[id].hero },
+          { k: "Services as", v: { list: "One list, price right-aligned, Book on every row", cards: "Cards with a photo each, three across", table: "Table with duration and price, searchable", timetable: "Week strip plus classes with spots left" }[specByTemplate[id].services] },
+          { k: "Proof", v: { minimal: "Rating line only — nothing to load", editorial: "One pull-quote review at 22px", dark: "Gallery strip, Instagram-style", grid: "The gallery itself, 3×2 above services", clinic: "Licence, insurance and doctor credentials", storefront: "Hours, phone and map", timetable: "Trainer row with ratings" }[id] }
+        ]
+      })),
+
+      principles: [
+        { k: "Templates never touch booking", v: "All seven wrap the same five-step flow from the widget. Switching template can't lose a service, a price or a booking." },
+        { k: "Accent is inherited, not chosen", v: "The vertical accent flows in from onboarding. Owners can shift hue, never lightness — so no template can be made unreadable." },
+        { k: "Yellow stays the action", v: "Book now is #FFC935 on every template, dark ones included. It's the one thing a client must find in under a second." },
+        { k: "Publish is explicit", v: "Edits accumulate as a draft with a change count. Nothing reaches clients until Publish, and the live page keeps serving in the meantime." }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

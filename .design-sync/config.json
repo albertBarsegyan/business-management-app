@@ -1,0 +1,16 @@
+{
+  "projectId": "3d4efbf0-259b-43e9-8e95-a012b05889d1",
+  "shape": "package",
+  "pkg": "business-management-app",
+  "globalName": "BusinessManagementApp",
+  "entry": "./dist/index.js",
+  "srcDir": "shared/ui",
+  "cssEntry": "dist/ds-styles.css",
+  "buildCmd": "pnpm run build:ds-css",
+  "provider": {
+    "component": "TooltipProvider"
+  },
+  "overrides": {
+    "Button": { "cardMode": "column" }
+  }
+}

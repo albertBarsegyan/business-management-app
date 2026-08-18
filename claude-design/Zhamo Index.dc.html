@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400..700&family=Instrument+Sans:wght@400..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #14141A; color: #FFFFFF; font-family: "Instrument Sans", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #FFFFFF; text-decoration: none; }
+  a:hover { color: #FFC935; }
+  :focus-visible { outline: 2px solid #FFC935; outline-offset: 3px; border-radius: 6px; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: 0.001ms !important; } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; padding: 80px 56px 120px; display: flex; flex-direction: column; align-items: center;">
+  <div style="width: 100%; max-width: 1080px; display: flex; flex-direction: column; gap: 56px;">
+
+    <header style="display: flex; flex-direction: column; gap: 22px;">
+      <div style="display: flex; align-items: center; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7C818B;">
+        <span style="width: 22px; height: 22px; border-radius: 6px; background: #FFC935; display: inline-flex; align-items: center; justify-content: center; font-family: 'Familjen Grotesk', sans-serif; font-size: 13px; font-weight: 700; color: #17170F; letter-spacing: 0;">Z</span>
+        <span>Zhamo — screen index</span>
+      </div>
+      <h1 style="margin: 0; font-family: 'Familjen Grotesk', sans-serif; font-size: 96px; line-height: 1.0; letter-spacing: -0.032em; font-weight: 700; max-width: 16ch;">Every screen, one system.</h1>
+      <p style="margin: 0; max-width: 62ch; font-size: 16px; line-height: 1.6; color: #A7ADB8;">Six files, each a working screen you can click through. The palette, type scale and density come from the foundation sheet; the per-vertical accent is what stops Zhamo reading as a generic booking clone.</p>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px;">
+      <sc-for list="{{ cards }}" as="c" hint-placeholder-count="7">
+        <a href="{{ c.href }}" style="border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 22px; display: flex; flex-direction: column; gap: 12px; background: #1A1A21; min-height: 190px;" style-hover="border-color: #FFC935; background: #1E1E26;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="width: 26px; height: 26px; border-radius: 7px; background: {{ c.tile }}; color: {{ c.tileText }}; font-family: 'IBM Plex Mono', monospace; font-size: 11px; display: inline-flex; align-items: center; justify-content: center;">{{ c.n }}</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #7C818B;">{{ c.kicker }}</span>
+          </div>
+          <span style="font-family: 'Familjen Grotesk', sans-serif; font-size: 27px; line-height: 1.05; letter-spacing: -0.022em; font-weight: 700;">{{ c.title }}</span>
+          <span style="font-size: 13px; line-height: 1.5; color: #A7ADB8;">{{ c.body }}</span>
+          <span style="margin-top: auto; display: flex; flex-wrap: wrap; gap: 5px;">
+            <sc-for list="{{ c.states }}" as="s" hint-placeholder-count="3">
+              <span style="height: 21px; padding: 0 8px; border-radius: 5px; background: rgba(255,255,255,0.07); color: #C6CAD1; font-size: 10.5px; display: inline-flex; align-items: center;">{{ s }}</span>
+            </sc-for>
+          </span>
+        </a>
+      </sc-for>
+    </div>
+
+    <div style="border-top: 1px solid rgba(255,255,255,0.12); padding-top: 28px; display: flex; flex-direction: column; gap: 10px;">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #7C818B;">Still to build — prompt 6</span>
+      <span style="font-size: 14px; line-height: 1.65; color: #A7ADB8; max-width: 74ch;">Work schedule editor, services list with drag reorder, SMS templates with variable chips, online booking settings, reports overview, the collected empty/error/loading sheet, and the phone-sized back-office calendar.</span>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      cards: [
+        { n: "00", kicker: "Foundation", href: "Zhamo Design System.dc.html", title: "Design system", body: "Palette, six vertical accents, type scale, density contract, components in every state, copy rules.", states: ["tokens", "components", "voice"], tile: "#FFC935", tileText: "#17170F" },
+        { n: "01", kicker: "Home screen", href: "Zhamo 01 Day Calendar.dc.html", title: "Day calendar", body: "Sidebar (collapsible), month rail with density, quick actions, four master columns, overlaps, break, no-show.", states: ["busy day", "day one", "collapsed nav"], tile: "oklch(0.64 0.16 350)", tileText: "#FFFFFF" },
+        { n: "02", kicker: "First run", href: "Zhamo 02 Onboarding.dc.html", title: "Onboarding", body: "Three screens, countdown rail instead of a stepper, and the moment the vertical accent takes over the page.", states: ["select open", "accent takeover", "promo code"], tile: "oklch(0.64 0.16 285)", tileText: "#FFFFFF" },
+        { n: "03", kicker: "Forced setup", href: "Zhamo 03 Setup Modal.dc.html", title: "Setup modal", body: "Service, team member, schedule — with a skeleton pane that assembles as you type, then the completion screen.", states: ["3 steps", "custom hours", "done"], tile: "oklch(0.64 0.16 155)", tileText: "#FFFFFF" },
+        { n: "04", kicker: "Densest screen", href: "Zhamo 04 Appointment Panel.dc.html", title: "Appointment panel", body: "Timing, cart and client in three columns over a dimmed calendar. Saved toast, edit mode, conflict recovery.", states: ["new", "edit", "conflict"], tile: "oklch(0.64 0.16 225)", tileText: "#FFFFFF" },
+        { n: "05", kicker: "Management", href: "Zhamo 05 Team and Clients.dc.html", title: "Team &amp; clients", body: "Grouped team table with schedule badges and invites; client base with segments, locked columns, bulk actions.", states: ["team", "clients", "empty", "add client"], tile: "oklch(0.64 0.16 45)", tileText: "#FFFFFF" },
+        { n: "06", kicker: "Client side", href: "Zhamo 06 Booking Widget.dc.html", title: "Booking widget", body: "Mobile five-step booking with no account, the embedded desktop version, and barbershop vs dental clinic side by side.", states: ["5 steps", "day full", "slot taken", "embed"], tile: "oklch(0.64 0.16 110)", tileText: "#FFFFFF" }
+        ,{ n: "07", kicker: "Owner branding", href: "Zhamo 07 Branding Page.dc.html", title: "Branding page builder", body: "Template gallery, live preview at phone and desktop width, section toggles, publish flow — plus the seven-template catalogue.", states: ["7 templates", "draft/published", "phone + desktop"], tile: "#FFC935", tileText: "#17170F" }
+        ,{ n: "08", kicker: "Owner site", href: "Zhamo 08 Landing Builder.dc.html", title: "Landing page builder", body: "Navbar, hero, footer and twelve addable body sections — every one configurable, reorderable and previewed live.", states: ["12 sections", "light + dark", "section library"], tile: "oklch(0.64 0.16 285)", tileText: "#FFFFFF" }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
