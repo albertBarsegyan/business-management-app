@@ -10,6 +10,15 @@ import { CalendarToolbar } from "./ui/calendar-toolbar";
 import { MiniCalendarRail } from "./ui/mini-calendar-rail";
 import { SidebarNav } from "./ui/sidebar-nav";
 
+export { PageShell } from "./ui/page-shell";
+export { PageHeader, PageHeaderButton } from "./ui/page-header";
+export { StatGrid, type Stat } from "./ui/stat-grid";
+export { DataTable, type DataTableColumn } from "./ui/data-table";
+export { Pill, Toggle } from "./ui/pill";
+export { SidebarNav } from "./ui/sidebar-nav";
+export { buildNavItems, type NavItem } from "./model/nav-items";
+export { dayCalendarAccent } from "./model/team";
+
 export function DayCalendarScreen() {
   const [collapsed, setCollapsed] = useState(false);
   const [empty, setEmpty] = useState(false);
@@ -17,7 +26,7 @@ export function DayCalendarScreen() {
 
   const expanded = !collapsed;
   const accent = dayCalendarAccent;
-  const navItems = useMemo(() => buildNavItems(accent), [accent]);
+  const navItems = useMemo(() => buildNavItems(), []);
   const monthDays = useMemo(() => buildMonthDays(accent), [accent]);
   const slots = useMemo(() => buildSlots(), []);
 

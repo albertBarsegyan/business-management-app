@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { NavItem } from "../model/nav-items";
 
 export function SidebarNav({
@@ -15,6 +17,8 @@ export function SidebarNav({
   navItems: NavItem[];
   onToggle: () => void;
 }) {
+  const pathname = usePathname();
+
   return (
     <aside
       style={{
@@ -61,53 +65,58 @@ export function SidebarNav({
       </div>
 
       <nav style={{ flex: "1 1 auto", overflowY: "auto", padding: "10px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
-        {navItems.map((item) => (
-          <div
-            key={item.label}
-            title={item.label}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              height: 34,
-              padding: "0 8px",
-              borderRadius: 6,
-              cursor: "pointer",
-              position: "relative",
-              background: item.bg,
-              color: item.color,
-              fontSize: 13,
-              fontWeight: item.weight,
-              borderTop: item.divider,
-            }}
-          >
-            <span style={{ position: "absolute", left: -8, top: 7, bottom: 7, width: 3, borderRadius: "0 2px 2px 0", background: item.marker }} />
-            <span
+        {navItems.map((item) => {
+          const active = pathname === item.href;
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              title={item.label}
               style={{
-                width: 20,
-                height: 20,
-                flex: "0 0 auto",
-                borderRadius: 5,
-                display: "inline-flex",
+                display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                fontFamily: "var(--font-zhamo-mono)",
-                fontSize: 10,
-                fontWeight: 500,
-                background: item.tileBg,
-                color: item.tileColor,
+                gap: 10,
+                height: 34,
+                padding: "0 8px",
+                borderRadius: 6,
+                cursor: "pointer",
+                position: "relative",
+                background: active ? "rgba(255,255,255,0.1)" : "transparent",
+                color: active ? "#FFFFFF" : "#A7ADB8",
+                fontSize: 13,
+                fontWeight: active ? 600 : 400,
+                borderTop: item.divider ? "1px solid rgba(255,255,255,0.08)" : "0",
+                textDecoration: "none",
               }}
             >
-              {item.mono}
-            </span>
-            {expanded && <span style={{ whiteSpace: "nowrap", overflow: "hidden" }}>{item.label}</span>}
-            {item.showCount && (
-              <span style={{ marginLeft: "auto", height: 18, minWidth: 18, padding: "0 5px", borderRadius: 9, background: "#FFC935", color: "#17170F", fontSize: 10.5, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                3
+              <span style={{ position: "absolute", left: -8, top: 7, bottom: 7, width: 3, borderRadius: "0 2px 2px 0", background: active ? accent : "transparent" }} />
+              <span
+                style={{
+                  width: 20,
+                  height: 20,
+                  flex: "0 0 auto",
+                  borderRadius: 5,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: "var(--font-zhamo-mono)",
+                  fontSize: 10,
+                  fontWeight: 500,
+                  background: active ? accent : "rgba(255,255,255,0.07)",
+                  color: active ? "#FFFFFF" : "#7C818B",
+                }}
+              >
+                {item.mono}
               </span>
-            )}
-          </div>
-        ))}
+              {expanded && <span style={{ whiteSpace: "nowrap", overflow: "hidden" }}>{item.label}</span>}
+              {item.showCount && (
+                <span style={{ marginLeft: "auto", height: 18, minWidth: 18, padding: "0 5px", borderRadius: 9, background: "#FFC935", color: "#17170F", fontSize: 10.5, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                  3
+                </span>
+              )}
+            </Link>
+          );
+        })}
       </nav>
 
       <div style={{ flex: "0 0 auto", borderTop: "1px solid rgba(255,255,255,0.07)", padding: "12px 10px 14px", display: "flex", flexDirection: "column", gap: 10, background: "#1A1A21" }}>
@@ -127,9 +136,12 @@ export function SidebarNav({
             </>
           )}
         </div>
-        <button style={{ height: 36, width: "100%", border: 0, borderRadius: 6, background: accent, color: "#FFFFFF", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", overflow: "hidden" }}>
-          {expanded ? "Administration" : "⚙"}
-        </button>
+        <Link
+          href="/setup"
+          style={{ height: 36, width: "100%", border: 0, borderRadius: 6, background: accent, color: "#FFFFFF", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", overflow: "hidden", display: "inline-flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}
+        >
+          {adminLabel}
+        </Link>
       </div>
     </aside>
   );

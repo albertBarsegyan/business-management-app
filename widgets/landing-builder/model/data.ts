@@ -106,19 +106,6 @@ export const accentSwatchHexes = [
   "oklch(0.64 0.16 45)",
 ];
 
-export const backOfficeNavItems: { label: string; mono: string; depth: 0 | 1; expanded?: boolean; active?: boolean }[] = [
-  { label: "Reports", mono: "RP", depth: 0 },
-  { label: "Team", mono: "TM", depth: 0 },
-  { label: "Clients", mono: "CL", depth: 0 },
-  { label: "Online booking", mono: "OB", depth: 0, expanded: true },
-  { label: "Landing page", mono: "", depth: 1, active: true },
-  { label: "Branding templates", mono: "", depth: 1 },
-  { label: "Booking settings", mono: "", depth: 1 },
-  { label: "Services", mono: "SV", depth: 0 },
-  { label: "Finance", mono: "FN", depth: 0 },
-  { label: "Loyalty", mono: "LY", depth: 0 },
-];
-
 export const defaultBuilderProps: BuilderProps = {
   nav: { sticky: true, showName: true, showLinks: true, cta: "Book now", bg: "solid" },
   hero: { layout: "fullbleed", height: "standard", title: "The best barbers on Abovyan Street.", sub: "Four chairs, no waiting past your time, open till 22:00 every weekday.", cta: "Book an appointment", second: true, trust: true },

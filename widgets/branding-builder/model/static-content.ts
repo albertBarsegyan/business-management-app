@@ -62,15 +62,3 @@ export const principles = [
   { k: "Yellow stays the action", v: "Book now is #FFC935 on every template, dark ones included. It's the one thing a client must find in under a second." },
   { k: "Publish is explicit", v: "Edits accumulate as a draft with a change count. Nothing reaches clients until Publish, and the live page keeps serving in the meantime." },
 ];
-
-export const navRows = [
-  { label: "Reports", mono: "RP", depth: 0 },
-  { label: "Team", mono: "TM", depth: 0 },
-  { label: "Clients", mono: "CL", depth: 0 },
-  { label: "Online booking", mono: "OB", depth: 0, expanded: true },
-  { label: "Branding page", mono: "", depth: 1, active: true },
-  { label: "Booking settings", mono: "", depth: 1 },
-  { label: "Services", mono: "SV", depth: 0 },
-  { label: "Finance", mono: "FN", depth: 0 },
-  { label: "Loyalty", mono: "LY", depth: 0 },
-];

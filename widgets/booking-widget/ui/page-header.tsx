@@ -6,6 +6,8 @@ export function PageHeader() {
       <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-zhamo-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A9099" }}>
         <span>Zhamo — public booking</span>
         <span style={{ color: "#C9CDD3" }}>/</span>
+        <Link href="/customer">Open customer page</Link>
+        <span style={{ color: "#C9CDD3" }}>/</span>
         <Link href="/screens">All screens</Link>
       </div>
       <h1 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: 56, lineHeight: 1.02, letterSpacing: "-0.03em", fontWeight: 700, maxWidth: "20ch" }}>
