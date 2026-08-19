@@ -10,7 +10,7 @@ export function CalendarToolbar({
   onToggleDay: () => void;
 }) {
   return (
-    <div style={{ height: 56, flex: "0 0 auto", background: "#FFFFFF", borderBottom: "1px solid #E6E8EB", display: "flex", alignItems: "center", gap: 12, padding: "0 16px" }}>
+    <div className="zhamo-toolbar-scroll" style={{ height: 56, flex: "0 0 auto", background: "#FFFFFF", borderBottom: "1px solid #E6E8EB", display: "flex", alignItems: "center", gap: 12, padding: "0 16px" }}>
       <button className="zhamo-daycal-outline-btn" style={{ height: 32, padding: "0 13px", border: "1px solid #D5D9DE", borderRadius: 6, background: "#FFFFFF", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
         Today
       </button>

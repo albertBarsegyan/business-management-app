@@ -2,7 +2,7 @@ import { walkthrough } from "../model/setup-data";
 
 export function CompletionScreen({ onRestart }: { onRestart: () => void }) {
   return (
-    <div style={{ position: "relative", width: "100%", maxWidth: 620, background: "#FFFFFF", borderRadius: 10, boxShadow: "0 24px 64px rgba(10,10,14,0.4)", padding: "36px 38px 30px", display: "flex", flexDirection: "column", gap: 22 }}>
+    <div style={{ position: "relative", width: "100%", maxWidth: 620, background: "#FFFFFF", borderRadius: 10, boxShadow: "0 24px 64px rgba(10,10,14,0.4)", padding: "clamp(20px, 5vw, 36px) clamp(20px, 5vw, 38px) clamp(18px, 4vw, 30px)", display: "flex", flexDirection: "column", gap: 22 }}>
       <div style={{ height: 132, borderRadius: 8, background: "#F7F8FA", border: "1px solid #E6E8EB", padding: "12px 14px", display: "grid", gridTemplateColumns: "30px 1fr 1fr 1fr", gap: 6, overflow: "hidden" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", fontFamily: "var(--font-zhamo-mono)", fontSize: 8.5, color: "#A9AEB6" }}>
           <span>09:00</span>
@@ -23,7 +23,7 @@ export function CompletionScreen({ onRestart }: { onRestart: () => void }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <h2 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: 38, lineHeight: 1.03, letterSpacing: "-0.028em", fontWeight: 700 }}>
+        <h2 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: "clamp(24px, 6vw, 38px)", lineHeight: 1.03, letterSpacing: "-0.028em", fontWeight: 700 }}>
           Your calendar can breathe.
         </h2>
         <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: "#5B6069" }}>
@@ -49,7 +49,7 @@ export function CompletionScreen({ onRestart }: { onRestart: () => void }) {
         <span style={{ fontSize: 12.5, fontWeight: 600, color: "#17753C" }}>Service, team member and schedule created</span>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14 }}>
         <button
           onClick={onRestart}
           className="zhamo-setup-primary"

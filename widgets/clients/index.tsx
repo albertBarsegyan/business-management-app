@@ -26,7 +26,7 @@ export function ClientsScreen() {
       />
       <main style={{ flex: "1 1 auto", minWidth: 0, display: "flex", flexDirection: "column", background: "#F5F6F8" }}>
         <TopBar empty={empty} onToggleEmpty={() => setEmpty((v) => !v)} />
-        <div style={{ flex: "1 1 auto", overflow: "auto", padding: "20px 22px 32px", display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="zhamo-main-pad" style={{ flex: "1 1 auto", overflow: "auto", padding: "20px 22px 32px", display: "flex", flexDirection: "column", gap: 16 }}>
           {empty ? <EmptyState onOpenPanel={() => setPanelOpen(true)} /> : <ClientTable onOpenPanel={() => setPanelOpen(true)} />}
         </div>
       </main>

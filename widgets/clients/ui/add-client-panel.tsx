@@ -10,6 +10,7 @@ export function AddClientPanel({ open, onClose }: { open: boolean; onClose: () =
           right: 0,
           bottom: 0,
           width: 460,
+          maxWidth: "100%",
           background: "#FFFFFF",
           borderLeft: "1px solid #E6E8EB",
           boxShadow: "-20px 0 60px rgba(10,10,14,0.22)",

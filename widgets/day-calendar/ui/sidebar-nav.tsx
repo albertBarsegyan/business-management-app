@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import type { NavItem } from "../model/nav-items";
 
 export function SidebarNav({
@@ -18,19 +19,49 @@ export function SidebarNav({
   onToggle: () => void;
 }) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <aside
-      style={{
-        width: expanded ? 232 : 64,
-        flex: "0 0 auto",
-        background: "#14141A",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        transition: "width 0.15s ease",
-      }}
-    >
+    <>
+      <button
+        type="button"
+        aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
+        onClick={() => setMobileOpen((v) => !v)}
+        className="zhamo-sidebar-toggle"
+        style={{
+          position: "fixed",
+          top: 12,
+          left: 12,
+          zIndex: 41,
+          width: 34,
+          height: 34,
+          border: 0,
+          borderRadius: 7,
+          background: "#14141A",
+          color: "#FFFFFF",
+          fontSize: 15,
+          cursor: "pointer",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {mobileOpen ? "✕" : "☰"}
+      </button>
+
+      {mobileOpen && <div className="zhamo-sidebar-backdrop" onClick={() => setMobileOpen(false)} />}
+
+      <aside
+        className={`zhamo-sidebar${mobileOpen ? " zhamo-sidebar-open" : ""}`}
+        style={{
+          width: expanded ? 232 : 64,
+          flex: "0 0 auto",
+          background: "#14141A",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          transition: "width 0.15s ease",
+        }}
+      >
       <div style={{ height: 56, flex: "0 0 auto", display: "flex", alignItems: "center", gap: 10, padding: "0 14px", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
         <span
           style={{
@@ -143,6 +174,7 @@ export function SidebarNav({
           {adminLabel}
         </Link>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

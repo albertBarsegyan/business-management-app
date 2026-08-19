@@ -5,8 +5,8 @@ export function StepPositionSelect() {
   return (
     <div style={{ width: "100%", maxWidth: 1180, display: "flex", flexDirection: "column", gap: 12 }}>
       <ZhamoSectionTag>Screen 1 — select open</ZhamoSectionTag>
-      <div style={{ background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 10, padding: "40px 56px", display: "flex", gap: 40 }}>
-        <label style={{ display: "flex", flexDirection: "column", gap: 6, width: 273 }}>
+      <div className="zhamo-stack-mobile" style={{ background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 10, padding: "40px 56px", display: "flex", flexWrap: "wrap", gap: 40 }}>
+        <label style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%", maxWidth: 273 }}>
           <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Your position</span>
           <div style={{ position: "relative" }}>
             <div style={{ height: 32, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 10px", border: "1px solid #2C6CF6", borderRadius: 6, fontSize: 13, boxShadow: "0 0 0 3px rgba(44,108,246,0.14)" }}>

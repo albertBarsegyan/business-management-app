@@ -1,7 +1,7 @@
 import type { LandingBuilderState } from "../../model/use-landing-builder";
 
 export function PreviewFooter({ state }: { state: LandingBuilderState }) {
-  const { footer, footerColumns, footerOutline, gutter, dark, device, selectFooter } = state;
+  const { footer, footerColumns, footerOutline, gutter, dark, device, selectFooter, interactive } = state;
   const footerBg = dark ? "#101016" : "#FAFBFC";
   const footerHairline = dark ? "rgba(255,255,255,0.1)" : "#E6E8EB";
   const footerInk = dark ? "rgba(255,255,255,0.82)" : "#16161A";
@@ -11,8 +11,8 @@ export function PreviewFooter({ state }: { state: LandingBuilderState }) {
   const cols = device === "phone" ? 1 : footer.cols;
 
   return (
-    <div onClick={selectFooter} style={{ padding: `20px ${gutter} 16px`, background: footerBg, borderTop: `1px solid ${footerHairline}`, cursor: "pointer", outline: footerOutline, outlineOffset: -2, display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 16 }}>
+    <div onClick={selectFooter} style={{ padding: `20px ${gutter} 16px`, background: footerBg, borderTop: `1px solid ${footerHairline}`, cursor: interactive ? "pointer" : "default", outline: footerOutline, outlineOffset: -2, display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="zhamo-grid-3" style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 16 }}>
         {footerColumns.map((col) => (
           <div key={col.title} style={{ display: "flex", flexDirection: "column", gap: 7 }}>
             <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 9.5, letterSpacing: "0.12em", textTransform: "uppercase", color: footerMuted }}>{col.title}</span>

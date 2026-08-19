@@ -25,16 +25,16 @@ export function SetupModalScreen() {
 
 
   return (
-    <div style={{ minHeight: "100vh", padding: 40, display: "flex", flexDirection: "column", alignItems: "center", gap: 22, background: "#E9EBEE", color: "#16161A" }}>
+    <div style={{ minHeight: "100vh", padding: "clamp(16px, 5vw, 40px)", display: "flex", flexDirection: "column", alignItems: "center", gap: 22, background: "#E9EBEE", color: "#16161A" }}>
       <SetupTopBar step={step} onGo={setStep} />
 
-      <div style={{ width: "100%", maxWidth: 1100, background: "#14141A", borderRadius: 12, padding: 44, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+      <div style={{ width: "100%", maxWidth: 1100, background: "#14141A", borderRadius: 12, padding: "clamp(16px, 5vw, 44px)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
         <SetupBackdrop />
 
         {step === 4 ? (
             <CompletionScreen onRestart={start}/>
         ) : (
-            <div style={{
+            <div className="zhamo-onboard-card" style={{
                 position: "relative",
                 width: "100%",
                 maxWidth: 940,

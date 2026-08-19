@@ -16,7 +16,7 @@ export function PreviewHero({ state }: { state: LandingBuilderState }) {
     );
 
   return (
-    <div onClick={state.selectHero} style={{ cursor: "pointer", outline: heroOutline, outlineOffset: -2 }}>
+    <div onClick={state.selectHero} style={{ cursor: state.interactive ? "pointer" : "default", outline: heroOutline, outlineOffset: -2 }}>
       {hero.layout === "fullbleed" && (
         <div style={{ minHeight: heroHeight, background: coverBg, padding: gutter, display: "flex", flexDirection: "column", justifyContent: "flex-end", gap: 12 }}>
           <span style={{ fontFamily: "var(--font-zhamo-display)", fontSize: heroTitleSize, lineHeight: 1.02, letterSpacing: "-0.032em", fontWeight: 700, color: "#FFFFFF", maxWidth: "22ch" }}>
@@ -38,7 +38,7 @@ export function PreviewHero({ state }: { state: LandingBuilderState }) {
       )}
 
       {hero.layout === "split" && (
-        <div style={{ display: "grid", gridTemplateColumns: state.device === "phone" ? "1fr" : "1.1fr 1fr", gap: 20, padding: gutter, minHeight: heroHeight, alignItems: "center", background: pageBg }}>
+        <div className="zhamo-grid-2" style={{ display: "grid", gridTemplateColumns: state.device === "phone" ? "1fr" : "1.1fr 1fr", gap: 20, padding: gutter, minHeight: heroHeight, alignItems: "center", background: pageBg }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <span style={{ fontFamily: "var(--font-zhamo-display)", fontSize: heroTitleSize, lineHeight: 1.03, letterSpacing: "-0.03em", fontWeight: 700, color: ink }}>{hero.title}</span>
             <span style={{ fontSize: 14, lineHeight: 1.55, color: inkMuted, maxWidth: "44ch" }}>{hero.sub}</span>

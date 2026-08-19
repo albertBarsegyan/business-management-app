@@ -27,51 +27,41 @@ export function DataTable<T>({
           {caption}
         </div>
       )}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: template,
-          height: 34,
-          alignItems: "center",
-          padding: "0 16px",
-          gap: 12,
-          background: "#FAFBFC",
-          borderBottom: "1px solid #E6E8EB",
-          fontFamily: "var(--font-zhamo-mono)",
-          fontSize: 10,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "#8A9099",
-        }}
-      >
-        {columns.map((c) => (
-          <span key={c.label} style={{ textAlign: c.align ?? "left" }}>
-            {c.label}
-          </span>
-        ))}
-      </div>
 
-      {rows.map((row) => (
-        <div
-          key={rowKey(row)}
-          style={{
-            display: "grid",
-            gridTemplateColumns: template,
-            minHeight: 46,
-            alignItems: "center",
-            padding: "6px 16px",
-            gap: 12,
-            borderBottom: "1px solid #EEF0F2",
-            fontSize: 13,
-          }}
-        >
+      {/* Below 640px each row becomes a stacked card of labeled blocks (see .zhamo-table-* rules in globals.css); above that, columns scroll horizontally as a unit if they don't fit. */}
+      <div className="zhamo-table-scroll" style={{ overflowX: "auto" }}>
+        <div className="zhamo-table-head" style={{ display: "grid", gridTemplateColumns: template, minWidth: 480, height: 34, alignItems: "center", padding: "0 16px", gap: 12, background: "#FAFBFC", borderBottom: "1px solid #E6E8EB", fontFamily: "var(--font-zhamo-mono)", fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8A9099" }}>
           {columns.map((c) => (
-            <span key={c.label} style={{ textAlign: c.align ?? "left", minWidth: 0 }}>
-              {c.render(row)}
+            <span key={c.label} style={{ textAlign: c.align ?? "left" }}>
+              {c.label}
             </span>
           ))}
         </div>
-      ))}
+
+        {rows.map((row) => (
+          <div
+            key={rowKey(row)}
+            className="zhamo-table-row"
+            style={{
+              display: "grid",
+              gridTemplateColumns: template,
+              minWidth: 480,
+              minHeight: 46,
+              alignItems: "center",
+              padding: "6px 16px",
+              gap: 12,
+              borderBottom: "1px solid #EEF0F2",
+              fontSize: 13,
+            }}
+          >
+            {columns.map((c) => (
+              <span key={c.label} data-label={c.label} className="zhamo-table-cell" style={{ textAlign: c.align ?? "left", minWidth: 0 }}>
+                {c.render(row)}
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
 
       {rows.length === 0 && (
         <div style={{ padding: "24px 16px", textAlign: "center", fontSize: 13, color: "#8A9099" }}>

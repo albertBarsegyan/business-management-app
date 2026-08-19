@@ -10,7 +10,7 @@ export function PanelFooter({
   isConflict: boolean;
 }) {
   return (
-    <footer style={{ flex: "0 0 auto", height: 62, background: "#FFFFFF", borderTop: "1px solid #E6E8EB", display: "flex", alignItems: "center", gap: 12, padding: "0 18px" }}>
+    <footer className="zhamo-toolbar-scroll" style={{ flex: "0 0 auto", height: 62, background: "#FFFFFF", borderTop: "1px solid #E6E8EB", display: "flex", alignItems: "center", gap: 12, padding: "0 18px" }}>
       <span style={{ display: "flex", flexDirection: "column" }}>
         <span style={{ fontSize: 13.5, fontWeight: 600 }}>{title}</span>
         <span style={{ fontSize: 11.5, color: "#8A9099" }}>{meta}</span>

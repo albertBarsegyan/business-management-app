@@ -5,7 +5,7 @@ export function StepAboutYou() {
   return (
     <div data-screen-label="Onboarding step 1" style={{ width: "100%", maxWidth: 1180, display: "flex", flexDirection: "column", gap: 12 }}>
       <ZhamoSectionTag>Screen 1 — select closed</ZhamoSectionTag>
-      <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", height: 660, background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 10, overflow: "hidden" }}>
+      <div className="zhamo-onboard-card" style={{ display: "grid", gridTemplateColumns: "300px 1fr", height: 660, background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 10, overflow: "hidden" }}>
         <OnboardingRail
           railBg="#14141A"
           stepNumber="01"
@@ -21,7 +21,7 @@ export function StepAboutYou() {
         />
 
         <div style={{ padding: "52px 56px", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-          <h2 style={{ margin: "0 0 10px", fontFamily: "var(--font-zhamo-display)", fontSize: 56, lineHeight: 1.02, letterSpacing: "-0.03em", fontWeight: 700 }}>
+          <h2 style={{ margin: "0 0 10px", fontFamily: "var(--font-zhamo-display)", fontSize: "clamp(28px, 6vw, 56px)", lineHeight: 1.02, letterSpacing: "-0.03em", fontWeight: 700 }}>
             Let&apos;s get acquainted!
           </h2>
           <p style={{ margin: "0 0 32px", fontSize: 14, color: "#5B6069" }}>

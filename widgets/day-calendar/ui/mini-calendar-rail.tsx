@@ -13,7 +13,7 @@ export function MiniCalendarRail({
   onToggleFavorites: () => void;
 }) {
   return (
-    <div style={{ width: 232, flex: "0 0 auto", background: "#FFFFFF", borderRight: "1px solid #E6E8EB", display: "flex", flexDirection: "column", overflowY: "auto" }}>
+    <div className="zhamo-daycal-rail" style={{ width: 232, flex: "0 0 auto", background: "#FFFFFF", borderRight: "1px solid #E6E8EB", display: "flex", flexDirection: "column", overflowY: "auto" }}>
       <div style={{ padding: 14, borderBottom: "1px solid #E6E8EB", display: "flex", flexDirection: "column", gap: 10 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ fontFamily: "var(--font-zhamo-display)", fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em" }}>August 2026</span>

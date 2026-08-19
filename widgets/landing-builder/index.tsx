@@ -9,6 +9,8 @@ import { LibraryModal } from "./ui/library-modal";
 import { LivePreview } from "./ui/preview";
 import { StructurePanel } from "./ui/structure-panel";
 
+export { PublicLandingPage } from "./ui/preview/public-page";
+
 export function LandingBuilder() {
   const state = useLandingBuilder();
   const [collapsed, setCollapsed] = useState(false);

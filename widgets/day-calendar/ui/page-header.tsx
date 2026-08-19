@@ -10,7 +10,7 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
+    <div className="zhamo-page-header" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
         <h1 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: 30, lineHeight: 1.05, letterSpacing: "-0.02em", fontWeight: 700 }}>
           {title}

@@ -5,7 +5,7 @@ export function DensitySection() {
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <ZhamoSectionHeading title="Density & space" tag="04 — a data product" />
-      <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: 14 }}>
+      <div className="zhamo-grid-2" style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: 14 }}>
         <div style={{ background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 8, padding: 24, display: "flex" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%" }}>
             <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A9099" }}>

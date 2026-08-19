@@ -6,7 +6,7 @@ const tableRows = [
 
 export function TableAndFeedbackShowcase() {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 14, alignItems: "start" }}>
+    <div className="zhamo-grid-2" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 14, alignItems: "start" }}>
       <div style={{ background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 8, overflow: "hidden" }}>
         <div style={{ padding: "14px 16px", borderBottom: "1px solid #E6E8EB", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A9099" }}>

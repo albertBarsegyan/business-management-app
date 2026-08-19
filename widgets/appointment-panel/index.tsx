@@ -49,7 +49,7 @@ export function AppointmentPanelScreen() {
         <PanelHeader title={headerTitle} meta={headerMeta} isEdit={isEdit} />
         {isConflict && <ConflictBanner />}
 
-        <div style={{ flex: "1 1 auto", overflowY: "auto", padding: "14px 18px 18px", display: "grid", gridTemplateColumns: "1fr 1.15fr 1fr", gap: 14, alignItems: "start" }}>
+        <div className="zhamo-grid-3" style={{ flex: "1 1 auto", overflowY: "auto", padding: "14px 18px 18px", display: "grid", gridTemplateColumns: "1fr 1.15fr 1fr", gap: 14, alignItems: "start" }}>
           <TimingColumn isEdit={isEdit} isConflict={isConflict} />
           <CartColumn status={status} onSelectStatus={setStatusState} />
           <ClientColumn isEdit={isEdit} />

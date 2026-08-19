@@ -42,9 +42,9 @@ export function OnboardingRail({
       {badge}
 
       <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 18 }}>
-        <span style={{ fontFamily: "var(--font-zhamo-display)", fontSize: 84, lineHeight: 0.9, letterSpacing: "-0.04em", fontWeight: 700, color: "#FFFFFF" }}>
+        <span style={{ fontFamily: "var(--font-zhamo-display)", fontSize: "clamp(48px, 9vw, 84px)", lineHeight: 0.9, letterSpacing: "-0.04em", fontWeight: 700, color: "#FFFFFF" }}>
           {stepNumber}
-          <span style={{ color: totalColor, fontSize: 34, letterSpacing: "-0.02em" }}>/03</span>
+          <span style={{ color: totalColor, fontSize: "clamp(20px, 4vw, 34px)", letterSpacing: "-0.02em" }}>/03</span>
         </span>
         <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
           <span style={{ width: 2, height: 96, background: "rgba(255,255,255,0.12)", position: "relative", borderRadius: 1 }}>

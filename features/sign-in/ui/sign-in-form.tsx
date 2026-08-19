@@ -16,7 +16,7 @@ export function SignInForm() {
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setIsSubmitting(true);
-    router.push("/booking");
+    router.push("/reports");
   }
 
   return (

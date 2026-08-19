@@ -57,7 +57,11 @@ export const padMap: Record<"compact" | "normal" | "roomy", string> = {
 };
 
 export const heroHeights = { compact: "220px", standard: "300px", tall: "400px" } as const;
-export const heroTitleSizes = { compact: "34px", standard: "44px", tall: "54px" } as const;
+export const heroTitleSizes = {
+  compact: "clamp(24px, 7vw, 34px)",
+  standard: "clamp(28px, 8vw, 44px)",
+  tall: "clamp(32px, 9vw, 54px)",
+} as const;
 
 export const services = [
   { name: "Men's cut & beard trim", meta: "45 min · with wash", duration: "45 min", price: "7 500 ֏", thumb: coverGradient("oklch(0.6 0.09 350)", "oklch(0.53 0.09 350)") },

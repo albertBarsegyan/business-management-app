@@ -15,7 +15,7 @@ export function SheetHeader() {
         style={{
           margin: 0,
           fontFamily: "var(--font-zhamo-display)",
-          fontSize: 104,
+          fontSize: "clamp(40px, 9vw, 104px)",
           lineHeight: 1.02,
           letterSpacing: "-0.028em",
           fontWeight: 700,

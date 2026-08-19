@@ -10,6 +10,7 @@ export function TypeScaleSection() {
         {zhamoTypeScale.map((t) => (
           <div
             key={t.name}
+            className="zhamo-grid-2"
             style={{
               display: "grid",
               gridTemplateColumns: "168px 1fr",

@@ -1,6 +1,6 @@
 export function NavAndModalShowcase() {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 14, alignItems: "start" }}>
+    <div className="zhamo-grid-2" style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 14, alignItems: "start" }}>
       <div style={{ background: "#14141A", borderRadius: 8, padding: 14, display: "flex", flexDirection: "column", gap: 6 }}>
         <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#6B7079", padding: "4px 8px" }}>
           Sidebar nav item

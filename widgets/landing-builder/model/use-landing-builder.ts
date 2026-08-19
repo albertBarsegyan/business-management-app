@@ -79,7 +79,8 @@ function chip(label: string, on: boolean, pick: () => void): ChipOption {
   return { label, active: on, onPick: pick };
 }
 
-export function useLandingBuilder() {
+export function useLandingBuilder(options?: { interactive?: boolean }) {
+  const interactive = options?.interactive ?? true;
   const [accent, setAccent] = useState(accentSwatchHexes[0]);
   const [surface, setSurface] = useState<SurfaceOption>("light");
   const [device, setDevice] = useState<DeviceOption>("desktop");
@@ -186,7 +187,11 @@ export function useLandingBuilder() {
   const gutter = device === "phone" ? "16px" : "26px";
 
   function outline(key: SelectedKey) {
+    if (!interactive) return "0";
     return selected === key ? "2px solid #FFC935" : "0";
+  }
+  function select(key: SelectedKey) {
+    return interactive ? () => setSelected(key) : () => {};
   }
   function secBg(key: BodySectionKey) {
     const b = props[key].bg;
@@ -226,7 +231,7 @@ export function useLandingBuilder() {
             ratingColor: d ? "#FFC935" : "#8A6A05",
             outline: outline(key),
             meta: "",
-            onSelect: () => setSelected(key),
+            onSelect: select(key),
           };
           return buildRenderedSection(key, base, p, accent, dark, device, sInk, sMuted, sHair);
         }),
@@ -545,20 +550,21 @@ export function useLandingBuilder() {
     navShowBurger: device === "phone",
     navShowCta: device !== "phone",
     navLinks,
-    selectNavbar: () => setSelected("nav"),
+    selectNavbar: select("nav"),
+    interactive,
 
     hero: props.hero,
     heroOutline: outline("hero"),
     heroHeight,
     heroTitleSize,
-    selectHero: () => setSelected("hero"),
+    selectHero: select("hero"),
 
     renderedSections,
 
     footer: props.footer,
     footerOutline: outline("footer"),
     footerColumns,
-    selectFooter: () => setSelected("footer"),
+    selectFooter: select("footer"),
 
     panel,
     isBody,

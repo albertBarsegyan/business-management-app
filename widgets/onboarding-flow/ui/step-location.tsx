@@ -6,7 +6,7 @@ export function StepLocation() {
   return (
     <div data-screen-label="Onboarding step 3" style={{ width: "100%", maxWidth: 1180, display: "flex", flexDirection: "column", gap: 12 }}>
       <ZhamoSectionTag>Screen 3 — promo code expanded</ZhamoSectionTag>
-      <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", height: 620, background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 10, overflow: "hidden" }}>
+      <div className="zhamo-onboard-card" style={{ display: "grid", gridTemplateColumns: "300px 1fr", height: 620, background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 10, overflow: "hidden" }}>
         <OnboardingRail
           railBg="oklch(0.22 0.03 350)"
           stepNumber="03"
@@ -24,14 +24,14 @@ export function StepLocation() {
         />
 
         <div style={{ padding: "52px 56px", display: "flex", flexDirection: "column" }}>
-          <h2 style={{ margin: "0 0 10px", fontFamily: "var(--font-zhamo-display)", fontSize: 56, lineHeight: 1.02, letterSpacing: "-0.03em", fontWeight: 700 }}>
+          <h2 style={{ margin: "0 0 10px", fontFamily: "var(--font-zhamo-display)", fontSize: "clamp(28px, 6vw, 56px)", lineHeight: 1.02, letterSpacing: "-0.03em", fontWeight: 700 }}>
             Where are you from?
           </h2>
           <p style={{ margin: "0 0 30px", fontSize: 14, color: "#5B6069" }}>
             Sets your currency, time zone and SMS sender defaults.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "273px 273px", gap: 14 }}>
+          <div className="zhamo-onboard-2col" style={{ display: "grid", gridTemplateColumns: "273px 273px", gap: 14, maxWidth: 560 }}>
             <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Country</span>
               <div className="zhamo-onboard-select" style={{ height: 32, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontSize: 13, cursor: "pointer" }}>

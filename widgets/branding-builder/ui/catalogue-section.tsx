@@ -6,17 +6,17 @@ export function CatalogueSection({ accent }: { accent: string }) {
   const catalogue = buildCatalogue(accent);
 
   return (
-    <div style={{ background: "#FFFFFF", borderTop: "1px solid #E6E8EB", padding: "56px 40px 88px", display: "flex", justifyContent: "center" }}>
+    <div style={{ background: "#FFFFFF", borderTop: "1px solid #E6E8EB", padding: "clamp(32px, 8vw, 56px) clamp(16px, 5vw, 40px) clamp(48px, 10vw, 88px)", display: "flex", justifyContent: "center" }}>
       <div style={{ width: "100%", maxWidth: 1180, display: "flex", flexDirection: "column", gap: 28 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-zhamo-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A9099" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", rowGap: 6, alignItems: "center", gap: 12, fontFamily: "var(--font-zhamo-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A9099" }}>
             <span>Template catalogue</span>
             <span style={{ color: "#C9CDD3" }}>/</span>
             <Link href="/screens">All screens</Link>
             <span style={{ color: "#C9CDD3" }}>/</span>
             <Link href="/booking">Booking widget</Link>
           </div>
-          <h2 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: 52, lineHeight: 1.02, letterSpacing: "-0.03em", fontWeight: 700, maxWidth: "22ch" }}>
+          <h2 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: "clamp(28px, 6vw, 52px)", lineHeight: 1.02, letterSpacing: "-0.03em", fontWeight: 700, maxWidth: "22ch" }}>
             Seven templates, one booking flow.
           </h2>
           <p style={{ margin: 0, maxWidth: "70ch", fontSize: 15, lineHeight: 1.6, color: "#5B6069" }}>

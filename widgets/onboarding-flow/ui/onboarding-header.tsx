@@ -11,7 +11,7 @@ export function OnboardingHeader() {
         <span style={{ color: "#C9CDD3" }}>/</span>
         <Link href="/design-system">System</Link>
       </ZhamoEyebrow>
-      <h1 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: 60, lineHeight: 1.02, letterSpacing: "-0.028em", fontWeight: 700 }}>
+      <h1 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: "clamp(30px, 7vw, 60px)", lineHeight: 1.02, letterSpacing: "-0.028em", fontWeight: 700 }}>
         Three questions, thirty seconds.
       </h1>
       <p style={{ margin: 0, maxWidth: "68ch", fontSize: 15.5, lineHeight: 1.6, color: "#5B6069" }}>

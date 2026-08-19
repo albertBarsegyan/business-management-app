@@ -6,14 +6,14 @@ const stepLabels: Record<SetupStep, string> = { 1: "Step 1", 2: "Step 2", 3: "St
 export function SetupTopBar({ step, onGo }: { step: SetupStep; onGo: (step: SetupStep) => void }) {
   const steps: SetupStep[] = [1, 2, 3, 4];
   return (
-    <div style={{ width: "100%", maxWidth: 1100, display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24 }}>
+    <div style={{ width: "100%", maxWidth: 1100, display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 24 }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: "var(--font-zhamo-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A9099" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", rowGap: 6, alignItems: "center", gap: 12, fontFamily: "var(--font-zhamo-mono)", fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A9099" }}>
           <span>Zhamo — forced setup</span>
           <span style={{ color: "#C9CDD3" }}>/</span>
           <Link href="/screens">All screens</Link>
         </div>
-        <h1 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: 40, lineHeight: 1.03, letterSpacing: "-0.026em", fontWeight: 700 }}>
+        <h1 style={{ margin: 0, fontFamily: "var(--font-zhamo-display)", fontSize: "clamp(24px, 5vw, 40px)", lineHeight: 1.03, letterSpacing: "-0.026em", fontWeight: 700 }}>
           A service, a person, a schedule.
         </h1>
         <p style={{ margin: 0, maxWidth: "60ch", fontSize: 14, lineHeight: 1.55, color: "#5B6069" }}>

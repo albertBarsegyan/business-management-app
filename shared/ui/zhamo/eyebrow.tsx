@@ -14,6 +14,8 @@ export function ZhamoEyebrow({
       style={{
         display: "flex",
         alignItems: "center",
+        flexWrap: "wrap",
+        rowGap: 6,
         gap: 12,
         fontFamily: "var(--font-zhamo-mono)",
         fontSize: 11,

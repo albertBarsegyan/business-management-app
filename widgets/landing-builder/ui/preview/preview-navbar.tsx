@@ -12,7 +12,7 @@ export function PreviewNavbar({ state }: { state: LandingBuilderState }) {
         display: "flex",
         alignItems: "center",
         gap: 14,
-        cursor: "pointer",
+        cursor: state.interactive ? "pointer" : "default",
         outline: state.navOutline,
         outlineOffset: -2,
       }}
@@ -41,7 +41,7 @@ export function PreviewNavbar({ state }: { state: LandingBuilderState }) {
         )}
       </span>
       {state.navShowLinks && (
-        <span style={{ display: "flex", gap: 14, marginLeft: 10 }}>
+        <span className="zhamo-navlinks" style={{ display: "flex", gap: 14, marginLeft: 10 }}>
           {state.navLinks.map((l) => (
             <span key={l} style={{ fontSize: 12.5, color: state.inkMuted }}>
               {l}

@@ -128,3 +128,180 @@
     @apply font-sans;
   }
 }
+
+/*
+ * Zhamo responsive layer.
+ * Breakpoints: mobile <768px, tablet 768–1023px, desktop >=1024px.
+ * The Zhamo screens are built with inline styles (a generated design system),
+ * so overrides here use classNames + !important to win over inline `style`
+ * at the relevant breakpoint without having to rewrite every inline style.
+ */
+
+.zhamo-sidebar-toggle {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .zhamo-sidebar-toggle {
+    display: inline-flex !important;
+  }
+
+  .zhamo-sidebar {
+    position: fixed !important;
+    z-index: 40;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 248px !important;
+    max-width: 84vw;
+    transform: translateX(-100%);
+    transition: transform 0.18s ease;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
+  }
+
+  .zhamo-sidebar.zhamo-sidebar-open {
+    transform: translateX(0);
+  }
+
+  .zhamo-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 39;
+    background: rgba(10, 10, 14, 0.4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .zhamo-sidebar-backdrop {
+    display: none !important;
+  }
+}
+
+.zhamo-sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .zhamo-main-pad {
+    padding-top: 60px !important;
+  }
+
+  .zhamo-topbar {
+    height: auto !important;
+    min-height: 48px;
+    flex-wrap: wrap !important;
+    padding: 8px 14px 8px 54px !important;
+  }
+
+  .zhamo-topbar-plain {
+    height: auto !important;
+    min-height: 48px;
+    flex-wrap: wrap !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .zhamo-toolbar-scroll {
+    padding-left: 54px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .zhamo-topbar-label {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .zhamo-main-pad {
+    padding: 16px 14px 28px !important;
+  }
+
+  .zhamo-page-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .zhamo-grid-2,
+  .zhamo-grid-3,
+  .zhamo-grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .zhamo-onboard-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+  }
+
+  .zhamo-onboard-card > div:last-child {
+    padding: 32px 22px !important;
+  }
+
+  .zhamo-onboard-card > div {
+    min-height: 0 !important;
+  }
+
+  .zhamo-onboard-2col {
+    grid-template-columns: 1fr !important;
+  }
+
+  .zhamo-stack-mobile {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .zhamo-toolbar-scroll {
+    overflow-x: auto !important;
+  }
+
+  .zhamo-toolbar-scroll > * {
+    flex-shrink: 0 !important;
+  }
+
+  .zhamo-daycal-rail {
+    display: none !important;
+  }
+
+  .zhamo-navlinks {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Column-block tables: each row becomes a stacked card, each column
+     becomes a labeled block inside it, instead of a horizontally-scrolling grid row. */
+  .zhamo-table-scroll {
+    overflow-x: visible !important;
+  }
+
+  .zhamo-table-head {
+    display: none !important;
+  }
+
+  .zhamo-table-row {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    gap: 8px !important;
+    padding: 12px 14px !important;
+  }
+
+  .zhamo-table-cell {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 3px;
+    text-align: left !important;
+  }
+
+  .zhamo-table-cell::before {
+    content: attr(data-label);
+    font-family: var(--font-zhamo-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a9099;
+  }
+}

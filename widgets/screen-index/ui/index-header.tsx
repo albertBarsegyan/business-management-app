@@ -12,7 +12,7 @@ export function IndexHeader() {
         style={{
           margin: 0,
           fontFamily: "var(--font-zhamo-display)",
-          fontSize: 96,
+          fontSize: "clamp(38px, 9vw, 96px)",
           lineHeight: 1.0,
           letterSpacing: "-0.032em",
           fontWeight: 700,

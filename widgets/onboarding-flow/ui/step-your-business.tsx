@@ -38,7 +38,7 @@ export function StepYourBusiness() {
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", height: 700, background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 10, overflow: "hidden" }}>
+      <div className="zhamo-onboard-card" style={{ display: "grid", gridTemplateColumns: "300px 1fr", height: 700, background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 10, overflow: "hidden" }}>
         <OnboardingRail
           railBg={railBg}
           stepNumber="02"
@@ -69,7 +69,7 @@ export function StepYourBusiness() {
         />
 
         <div style={{ padding: "52px 56px", display: "flex", flexDirection: "column", overflow: "hidden", background: pageTint }}>
-          <h2 style={{ margin: "0 0 10px", fontFamily: "var(--font-zhamo-display)", fontSize: 48, lineHeight: 1.03, letterSpacing: "-0.028em", fontWeight: 700, maxWidth: "22ch" }}>
+          <h2 style={{ margin: "0 0 10px", fontFamily: "var(--font-zhamo-display)", fontSize: "clamp(26px, 5.5vw, 48px)", lineHeight: 1.03, letterSpacing: "-0.028em", fontWeight: 700, maxWidth: "22ch" }}>
             A couple of questions about your business
           </h2>
           <p style={{ margin: "0 0 28px", fontSize: 14, color: "#5B6069" }}>
@@ -92,7 +92,7 @@ export function StepYourBusiness() {
             </div>
           </div>
 
-          <div style={{ marginTop: 24, display: "grid", gridTemplateColumns: "273px 273px", gap: 14 }}>
+          <div className="zhamo-onboard-2col" style={{ marginTop: 24, display: "grid", gridTemplateColumns: "273px 273px", gap: 14, maxWidth: 560 }}>
             <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <span style={{ fontSize: 12, fontWeight: 500, color: industryLabelColor }}>Industry</span>
               <div style={{ height: 32, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 10px", border: `1px solid ${industryBorder}`, borderRadius: 6, background: industryBg, fontSize: 13, color: industryColor, cursor: industryCursor }}>

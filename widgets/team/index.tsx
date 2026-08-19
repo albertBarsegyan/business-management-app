@@ -23,7 +23,7 @@ export function TeamScreen() {
       />
       <main style={{ flex: "1 1 auto", minWidth: 0, display: "flex", flexDirection: "column", background: "#F5F6F8" }}>
         <TopBar />
-        <div style={{ flex: "1 1 auto", overflow: "auto", padding: "20px 22px 32px", display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="zhamo-main-pad" style={{ flex: "1 1 auto", overflow: "auto", padding: "20px 22px 32px", display: "flex", flexDirection: "column", gap: 16 }}>
           <TeamTable groupOpen={groupOpen} onToggleGroup={() => setGroupOpen((v) => !v)} />
         </div>
       </main>

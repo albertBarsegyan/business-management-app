@@ -39,7 +39,7 @@ export function StepContentPane({
 }) {
   return (
     <div style={{ padding: "32px 34px 26px", display: "flex", flexDirection: "column", minHeight: 520 }}>
-      <h2 style={{ margin: "0 0 8px", fontFamily: "var(--font-zhamo-display)", fontSize: 32, lineHeight: 1.05, letterSpacing: "-0.024em", fontWeight: 700 }}>
+      <h2 style={{ margin: "0 0 8px", fontFamily: "var(--font-zhamo-display)", fontSize: "clamp(22px, 5vw, 32px)", lineHeight: 1.05, letterSpacing: "-0.024em", fontWeight: 700 }}>
         {titles[step]}
       </h2>
       <p style={{ margin: "0 0 26px", fontSize: 13.5, lineHeight: 1.55, color: "#5B6069", maxWidth: "48ch" }}>{subtitles[step]}</p>
