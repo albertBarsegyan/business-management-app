@@ -20,7 +20,7 @@ const navItems: [string, string, string, boolean, boolean?][] = [
   ["Loyalty", "/loyalty", "LY", false],
   ["Resources", "/resources", "RS", false],
   ["Integrations", "/integrations", "IN", false],
-  ["Settings", "/setup", "ST", false, true],
+  ["Settings", "/settings", "ST", false, true],
   ["Billing", "/billing", "BL", false],
 ];
 

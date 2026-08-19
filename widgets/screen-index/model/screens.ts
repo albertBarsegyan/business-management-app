@@ -23,7 +23,7 @@ export const screenCards: ScreenCard[] = [
   {
     n: "01",
     kicker: "Home screen",
-    href: "/day-calendar",
+    href: "/booking",
     title: "Day calendar",
     body: "Sidebar (collapsible), month rail with density, quick actions, four master columns, overlaps, break, no-show.",
     states: ["busy day", "day one", "collapsed nav"],
@@ -82,16 +82,6 @@ export const screenCards: ScreenCard[] = [
   },
   {
     n: "07",
-    kicker: "Client side",
-    href: "/booking",
-    title: "Booking widget",
-    body: "Mobile five-step booking with no account, the embedded desktop version, and barbershop vs dental clinic side by side.",
-    states: ["5 steps", "day full", "slot taken", "embed"],
-    tile: "oklch(0.64 0.16 110)",
-    tileText: "#FFFFFF",
-  },
-  {
-    n: "08",
     kicker: "Owner branding",
     href: "/branding",
     title: "Branding page builder",
@@ -101,7 +91,7 @@ export const screenCards: ScreenCard[] = [
     tileText: "#17170F",
   },
   {
-    n: "09",
+    n: "08",
     kicker: "Owner site",
     href: "/landing-builder",
     title: "Landing page builder",

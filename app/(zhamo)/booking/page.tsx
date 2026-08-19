@@ -1,5 +1,5 @@
-import { BookingWidgetScreen } from "@/widgets/booking-widget";
+import { DayCalendarScreen } from "@/widgets/day-calendar";
 
 export default function BookingPage() {
-  return <BookingWidgetScreen />;
+  return <DayCalendarScreen />;
 }

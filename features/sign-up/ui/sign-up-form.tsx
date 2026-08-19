@@ -18,7 +18,7 @@ export function SignUpForm() {
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setIsSubmitting(true);
-    router.push("/onboarding");
+    router.push("/setup");
   }
 
   return (
