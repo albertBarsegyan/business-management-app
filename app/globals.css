@@ -286,14 +286,22 @@
     min-width: 0 !important;
     gap: 8px !important;
     padding: 12px 14px !important;
+    margin-bottom: 8px;
   }
 
   .zhamo-table-cell {
     display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
+    align-items: center !important;
     gap: 3px;
     text-align: left !important;
+    width: 100% !important;
+    justify-content: space-between;
+    padding-bottom: 6px;
+    border-bottom: 0.5px solid var(--color-border) !important;
+  }
+
+  .zhamo-table-cell:last-of-type {
+    border-bottom: none !important;
   }
 
   .zhamo-table-cell::before {

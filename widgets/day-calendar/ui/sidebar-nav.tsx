@@ -130,14 +130,11 @@ export function SidebarNav({
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontFamily: "var(--font-zhamo-mono)",
-                  fontSize: 10,
-                  fontWeight: 500,
                   background: active ? accent : "rgba(255,255,255,0.07)",
                   color: active ? "#FFFFFF" : "#7C818B",
                 }}
               >
-                {item.mono}
+                <item.icon size={13} strokeWidth={2} />
               </span>
               {expanded && <span style={{ whiteSpace: "nowrap", overflow: "hidden" }}>{item.label}</span>}
               {item.showCount && (

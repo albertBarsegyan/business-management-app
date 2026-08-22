@@ -1,34 +1,53 @@
+import {
+  BarChart3,
+  Users,
+  Contact,
+  CalendarCheck,
+  Globe,
+  Sparkles,
+  Package,
+  Wallet,
+  Banknote,
+  Bell,
+  Heart,
+  Folder,
+  Settings as SettingsIcon,
+  Receipt,
+  type LucideIcon,
+} from "lucide-react";
+
 export type NavItem = {
   label: string;
   href: string;
   mono: string;
+  icon: LucideIcon;
   showCount: boolean;
   divider: boolean;
 };
 
-const navItems: [string, string, string, boolean, boolean?][] = [
-  ["Reports", "/reports", "RP", false],
-  ["Team", "/team", "TM", false],
-  ["Clients", "/clients", "CL", false],
-  ["Online booking", "/booking", "OB", false],
-  ["Website builder", "/landing-builder", "WB", false],
-  ["Services", "/services", "SV", false],
-  ["Products", "/products", "PR", false],
-  ["Finance", "/finance", "FN", false],
-  ["Payroll", "/payroll", "PY", false],
-  ["Notifications", "/notifications", "NT", true],
-  ["Loyalty", "/loyalty", "LY", false],
-  ["Resources", "/resources", "RS", false],
-  ["Integrations", "/integrations", "IN", false],
-  ["Settings", "/settings", "ST", false, true],
-  ["Billing", "/billing", "BL", false],
+const navItems: [string, string, string, LucideIcon, boolean, boolean?][] = [
+  ["Reports", "/reports", "RP", BarChart3, false],
+  ["Team", "/team", "TM", Users, false],
+  ["Clients", "/clients", "CL", Contact, false],
+  ["Online booking", "/booking", "OB", CalendarCheck, false],
+  ["Website builder", "/landing-builder", "WB", Globe, false],
+  ["Services", "/services", "SV", Sparkles, false],
+  ["Products", "/products", "PR", Package, false],
+  ["Finance", "/finance", "FN", Wallet, false],
+  ["Payroll", "/payroll", "PY", Banknote, false],
+  ["Notifications", "/notifications", "NT", Bell, true],
+  ["Loyalty", "/loyalty", "LY", Heart, false],
+  ["Resources", "/resources", "RS", Folder, false],
+  ["Settings", "/settings", "ST", SettingsIcon, false, true],
+  ["Billing", "/billing", "BL", Receipt, false],
 ];
 
 export function buildNavItems(): NavItem[] {
-  return navItems.map(([label, href, mono, showCount, divider]) => ({
+  return navItems.map(([label, href, mono, icon, showCount, divider]) => ({
     label,
     href,
     mono,
+    icon,
     showCount,
     divider: !!divider,
   }));
