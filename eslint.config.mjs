@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // openapi-typescript output — regenerated from the backend's OpenAPI
+    // spec via `pnpm gen:api`, never hand-edited (business-management-infra
+    // CLAUDE.md §3). Same rationale as .gitignore'd generated content
+    // elsewhere in the project.
+    "shared/api/generated/**",
   ]),
 ]);
 
