@@ -97,6 +97,70 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
+        patch: operations["Auth_updateProfile"];
+        trace?: never;
+    };
+    "/auth/me/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Auth_changePassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/me/avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Auth_uploadAvatar"];
+        delete: operations["Auth_deleteAvatar"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AuditLogs_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assets/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Assets_getAvatar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
         patch?: never;
         trace?: never;
     };
@@ -142,22 +206,6 @@ export interface paths {
         get: operations["Locations_list"];
         put?: never;
         post: operations["Locations_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/audit-logs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["AuditLogs_list"];
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1099,6 +1147,38 @@ export interface components {
             venueId: string | null;
             permissions: string[];
         };
+        UpdateProfileDto: {
+            displayName?: string;
+            primaryPhoneE164?: string;
+        };
+        ChangePasswordDto: {
+            currentPassword: string;
+            newPassword: string;
+        };
+        AuditLogResponseDto: {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            venueId: string;
+            /** Format: date-time */
+            occurredAt: string;
+            /** @enum {string} */
+            actorType: "membership" | "client_token" | "system" | "integration";
+            actorId: string | null;
+            action: string;
+            entityType: string;
+            entityId: string | null;
+            beforeJson: {
+                [key: string]: unknown;
+            } | null;
+            afterJson: {
+                [key: string]: unknown;
+            } | null;
+            reason: string | null;
+            correlationId: string;
+            ipHash: string | null;
+            userAgentSummary: string | null;
+        };
         OnboardingVenueDto: {
             name: string;
             slug: string;
@@ -1188,30 +1268,6 @@ export interface components {
             timezone: string;
             currencyCode: string;
             onlineBookingEnabled?: boolean;
-        };
-        AuditLogResponseDto: {
-            id: string;
-            /** Format: date-time */
-            createdAt: string;
-            venueId: string;
-            /** Format: date-time */
-            occurredAt: string;
-            /** @enum {string} */
-            actorType: "membership" | "client_token" | "system" | "integration";
-            actorId: string | null;
-            action: string;
-            entityType: string;
-            entityId: string | null;
-            beforeJson: {
-                [key: string]: unknown;
-            } | null;
-            afterJson: {
-                [key: string]: unknown;
-            } | null;
-            reason: string | null;
-            correlationId: string;
-            ipHash: string | null;
-            userAgentSummary: string | null;
         };
         TeamMemberResponseDto: {
             id: string;
@@ -2536,6 +2592,173 @@ export interface operations {
             };
         };
     };
+    Auth_updateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeResponseDto"];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    Auth_changePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenPairResponseDto"];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    Auth_uploadAvatar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeResponseDto"];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    Auth_deleteAvatar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    AuditLogs_list: {
+        parameters: {
+            query: {
+                limit: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditLogResponseDto"][];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    Assets_getAvatar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     Venues_completeOnboarding: {
         parameters: {
             query?: never;
@@ -2643,36 +2866,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LocationResponseDto"];
-                };
-            };
-            /** @description Validation or business-rule error. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponseDto"];
-                };
-            };
-        };
-    };
-    AuditLogs_list: {
-        parameters: {
-            query: {
-                limit: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuditLogResponseDto"][];
                 };
             };
             /** @description Validation or business-rule error. */

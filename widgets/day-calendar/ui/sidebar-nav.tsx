@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -9,6 +10,7 @@ import { useState } from "react";
 import { logoutAction } from "@/entities/session/model/actions";
 import { useSessionUser } from "@/entities/session/ui/session-provider";
 import { useInAppNotificationsQuery } from "@/shared/api/notifications/queries";
+import { avatarUrl } from "@/shared/lib/avatar-url";
 import { getInitials } from "@/shared/lib/get-initials";
 import type { NavItem } from "../model/nav-items";
 
@@ -263,23 +265,39 @@ export function SidebarNav({
                 color: "inherit",
               }}
             >
-              <span
-                style={{
-                  width: 28,
-                  height: 28,
-                  flex: "0 0 auto",
-                  borderRadius: "50%",
-                  background: "oklch(0.64 0.16 350)",
-                  color: "#FFFFFF",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {initials}
-              </span>
+              {user.avatarAssetId ? (
+                <Image
+                  src={avatarUrl(user.avatarAssetId)}
+                  alt={user.displayName}
+                  width={28}
+                  height={28}
+                  style={{
+                    width: 28,
+                    height: 28,
+                    flex: "0 0 auto",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <span
+                  style={{
+                    width: 28,
+                    height: 28,
+                    flex: "0 0 auto",
+                    borderRadius: "50%",
+                    background: "oklch(0.64 0.16 350)",
+                    color: "#FFFFFF",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {initials}
+                </span>
+              )}
               {expanded && (
                 <span
                   style={{

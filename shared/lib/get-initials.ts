@@ -1,4 +1,4 @@
-/** "Jordan Lee" -> "JL", "Madonna" -> "M". Used as the avatar fallback wherever no avatar image exists yet (no upload path is built — Phase 4). */
+/** "Jordan Lee" -> "JL", "Madonna" -> "M". Used as the avatar fallback wherever a user has no avatar image uploaded. */
 export function getInitials(displayName: string): string {
   const parts = displayName.trim().split(/\s+/).filter(Boolean);
   if (parts.length === 0) return "";
