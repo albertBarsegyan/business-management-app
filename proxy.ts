@@ -21,7 +21,11 @@ import { ACCESS_TOKEN_COOKIE } from "@/shared/api/server/cookies";
 const PUBLIC_PATHS = ["/", "/sign-in", "/sign-up", "/table-demo"];
 
 function isPublicPath(pathname: string): boolean {
-  return PUBLIC_PATHS.includes(pathname) || pathname.startsWith("/customer");
+  return (
+    PUBLIC_PATHS.includes(pathname) ||
+    pathname.startsWith("/customer") ||
+    pathname.startsWith("/manage-booking")
+  );
 }
 
 export function proxy(request: NextRequest) {
