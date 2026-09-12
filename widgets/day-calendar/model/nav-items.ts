@@ -1,19 +1,17 @@
 import {
-  BarChart3,
-  Users,
-  Contact,
-  CalendarCheck,
-  Globe,
-  Sparkles,
-  Package,
-  Wallet,
   Banknote,
+  BarChart3,
   Bell,
-  Heart,
-  Folder,
-  Settings as SettingsIcon,
-  Receipt,
+  CalendarCheck,
+  Contact,
+  Globe,
   type LucideIcon,
+  Receipt,
+  ScrollText,
+  Settings as SettingsIcon,
+  Sparkles,
+  Users,
+  Wallet,
 } from "lucide-react";
 
 export type NavItem = {
@@ -32,14 +30,12 @@ const navItems: [string, string, string, LucideIcon, boolean, boolean?][] = [
   ["Online booking", "/booking", "OB", CalendarCheck, false],
   ["Website builder", "/landing-builder", "WB", Globe, false],
   ["Services", "/services", "SV", Sparkles, false],
-  ["Products", "/products", "PR", Package, false],
   ["Finance", "/finance", "FN", Wallet, false],
   ["Payroll", "/payroll", "PY", Banknote, false],
   ["Notifications", "/notifications", "NT", Bell, true],
-  ["Loyalty", "/loyalty", "LY", Heart, false],
-  ["Resources", "/resources", "RS", Folder, false],
   ["Settings", "/settings", "ST", SettingsIcon, false, true],
   ["Billing", "/billing", "BL", Receipt, false],
+  ["Audit log", "/audit-logs", "AL", ScrollText, false],
 ];
 
 export function buildNavItems(): NavItem[] {

@@ -8,6 +8,7 @@ import { useState } from "react";
 // would fail to bundle into this client component.
 import { logoutAction } from "@/entities/session/model/actions";
 import { useSessionUser } from "@/entities/session/ui/session-provider";
+import { useInAppNotificationsQuery } from "@/shared/api/notifications/queries";
 import { getInitials } from "@/shared/lib/get-initials";
 import type { NavItem } from "../model/nav-items";
 
@@ -29,6 +30,10 @@ export function SidebarNav({
   const user = useSessionUser();
   const initials = getInitials(user.displayName);
   const isProfileRoute = pathname === "/profile";
+  const notificationsQuery = useInAppNotificationsQuery();
+  const unreadCount = (notificationsQuery.data ?? []).filter(
+    (n) => !n.readAt,
+  ).length;
 
   return (
     <>
@@ -207,7 +212,7 @@ export function SidebarNav({
                     {item.label}
                   </span>
                 )}
-                {item.showCount && (
+                {item.showCount && unreadCount > 0 && (
                   <span
                     style={{
                       marginLeft: "auto",
@@ -224,7 +229,7 @@ export function SidebarNav({
                       justifyContent: "center",
                     }}
                   >
-                    3
+                    {unreadCount}
                   </span>
                 )}
               </Link>

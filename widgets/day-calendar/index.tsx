@@ -14,6 +14,7 @@ export { PageShell } from "./ui/page-shell";
 export { PageHeader, PageHeaderButton } from "./ui/page-header";
 export { StatGrid, type Stat } from "./ui/stat-grid";
 export { DataTable, type DataTableColumn } from "./ui/data-table";
+export { NotAvailableNotice } from "./ui/not-available-notice";
 export { Pill, Toggle } from "./ui/pill";
 export { SidebarNav } from "./ui/sidebar-nav";
 export { buildNavItems, type NavItem } from "./model/nav-items";
