@@ -1,79 +1,193 @@
 "use client";
 
-import { DataTable, PageHeader, PageHeaderButton, PageShell, Pill, Toggle } from "@/widgets/day-calendar";
-import { businessProfile, bookingPreferences, workingHours, type HoursRow, type PreferenceRow } from "./model/data";
+import type { LocationDetails } from "@/entities/location/api/get-locations";
+import type {
+  TeamMemberDetails,
+  TeamWorkingHoursDetails,
+} from "@/entities/team-member/api/list-team-members";
+import type { VenueDetails } from "@/entities/venue/api/get-venue";
+import { formatAddress } from "@/shared/lib/format-address";
+import { formatTime, weekdayLabel } from "@/shared/lib/weekdays";
+import { PageHeader, PageShell } from "@/widgets/day-calendar";
 
-export function SettingsScreen() {
+export function SettingsScreen({
+  venue,
+  primaryLocation,
+  teamWorkingHours,
+}: {
+  venue: VenueDetails;
+  primaryLocation: LocationDetails | null;
+  teamWorkingHours: {
+    member: TeamMemberDetails;
+    hours: TeamWorkingHoursDetails[];
+  }[];
+}) {
+  const address = primaryLocation ? formatAddress(primaryLocation) : null;
+
   return (
     <PageShell>
       <PageHeader
         title="Settings"
-        subtitle="Manage your business profile, working hours and booking preferences."
-        action={<PageHeaderButton>Save changes</PageHeaderButton>}
+        subtitle="Your business profile, team working hours, and booking preferences."
       />
 
-      <div style={{ background: "#FFFFFF", border: "1px solid #E6E8EB", borderRadius: 8, padding: 18, display: "flex", flexDirection: "column", gap: 14 }}>
-        <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 10.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#8A9099" }}>
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E6E8EB",
+          borderRadius: 8,
+          padding: 18,
+          display: "flex",
+          flexDirection: "column",
+          gap: 14,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-zhamo-mono)",
+            fontSize: 10.5,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "#8A9099",
+          }}
+        >
           Business profile
         </span>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 16,
+          }}
+        >
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <span style={{ fontSize: 11.5, color: "#8A9099" }}>Business name</span>
-            <span style={{ fontSize: 14, fontWeight: 600 }}>{businessProfile.name}</span>
+            <span style={{ fontSize: 11.5, color: "#8A9099" }}>
+              Business name
+            </span>
+            <span style={{ fontSize: 14, fontWeight: 600 }}>{venue.name}</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <span style={{ fontSize: 11.5, color: "#8A9099" }}>Address</span>
-            <span style={{ fontSize: 14, fontWeight: 600 }}>{businessProfile.address}</span>
+            <span style={{ fontSize: 14, fontWeight: 600 }}>
+              {address ?? "No location set yet"}
+            </span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <span style={{ fontSize: 11.5, color: "#8A9099" }}>Timezone</span>
-            <span style={{ fontSize: 14, fontWeight: 600 }}>{businessProfile.timezone}</span>
+            <span style={{ fontSize: 14, fontWeight: 600 }}>
+              {venue.defaultTimezone}
+            </span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <span style={{ fontSize: 11.5, color: "#8A9099" }}>Currency</span>
-            <span style={{ fontSize: 14, fontWeight: 600 }}>{businessProfile.currency}</span>
+            <span style={{ fontSize: 14, fontWeight: 600 }}>
+              {venue.baseCurrencyCode}
+            </span>
           </div>
         </div>
       </div>
 
-      <DataTable<HoursRow>
-        caption="Working hours"
-        rowKey={(row) => row.day}
-        columns={[
-          { label: "Day", render: (row) => row.day, width: "1fr" },
-          {
-            label: "Status",
-            render: (row) =>
-              row.open ? (
-                <Pill bg="rgba(30,142,90,0.12)" color="#1E8E5A">Open</Pill>
-              ) : (
-                <Pill bg="rgba(139,145,154,0.14)" color="#6B717A">Closed</Pill>
-              ),
-            width: "0.8fr",
-          },
-          { label: "Hours", render: (row) => row.hours, align: "right", width: "1fr" },
-        ]}
-        rows={workingHours}
-      />
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E6E8EB",
+          borderRadius: 8,
+          padding: 18,
+          display: "flex",
+          flexDirection: "column",
+          gap: 14,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-zhamo-mono)",
+            fontSize: 10.5,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "#8A9099",
+          }}
+        >
+          Team working hours
+        </span>
+        {teamWorkingHours.length === 0 ? (
+          <p style={{ margin: 0, fontSize: 13, color: "#8A9099" }}>
+            No team members yet.
+          </p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {teamWorkingHours.map(({ member, hours }) => (
+              <div
+                key={member.id}
+                style={{ display: "flex", flexDirection: "column", gap: 6 }}
+              >
+                <span style={{ fontSize: 13, fontWeight: 600 }}>
+                  {member.displayName}
+                </span>
+                {hours.length === 0 ? (
+                  <p style={{ margin: 0, fontSize: 12.5, color: "#8A9099" }}>
+                    No working hours set yet.
+                  </p>
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 8,
+                    }}
+                  >
+                    {hours.map((entry) => (
+                      <span
+                        key={entry.id}
+                        style={{
+                          fontSize: 12,
+                          padding: "4px 8px",
+                          border: "1px solid #EEF0F2",
+                          borderRadius: 6,
+                          color: "#5B6069",
+                        }}
+                      >
+                        {weekdayLabel(entry.weekday)}{" "}
+                        <span style={{ fontFamily: "var(--font-zhamo-mono)" }}>
+                          {formatTime(entry.startsAtLocal)}–
+                          {formatTime(entry.endsAtLocal)}
+                        </span>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-      <DataTable<PreferenceRow>
-        caption="Booking preferences"
-        rowKey={(row) => row.label}
-        columns={[
-          {
-            label: "Preference",
-            render: (row) => (
-              <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <span style={{ fontWeight: 600 }}>{row.label}</span>
-                <span style={{ fontSize: 12, color: "#8A9099" }}>{row.description}</span>
-              </span>
-            ),
-            width: "2.4fr",
-          },
-          { label: "Enabled", render: (row) => <Toggle on={row.on} />, align: "right", width: "0.6fr" },
-        ]}
-        rows={bookingPreferences}
-      />
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E6E8EB",
+          borderRadius: 8,
+          padding: 18,
+          display: "flex",
+          flexDirection: "column",
+          gap: 6,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-zhamo-mono)",
+            fontSize: 10.5,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "#8A9099",
+          }}
+        >
+          Booking preferences
+        </span>
+        <p style={{ margin: 0, fontSize: 12.5, color: "#8A9099" }}>
+          Not configurable yet — this needs backend support that doesn&apos;t
+          exist yet.
+        </p>
+      </div>
     </PageShell>
   );
 }

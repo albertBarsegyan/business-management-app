@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/entities/session";
+import { SessionProvider } from "@/entities/session/ui/session-provider";
 import { zhamoFontVariables } from "@/shared/config/zhamo-fonts";
 
 export const metadata: Metadata = {
@@ -38,7 +39,7 @@ export default async function ZhamoLayout({
         WebkitFontSmoothing: "antialiased",
       }}
     >
-      {children}
+      <SessionProvider user={user}>{children}</SessionProvider>
     </div>
   );
 }
