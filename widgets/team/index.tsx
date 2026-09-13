@@ -39,7 +39,6 @@ export function TeamScreen() {
       <SidebarNav
         expanded={expanded}
         accent={dayCalendarAccent}
-        adminLabel={expanded ? "Administration" : "⚙"}
         navItems={navItems}
         onToggle={() => setCollapsed((c) => !c)}
       />

@@ -56,7 +56,6 @@ export function DayCalendarScreen() {
       <SidebarNav
         expanded={expanded}
         accent={accent}
-        adminLabel={expanded ? "Administration" : "⚙"}
         navItems={navItems}
         onToggle={() => setCollapsed((c) => !c)}
       />

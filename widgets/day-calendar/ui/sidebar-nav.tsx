@@ -17,13 +17,11 @@ import type { NavItem } from "../model/nav-items";
 export function SidebarNav({
   expanded,
   accent,
-  adminLabel,
   navItems,
   onToggle,
 }: {
   expanded: boolean;
   accent: string;
-  adminLabel: string;
   navItems: NavItem[];
   onToggle: () => void;
 }) {

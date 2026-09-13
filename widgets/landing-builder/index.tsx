@@ -48,7 +48,6 @@ export function LandingBuilder() {
       <SidebarNav
         expanded={expanded}
         accent={dayCalendarAccent}
-        adminLabel={expanded ? "Administration" : "⚙"}
         navItems={navItems}
         onToggle={() => setCollapsed((c) => !c)}
       />
