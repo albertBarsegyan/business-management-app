@@ -24,7 +24,9 @@ function isPublicPath(pathname: string): boolean {
   return (
     PUBLIC_PATHS.includes(pathname) ||
     pathname.startsWith("/customer") ||
-    pathname.startsWith("/manage-booking")
+    pathname.startsWith("/manage-booking") ||
+    // Public site addressing (Decision I.1) — /s/[slug].
+    pathname.startsWith("/s/")
   );
 }
 

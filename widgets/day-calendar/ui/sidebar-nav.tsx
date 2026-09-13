@@ -10,7 +10,7 @@ import { useState } from "react";
 import { logoutAction } from "@/entities/session/model/actions";
 import { useSessionUser } from "@/entities/session/ui/session-provider";
 import { useInAppNotificationsQuery } from "@/shared/api/notifications/queries";
-import { avatarUrl } from "@/shared/lib/avatar-url";
+import { assetUrl } from "@/shared/lib/asset-url";
 import { getInitials } from "@/shared/lib/get-initials";
 import type { NavItem } from "../model/nav-items";
 
@@ -267,7 +267,7 @@ export function SidebarNav({
             >
               {user.avatarAssetId ? (
                 <Image
-                  src={avatarUrl(user.avatarAssetId)}
+                  src={assetUrl(user.avatarAssetId)}
                   alt={user.displayName}
                   width={28}
                   height={28}

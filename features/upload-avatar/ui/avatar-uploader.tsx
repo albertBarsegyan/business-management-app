@@ -4,7 +4,7 @@ import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar";
 import { Button } from "@/shared/ui/button";
-import { avatarUrl } from "@/shared/lib/avatar-url";
+import { assetUrl } from "@/shared/lib/asset-url";
 import { getInitials } from "@/shared/lib/get-initials";
 import { removeAvatarAction, uploadAvatarAction } from "../model/actions";
 
@@ -20,7 +20,7 @@ export function AvatarUploader({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const currentSrc =
-    preview ?? (avatarAssetId ? avatarUrl(avatarAssetId) : undefined);
+    preview ?? (avatarAssetId ? assetUrl(avatarAssetId) : undefined);
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];

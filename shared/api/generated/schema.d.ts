@@ -155,7 +155,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["Assets_getAvatar"];
+        get: operations["Assets_getImage"];
         put?: never;
         post?: never;
         delete?: never;
@@ -641,7 +641,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        patch: operations["Site_updateDraft"];
         trace?: never;
     };
     "/site/publish": {
@@ -676,6 +676,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/site/pages/{pageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Site_deletePage"];
+        options?: never;
+        head?: never;
+        patch: operations["Site_updatePage"];
+        trace?: never;
+    };
     "/site/pages/{pageId}/sections": {
         parameters: {
             query?: never;
@@ -692,7 +708,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/site/pages/{pageId}/sections/{sectionId}": {
+    "/site/pages/{pageId}/sections/reorder": {
         parameters: {
             query?: never;
             header?: never;
@@ -705,7 +721,55 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
+        patch: operations["Site_reorderSections"];
+        trace?: never;
+    };
+    "/site/pages/{pageId}/sections/{sectionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Site_deleteSection"];
+        options?: never;
+        head?: never;
         patch: operations["Site_updateSection"];
+        trace?: never;
+    };
+    "/site/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Site_uploadImage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/sites/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PublicSite_getPublishedSite"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/notification-templates": {
@@ -1819,6 +1883,17 @@ export interface components {
             publishedAt: string | null;
             publishedByMembershipId: string | null;
         };
+        UpdateSiteRevisionDto: {
+            themeJson?: {
+                [key: string]: unknown;
+            };
+            navigationJson?: {
+                [key: string]: unknown;
+            };
+            footerJson?: {
+                [key: string]: unknown;
+            };
+        };
         PublishSiteRevisionResponseDto: {
             published: components["schemas"]["SiteRevisionResponseDto"];
             draft: components["schemas"]["SiteRevisionResponseDto"];
@@ -1850,6 +1925,13 @@ export interface components {
             seoTitle?: string;
             seoDescription?: string;
         };
+        UpdateSitePageDto: {
+            slug?: string;
+            title?: string;
+            isHome?: boolean;
+            seoTitle?: string;
+            seoDescription?: string;
+        };
         SiteSectionResponseDto: {
             id: string;
             /** Format: date-time */
@@ -1862,6 +1944,7 @@ export interface components {
             stableKey: string;
             /** @enum {string} */
             sectionType: "hero" | "services" | "team" | "locations" | "gallery" | "reviews" | "hours" | "faq" | "custom";
+            templateKey: string | null;
             position: number;
             enabled: boolean;
             schemaVersion: number;
@@ -1872,11 +1955,20 @@ export interface components {
         CreateSiteSectionDto: {
             /** @enum {string} */
             sectionType: "hero" | "services" | "team" | "locations" | "gallery" | "reviews" | "hours" | "faq" | "custom";
+            templateKey: string;
             enabled?: boolean;
             propsJson: {
                 [key: string]: unknown;
             };
             position?: number;
+        };
+        SectionPosition: {
+            /** Format: uuid */
+            id: string;
+            position: number;
+        };
+        ReorderSectionsDto: {
+            sections: components["schemas"]["SectionPosition"][];
         };
         UpdateSiteSectionDto: {
             enabled?: boolean;
@@ -1884,6 +1976,61 @@ export interface components {
                 [key: string]: unknown;
             };
             position?: number;
+        };
+        AssetUploadResponseDto: {
+            assetId: string;
+        };
+        PublicSiteSectionDto: {
+            id: string;
+            stableKey: string;
+            /** @enum {string} */
+            sectionType: "hero" | "services" | "team" | "locations" | "gallery" | "reviews" | "hours" | "faq" | "custom";
+            templateKey: string | null;
+            position: number;
+            schemaVersion: number;
+            propsJson: {
+                [key: string]: unknown;
+            };
+        };
+        PublicSitePageDto: {
+            id: string;
+            stableKey: string;
+            slug: string;
+            title: string;
+            pageType: string;
+            position: number;
+            isHome: boolean;
+            seoTitle: string | null;
+            seoDescription: string | null;
+            sections: components["schemas"]["PublicSiteSectionDto"][];
+        };
+        PublicServiceDto: {
+            id: string;
+            name: string;
+            durationLabel: string;
+            priceLabel: string;
+        };
+        PublicTeamMemberDto: {
+            id: string;
+            name: string;
+            firstName: string;
+            roleTitle: string;
+        };
+        PublicSiteResponseDto: {
+            name: string;
+            defaultLocale: string;
+            themeJson: {
+                [key: string]: unknown;
+            };
+            navigationJson: {
+                [key: string]: unknown;
+            };
+            footerJson: {
+                [key: string]: unknown;
+            };
+            pages: components["schemas"]["PublicSitePageDto"][];
+            services: components["schemas"]["PublicServiceDto"][];
+            teamMembers: components["schemas"]["PublicTeamMemberDto"][];
         };
         NotificationTemplateResponseDto: {
             id: string;
@@ -2740,7 +2887,7 @@ export interface operations {
             };
         };
     };
-    Assets_getAvatar: {
+    Assets_getImage: {
         parameters: {
             query?: never;
             header?: never;
@@ -4256,6 +4403,38 @@ export interface operations {
             };
         };
     };
+    Site_updateDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSiteRevisionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteRevisionResponseDto"];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     Site_publish: {
         parameters: {
             query?: never;
@@ -4344,6 +4523,68 @@ export interface operations {
             };
         };
     };
+    Site_deletePage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    Site_updatePage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSitePageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SitePageResponseDto"];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     Site_listSections: {
         parameters: {
             query?: never;
@@ -4408,6 +4649,69 @@ export interface operations {
             };
         };
     };
+    Site_reorderSections: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderSectionsDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteSectionResponseDto"][];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    Site_deleteSection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pageId: string;
+                sectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
     Site_updateSection: {
         parameters: {
             query?: never;
@@ -4439,6 +4743,55 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    Site_uploadImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetUploadResponseDto"];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    PublicSite_getPublishedSite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicSiteResponseDto"];
                 };
             };
         };

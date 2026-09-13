@@ -1,5 +1,5 @@
-import { LandingBuilder } from "@/widgets/landing-builder";
+import { LandingBuilderScreen } from "@/widgets/landing-builder";
 
 export default function LandingBuilderPage() {
-  return <LandingBuilder />;
+  return <LandingBuilderScreen />;
 }
