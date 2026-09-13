@@ -1,0 +1,30 @@
+# Local dev: the Next.js app, hot-reloading from bind-mounted source (`dev`
+# Dockerfile target, `pnpm dev`).
+#
+# Joins the `zhamo-network` bridge that the backend repo's docker-compose.yml
+# creates, so the backend must be brought up first (or use
+# business-management-infra/scripts/dev-up.sh, which does both in order).
+# On that network this container reaches the API at http://backend:3000 —
+# see .env.development.
+#
+# For a locally-built production image instead, use docker-compose.prod.yml.
+services:
+  frontend:
+    build:
+      context: .
+      target: dev
+    restart: unless-stopped
+    env_file:
+      - .env.development
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - zhamo-network
+
+networks:
+  zhamo-network:
+    external: true

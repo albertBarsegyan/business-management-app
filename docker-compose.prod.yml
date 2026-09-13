@@ -1,0 +1,25 @@
+# Runs the production Dockerfile target (standalone `node server.js`, no
+# bind mounts) for validating the prod image before it ships to a real
+# deploy target.
+#
+# This is NOT the production deployment — actual prod infra is planned
+# under business-management-infra/terraform/ (does not exist yet, see that
+# repo's CLAUDE.md §8). This file is a local smoke test only.
+#
+# Usage: docker compose -f docker-compose.prod.yml --env-file .env.production up --build
+services:
+  frontend:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    ports:
+      - '3000:3000'
+    networks:
+      - zhamo-network-prod
+
+networks:
+  zhamo-network-prod:
+    external: true

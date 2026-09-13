@@ -10,7 +10,10 @@ export default function SignInPage() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center bg-background px-4 py-16 sm:px-6">
       <div className="flex w-full max-w-sm flex-col gap-8">
-        <Link href="/" className="flex items-center justify-center gap-2 font-semibold tracking-tight">
+        <Link
+          href="/"
+          className="flex items-center justify-center gap-2 font-semibold tracking-tight"
+        >
           <span className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground text-sm font-bold">
             B
           </span>

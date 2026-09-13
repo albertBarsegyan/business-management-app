@@ -1,4 +1,4 @@
-import type { team } from "../../../model/data";
+import type { TeamCardItem } from "../../../model/types";
 
 export function TeamGrid({
   items,
@@ -11,7 +11,7 @@ export function TeamGrid({
   cardBg,
   ratingColor,
 }: {
-  items: typeof team;
+  items: TeamCardItem[];
   cols: string;
   ratings: boolean;
   ink: string;
@@ -22,18 +22,68 @@ export function TeamGrid({
   ratingColor: string;
 }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: 10 }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gap: 10,
+      }}
+    >
       {items.map((m) => (
-        <div key={m.name} style={{ border: `1px solid ${hairline}`, borderRadius: 9, padding: 12, display: "flex", flexDirection: "column", gap: 8, background: cardBg }}>
-          <span style={{ width: 44, height: 44, borderRadius: "50%", background: m.photo, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-zhamo-mono)", fontSize: 8.5, color: "rgba(255,255,255,0.85)" }}>
+        <div
+          key={m.id}
+          style={{
+            border: `1px solid ${hairline}`,
+            borderRadius: 9,
+            padding: 12,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            background: cardBg,
+          }}
+        >
+          <span
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              background: m.photo,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: "var(--font-zhamo-mono)",
+              fontSize: 8.5,
+              color: "rgba(255,255,255,0.85)",
+            }}
+          >
             PHOTO
           </span>
           <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <span style={{ fontSize: 13, fontWeight: 600, color: ink }}>{m.name}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: ink }}>
+              {m.name}
+            </span>
             <span style={{ fontSize: 11.5, color: inkMuted }}>{m.role}</span>
-            {ratings && <span style={{ fontSize: 11.5, fontWeight: 600, color: ratingColor }}>★ {m.rating}</span>}
+            {ratings && (
+              <span
+                style={{ fontSize: 11.5, fontWeight: 600, color: ratingColor }}
+              >
+                ★ {m.rating}
+              </span>
+            )}
           </span>
-          <span style={{ height: 32, border: `1px solid ${ghost}`, borderRadius: 7, fontSize: 12, fontWeight: 600, color: ink, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+          <span
+            style={{
+              height: 32,
+              border: `1px solid ${ghost}`,
+              borderRadius: 7,
+              fontSize: 12,
+              fontWeight: 600,
+              color: ink,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             Book with {m.first}
           </span>
         </div>

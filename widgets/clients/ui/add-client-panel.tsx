@@ -1,8 +1,82 @@
-export function AddClientPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+"use client";
+
+import { useState } from "react";
+import { useCreateClientMutation } from "@/shared/api/clients/queries";
+import type { ClientImportance } from "@/shared/api/clients/types";
+
+const inputStyle: React.CSSProperties = {
+  height: 32,
+  padding: "0 10px",
+  border: "1px solid #D5D9DE",
+  borderRadius: 6,
+  fontFamily: "inherit",
+  fontSize: 13,
+};
+
+const labelStyle: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 500,
+  color: "#5B6069",
+};
+
+function emptyState() {
+  return {
+    displayName: "",
+    phone: "",
+    email: "",
+    dateOfBirth: "",
+    importance: "regular" as ClientImportance,
+    onlineBookingDisabled: false,
+    note: "",
+  };
+}
+
+export function AddClientPanel({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  const [form, setForm] = useState(emptyState);
+  const createClient = useCreateClientMutation();
+
   if (!open) return null;
+
+  function handleClose() {
+    setForm(emptyState());
+    createClient.reset();
+    onClose();
+  }
+
+  function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    createClient.mutate(
+      {
+        client: {
+          displayName: form.displayName,
+          dateOfBirth: form.dateOfBirth || undefined,
+          importance: form.importance,
+          onlineBookingDisabled: form.onlineBookingDisabled,
+        },
+        phone: form.phone,
+        email: form.email || undefined,
+        note: form.note || undefined,
+      },
+      { onSuccess: handleClose },
+    );
+  }
+
   return (
     <>
-      <div style={{ position: "absolute", inset: 0, background: "rgba(20,20,26,0.42)", zIndex: 15 }} />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(20,20,26,0.42)",
+          zIndex: 15,
+        }}
+      />
       <section
         style={{
           position: "absolute",
@@ -20,118 +94,297 @@ export function AddClientPanel({ open, onClose }: { open: boolean; onClose: () =
           animation: "zhamo-teamclients-in 0.22s ease both",
         }}
       >
-        <header style={{ height: 52, flex: "0 0 auto", borderBottom: "1px solid #E6E8EB", display: "flex", alignItems: "center", padding: "0 18px" }}>
-          <span style={{ fontFamily: "var(--font-zhamo-display)", fontSize: 20, fontWeight: 700, letterSpacing: "-0.018em" }}>Add client</span>
-          <span onClick={onClose} style={{ marginLeft: "auto", width: 28, height: 28, borderRadius: 6, border: "1px solid #E6E8EB", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#5B6069", cursor: "pointer" }}>
-            ✕
-          </span>
-        </header>
-        <div style={{ flex: "1 1 auto", overflowY: "auto", padding: 18, display: "flex", flexDirection: "column", gap: 14 }}>
-          <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Name</span>
-            <input readOnly placeholder="Example: Anahit Grigoryan" style={{ height: 32, padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontFamily: "inherit", fontSize: 13 }} />
-          </label>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flex: "1 1 auto",
+            minHeight: 0,
+          }}
+        >
+          <header
+            style={{
+              height: 52,
+              flex: "0 0 auto",
+              borderBottom: "1px solid #E6E8EB",
+              display: "flex",
+              alignItems: "center",
+              padding: "0 18px",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-zhamo-display)",
+                fontSize: 20,
+                fontWeight: 700,
+                letterSpacing: "-0.018em",
+              }}
+            >
+              Add client
+            </span>
+            <span
+              onClick={handleClose}
+              style={{
+                marginLeft: "auto",
+                width: 28,
+                height: 28,
+                borderRadius: 6,
+                border: "1px solid #E6E8EB",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 13,
+                color: "#5B6069",
+                cursor: "pointer",
+              }}
+            >
+              ✕
+            </span>
+          </header>
+          <div
+            style={{
+              flex: "1 1 auto",
+              overflowY: "auto",
+              padding: 18,
+              display: "flex",
+              flexDirection: "column",
+              gap: 14,
+            }}
+          >
             <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Phone</span>
-              <span style={{ display: "flex", height: 32, border: "1px solid #D5D9DE", borderRadius: 6, overflow: "hidden" }}>
-                <span style={{ padding: "0 8px", borderRight: "1px solid #E6E8EB", background: "#FAFBFC", fontSize: 12.5, display: "inline-flex", alignItems: "center", gap: 5, cursor: "pointer" }}>
-                  +374<span style={{ fontSize: 7, color: "#8A9099" }}>▾</span>
+              <span style={labelStyle}>Name</span>
+              <input
+                required
+                placeholder="Example: Anahit Grigoryan"
+                value={form.displayName}
+                onChange={(event) =>
+                  setForm((f) => ({ ...f, displayName: event.target.value }))
+                }
+                style={inputStyle}
+              />
+            </label>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 10,
+              }}
+            >
+              <label
+                style={{ display: "flex", flexDirection: "column", gap: 6 }}
+              >
+                <span style={labelStyle}>Phone</span>
+                <input
+                  required
+                  placeholder="+374 77 000 000"
+                  value={form.phone}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, phone: event.target.value }))
+                  }
+                  style={{
+                    ...inputStyle,
+                    fontFamily: "var(--font-zhamo-mono)",
+                  }}
+                />
+              </label>
+              <label
+                style={{ display: "flex", flexDirection: "column", gap: 6 }}
+              >
+                <span style={labelStyle}>Email</span>
+                <input
+                  type="email"
+                  placeholder="optional"
+                  value={form.email}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, email: event.target.value }))
+                  }
+                  style={inputStyle}
+                />
+              </label>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 10,
+              }}
+            >
+              <label
+                style={{ display: "flex", flexDirection: "column", gap: 6 }}
+              >
+                <span style={labelStyle}>Date of birth</span>
+                <input
+                  type="date"
+                  value={form.dateOfBirth}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, dateOfBirth: event.target.value }))
+                  }
+                  style={{
+                    ...inputStyle,
+                    fontFamily: "var(--font-zhamo-mono)",
+                  }}
+                />
+              </label>
+              <label
+                style={{ display: "flex", flexDirection: "column", gap: 6 }}
+              >
+                <span style={labelStyle}>Importance class</span>
+                <select
+                  value={form.importance}
+                  onChange={(event) =>
+                    setForm((f) => ({
+                      ...f,
+                      importance: event.target.value as ClientImportance,
+                    }))
+                  }
+                  style={{ ...inputStyle, cursor: "pointer" }}
+                >
+                  <option value="regular">Regular</option>
+                  <option value="vip">VIP</option>
+                </select>
+              </label>
+            </div>
+            <label
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 10,
+                padding: "11px 12px",
+                border: "1px solid #E6E8EB",
+                borderRadius: 8,
+                background: "#FAFBFC",
+                cursor: "pointer",
+              }}
+            >
+              <span
+                style={{ display: "flex", flexDirection: "column", gap: 2 }}
+              >
+                <span style={{ fontSize: 12.5, fontWeight: 600 }}>
+                  Disable online booking
                 </span>
-                <input readOnly placeholder="77 000 000" style={{ flex: 1, minWidth: 0, border: 0, padding: "0 8px", fontFamily: "var(--font-zhamo-mono)", fontSize: 12.5, outline: "none" }} />
+                <span style={{ fontSize: 11, color: "#8A9099" }}>
+                  They can still be booked by staff.
+                </span>
+              </span>
+              <span
+                onClick={() =>
+                  setForm((f) => ({
+                    ...f,
+                    onlineBookingDisabled: !f.onlineBookingDisabled,
+                  }))
+                }
+                style={{
+                  width: 34,
+                  height: 20,
+                  flex: "0 0 auto",
+                  borderRadius: 10,
+                  background: form.onlineBookingDisabled
+                    ? "#16161A"
+                    : "#D5D9DE",
+                  position: "relative",
+                  display: "inline-block",
+                  transition: "background 0.15s ease",
+                }}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 2,
+                    left: form.onlineBookingDisabled ? 16 : 2,
+                    width: 16,
+                    height: 16,
+                    borderRadius: "50%",
+                    background: "#FFFFFF",
+                    transition: "left 0.15s ease",
+                  }}
+                />
               </span>
             </label>
             <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Additional phone</span>
-              <span style={{ display: "flex", height: 32, border: "1px solid #D5D9DE", borderRadius: 6, overflow: "hidden" }}>
-                <span style={{ padding: "0 8px", borderRight: "1px solid #E6E8EB", background: "#FAFBFC", fontSize: 12.5, display: "inline-flex", alignItems: "center", gap: 5, cursor: "pointer" }}>
-                  +374<span style={{ fontSize: 7, color: "#8A9099" }}>▾</span>
-                </span>
-                <input readOnly placeholder="optional" style={{ flex: 1, minWidth: 0, border: 0, padding: "0 8px", fontFamily: "inherit", fontSize: 12.5, outline: "none" }} />
-              </span>
+              <span style={labelStyle}>Note</span>
+              <textarea
+                placeholder="Anything the team should know before she sits down"
+                value={form.note}
+                onChange={(event) =>
+                  setForm((f) => ({ ...f, note: event.target.value }))
+                }
+                style={{
+                  minHeight: 68,
+                  padding: "8px 10px",
+                  border: "1px solid #D5D9DE",
+                  borderRadius: 6,
+                  fontFamily: "inherit",
+                  fontSize: 13,
+                  resize: "vertical",
+                }}
+              />
             </label>
+            {createClient.isError ? (
+              <p style={{ margin: 0, fontSize: 12.5, color: "#C7302F" }}>
+                {createClient.error.message}
+              </p>
+            ) : null}
           </div>
-          <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Email</span>
-            <input readOnly placeholder="optional" style={{ height: 32, padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontFamily: "inherit", fontSize: 13 }} />
-          </label>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Date of birth</span>
-              <input readOnly placeholder="dd.mm.yyyy" style={{ height: 32, padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontFamily: "var(--font-zhamo-mono)", fontSize: 13 }} />
-            </label>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Gender</span>
-              <div style={{ display: "flex", gap: 5 }}>
-                <span className="zhamo-teamclients-outline-btn" style={{ height: 32, flex: 1, borderRadius: 6, border: "1px solid #D5D9DE", fontSize: 12.5, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>Female</span>
-                <span className="zhamo-teamclients-outline-btn" style={{ height: 32, flex: 1, borderRadius: 6, border: "1px solid #D5D9DE", fontSize: 12.5, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>Male</span>
-              </div>
-            </div>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Importance class</span>
-              <div style={{ height: 32, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontSize: 12.5, cursor: "pointer" }}>
-                <span>Regular</span><span style={{ fontSize: 8, color: "#8A9099" }}>▾</span>
-              </div>
-            </label>
-            <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Category</span>
-              <div style={{ height: 32, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontSize: 12.5, cursor: "pointer" }}>
-                <span>Colour clients</span><span style={{ fontSize: 8, color: "#8A9099" }}>▾</span>
-              </div>
-            </label>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Card number</span>
-              <input readOnly placeholder="optional" style={{ height: 32, padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontFamily: "var(--font-zhamo-mono)", fontSize: 13 }} />
-            </label>
-            <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Discount %</span>
-              <input readOnly defaultValue="0" style={{ height: 32, padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontFamily: "var(--font-zhamo-mono)", fontSize: 13 }} />
-            </label>
-          </div>
-          <label style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "11px 12px", border: "1px solid #E6E8EB", borderRadius: 8, background: "#FAFBFC", cursor: "pointer" }}>
-            <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <span style={{ fontSize: 12.5, fontWeight: 600 }}>Disable online booking</span>
-              <span style={{ fontSize: 11, color: "#8A9099" }}>They can still be booked by staff.</span>
+          <footer
+            style={{
+              flex: "0 0 auto",
+              height: 60,
+              borderTop: "1px solid #E6E8EB",
+              background: "#FAFBFC",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "0 18px",
+            }}
+          >
+            <span style={{ fontSize: 11.5, color: "#8A9099" }}>
+              Name and phone are required.
             </span>
-            <span style={{ width: 34, height: 20, flex: "0 0 auto", borderRadius: 10, background: "#D5D9DE", position: "relative", display: "inline-block" }}>
-              <span style={{ position: "absolute", top: 2, left: 2, width: 16, height: 16, borderRadius: "50%", background: "#FFFFFF" }} />
-            </span>
-          </label>
-          <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Note</span>
-            <textarea readOnly placeholder="Anything the team should know before she sits down" style={{ minHeight: 68, padding: "8px 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontFamily: "inherit", fontSize: 13, resize: "vertical" }} />
-          </label>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 12, borderTop: "1px solid #EEF0F2" }}>
-            <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#A9AEB6" }}>Payments</span>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Sold</span>
-                <input readOnly defaultValue="0" style={{ height: 32, padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontFamily: "var(--font-zhamo-mono)", fontSize: 13 }} />
-              </label>
-              <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <span style={{ fontSize: 12, fontWeight: 500, color: "#5B6069" }}>Paid</span>
-                <input readOnly defaultValue="0" style={{ height: 32, padding: "0 10px", border: "1px solid #D5D9DE", borderRadius: 6, fontFamily: "var(--font-zhamo-mono)", fontSize: 13 }} />
-              </label>
-            </div>
-          </div>
-        </div>
-        <footer style={{ flex: "0 0 auto", height: 60, borderTop: "1px solid #E6E8EB", background: "#FAFBFC", display: "flex", alignItems: "center", gap: 8, padding: "0 18px" }}>
-          <span style={{ fontSize: 11.5, color: "#8A9099" }}>Phone is the only required field.</span>
-          <button onClick={onClose} style={{ marginLeft: "auto", height: 36, padding: "0 14px", border: "1px solid #D5D9DE", borderRadius: 6, background: "#FFFFFF", fontFamily: "inherit", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-            Cancel
-          </button>
-          <button className="zhamo-teamclients-primary-btn" style={{ height: 36, padding: "0 18px", border: 0, borderRadius: 6, background: "#FFC935", color: "#17170F", fontFamily: "inherit", fontSize: 13.5, fontWeight: 600, cursor: "pointer" }}>
-            Save client
-          </button>
-        </footer>
+            <button
+              type="button"
+              onClick={handleClose}
+              style={{
+                marginLeft: "auto",
+                height: 36,
+                padding: "0 14px",
+                border: "1px solid #D5D9DE",
+                borderRadius: 6,
+                background: "#FFFFFF",
+                fontFamily: "inherit",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={createClient.isPending}
+              className="zhamo-teamclients-primary-btn"
+              style={{
+                height: 36,
+                padding: "0 18px",
+                border: 0,
+                borderRadius: 6,
+                background: "#FFC935",
+                color: "#17170F",
+                fontFamily: "inherit",
+                fontSize: 13.5,
+                fontWeight: 600,
+                cursor: createClient.isPending ? "default" : "pointer",
+                opacity: createClient.isPending ? 0.7 : 1,
+              }}
+            >
+              {createClient.isPending ? "Saving…" : "Save client"}
+            </button>
+          </footer>
+        </form>
       </section>
       <style>{`
         @keyframes zhamo-teamclients-in { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
-        .zhamo-teamclients-outline-btn:hover { border-color: #16161A; }
         .zhamo-teamclients-primary-btn:hover { background: #F0B81F; }
       `}</style>
     </>

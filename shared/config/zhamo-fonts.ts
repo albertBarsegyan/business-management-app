@@ -1,4 +1,8 @@
-import { Familjen_Grotesk, IBM_Plex_Mono, Instrument_Sans } from "next/font/google";
+import {
+  Familjen_Grotesk,
+  IBM_Plex_Mono,
+  Instrument_Sans,
+} from "next/font/google";
 
 export const familjenGrotesk = Familjen_Grotesk({
   variable: "--font-zhamo-display",

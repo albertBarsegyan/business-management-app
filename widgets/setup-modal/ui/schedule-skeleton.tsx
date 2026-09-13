@@ -5,14 +5,34 @@ type WeekCell = { label: string; bg: string; border: string; color: string };
 export function ScheduleSkeleton({ weekCells }: { weekCells: WeekCell[] }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(7, 1fr)",
+          gap: 4,
+        }}
+      >
         {weekHeads.map((d, i) => (
-          <span key={i} style={{ textAlign: "center", fontFamily: "var(--font-zhamo-mono)", fontSize: 9.5, color: "#A9AEB6" }}>
+          <span
+            key={i}
+            style={{
+              textAlign: "center",
+              fontFamily: "var(--font-zhamo-mono)",
+              fontSize: 9.5,
+              color: "#A9AEB6",
+            }}
+          >
             {d}
           </span>
         ))}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(7, 1fr)",
+          gap: 4,
+        }}
+      >
         {weekCells.map((c, i) => (
           <span
             key={i}
@@ -33,7 +53,14 @@ export function ScheduleSkeleton({ weekCells }: { weekCells: WeekCell[] }) {
           </span>
         ))}
       </div>
-      <span style={{ marginTop: 6, fontSize: 11.5, color: "#8A9099", lineHeight: 1.45 }}>
+      <span
+        style={{
+          marginTop: 6,
+          fontSize: 11.5,
+          color: "#8A9099",
+          lineHeight: 1.45,
+        }}
+      >
         Four weeks generated ahead. Grey days are closed.
       </span>
     </div>

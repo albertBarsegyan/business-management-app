@@ -1,4 +1,9 @@
-import type { DateOption, ServiceCategory, Specialist, TimeGroupDef } from "./types";
+import type {
+  DateOption,
+  ServiceCategory,
+  Specialist,
+  TimeGroupDef,
+} from "./types";
 
 export const bizName = "Studio Aram";
 export const bizInitial = "A";
@@ -26,13 +31,37 @@ export const serviceCategories: ServiceCategory[] = [
       { name: "Kids cut (under 12)", duration: "30 min", price: "4 000 ֏" },
     ],
   },
-  { name: "Colour", count: "5 services", glyph: "▸", open: false, services: [] },
+  {
+    name: "Colour",
+    count: "5 services",
+    glyph: "▸",
+    open: false,
+    services: [],
+  },
 ];
 
 export const specialists: Specialist[] = [
-  { name: "Karen Sahakyan", role: "Barber · 9 years", rating: "4.9", free: "5 free today", initials: "PHOTO" },
-  { name: "Davit Melkonyan", role: "Barber · 4 years", rating: "4.8", free: "3 free today", initials: "PHOTO" },
-  { name: "Mariam Petrosyan", role: "Colourist", rating: "5.0", free: "1 free today", initials: "PHOTO" },
+  {
+    name: "Karen Sahakyan",
+    role: "Barber · 9 years",
+    rating: "4.9",
+    free: "5 free today",
+    initials: "PHOTO",
+  },
+  {
+    name: "Davit Melkonyan",
+    role: "Barber · 4 years",
+    rating: "4.8",
+    free: "3 free today",
+    initials: "PHOTO",
+  },
+  {
+    name: "Mariam Petrosyan",
+    role: "Colourist",
+    rating: "5.0",
+    free: "1 free today",
+    initials: "PHOTO",
+  },
 ];
 
 export const dateOptions: DateOption[] = [

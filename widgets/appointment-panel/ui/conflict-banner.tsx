@@ -1,6 +1,8 @@
-import { alternatives } from "../model/appointment-panel-data";
+import type { AppointmentPanelState } from "../model/use-appointment-panel";
 
-export function ConflictBanner() {
+export function ConflictBanner({ state }: { state: AppointmentPanelState }) {
+  const alternatives = state.conflictAlternatives ?? [];
+
   return (
     <div
       className="zhamo-apptpanel-conflict"
@@ -16,23 +18,54 @@ export function ConflictBanner() {
         gap: 12,
       }}
     >
-      <span style={{ width: 20, height: 20, flex: "0 0 auto", borderRadius: "50%", background: "#EF4444", color: "#FFFFFF", fontSize: 12, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+      <span
+        style={{
+          width: 20,
+          height: 20,
+          flex: "0 0 auto",
+          borderRadius: "50%",
+          background: "#EF4444",
+          color: "#FFFFFF",
+          fontSize: 12,
+          fontWeight: 700,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         !
       </span>
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-        <span style={{ fontSize: 13.5, fontWeight: 600, color: "#C7302F" }}>14:30 was taken while you were typing</span>
+        <span style={{ fontSize: 13.5, fontWeight: 600, color: "#C7302F" }}>
+          This time conflicts with an existing booking
+        </span>
         <span style={{ fontSize: 12.5, color: "#8A6A6A", lineHeight: 1.45 }}>
-          Sona Avagyan booked it online 40 seconds ago. Nothing you entered is lost — pick a new time and save.
+          Nothing you entered is lost — pick one of these open slots instead.
         </span>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {alternatives.map((a) => (
             <span
-              key={a.time + a.who}
+              key={a.startsAt}
+              onClick={() => state.onPickAlternative(a)}
               className="zhamo-apptpanel-alt"
-              style={{ height: 30, padding: "0 12px", borderRadius: 6, border: `1px solid ${a.border}`, background: "#FFFFFF", fontSize: 12.5, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 7, cursor: "pointer" }}
+              style={{
+                height: 30,
+                padding: "0 12px",
+                borderRadius: 6,
+                border: "1px solid #D5D9DE",
+                background: "#FFFFFF",
+                fontSize: 12.5,
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 7,
+                cursor: "pointer",
+              }}
             >
-              {a.time}
-              <span style={{ fontWeight: 400, color: "#8A9099" }}>{a.who}</span>
+              {new Date(a.startsAt).toLocaleTimeString(undefined, {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </span>
           ))}
         </div>

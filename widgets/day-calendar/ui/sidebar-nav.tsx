@@ -19,12 +19,12 @@ export function SidebarNav({
   accent,
   navItems,
   onToggle,
-}: {
+}: Readonly<{
   expanded: boolean;
   accent: string;
   navItems: NavItem[];
   onToggle: () => void;
-}) {
+}>) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const user = useSessionUser();

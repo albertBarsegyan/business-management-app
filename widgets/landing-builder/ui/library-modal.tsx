@@ -5,7 +5,15 @@ export function LibraryModal({ state }: { state: LandingBuilderState }) {
 
   return (
     <>
-      <div onClick={state.closeLibrary} style={{ position: "absolute", inset: 0, background: "rgba(20,20,26,0.44)", zIndex: 20 }} />
+      <div
+        onClick={state.closeLibrary}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(20,20,26,0.44)",
+          zIndex: 20,
+        }}
+      />
       <section
         style={{
           position: "absolute",
@@ -23,19 +31,59 @@ export function LibraryModal({ state }: { state: LandingBuilderState }) {
           overflow: "hidden",
         }}
       >
-        <header style={{ padding: "18px 20px 14px", borderBottom: "1px solid #E6E8EB", display: "flex", alignItems: "flex-start", gap: 14 }}>
+        <header
+          style={{
+            padding: "18px 20px 14px",
+            borderBottom: "1px solid #E6E8EB",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 14,
+          }}
+        >
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <span style={{ fontFamily: "var(--font-zhamo-display)", fontSize: 26, fontWeight: 700, letterSpacing: "-0.022em" }}>Add a section</span>
-            <span style={{ fontSize: 12.5, color: "#5B6069" }}>Twelve blocks. Each one says what it needs before you add it.</span>
+            <span
+              style={{
+                fontFamily: "var(--font-zhamo-display)",
+                fontSize: 26,
+                fontWeight: 700,
+                letterSpacing: "-0.022em",
+              }}
+            >
+              Add a section
+            </span>
+            <span style={{ fontSize: 12.5, color: "#5B6069" }}>
+              Twelve blocks. Each one says what it needs before you add it.
+            </span>
           </div>
           <span
             onClick={state.closeLibrary}
-            style={{ marginLeft: "auto", width: 28, height: 28, borderRadius: 6, border: "1px solid #E6E8EB", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#5B6069", cursor: "pointer" }}
+            style={{
+              marginLeft: "auto",
+              width: 28,
+              height: 28,
+              borderRadius: 6,
+              border: "1px solid #E6E8EB",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 13,
+              color: "#5B6069",
+              cursor: "pointer",
+            }}
           >
             ✕
           </span>
         </header>
-        <div style={{ flex: "1 1 auto", overflowY: "auto", padding: "16px 20px 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(248px, 1fr))", gap: 10 }}>
+        <div
+          style={{
+            flex: "1 1 auto",
+            overflowY: "auto",
+            padding: "16px 20px 20px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(248px, 1fr))",
+            gap: 10,
+          }}
+        >
           {state.library.map((l) => (
             <div
               key={l.key}
@@ -53,14 +101,42 @@ export function LibraryModal({ state }: { state: LandingBuilderState }) {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                <span style={{ width: 24, height: 24, borderRadius: 6, background: l.added ? "#EDEFF2" : "#16161A", color: l.added ? "#A9AEB6" : "#FFFFFF", fontFamily: "var(--font-zhamo-mono)", fontSize: 10, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                <span
+                  style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: 6,
+                    background: l.added ? "#EDEFF2" : "#16161A",
+                    color: l.added ? "#A9AEB6" : "#FFFFFF",
+                    fontFamily: "var(--font-zhamo-mono)",
+                    fontSize: 10,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   {l.mono}
                 </span>
                 <span style={{ fontSize: 13, fontWeight: 600 }}>{l.name}</span>
-                <span style={{ marginLeft: "auto", fontSize: 11, color: l.added ? "#22C55E" : "#A9AEB6", fontWeight: 600 }}>{l.added ? "Added" : "Add"}</span>
+                <span
+                  style={{
+                    marginLeft: "auto",
+                    fontSize: 11,
+                    color: l.added ? "#22C55E" : "#A9AEB6",
+                    fontWeight: 600,
+                  }}
+                >
+                  {l.added ? "Added" : "Add"}
+                </span>
               </div>
-              <span style={{ fontSize: 12, lineHeight: 1.45, color: "#5B6069" }}>{l.body}</span>
-              <span style={{ fontSize: 11, color: "#A9AEB6" }}>Needs: {l.needs}</span>
+              <span
+                style={{ fontSize: 12, lineHeight: 1.45, color: "#5B6069" }}
+              >
+                {l.body}
+              </span>
+              <span style={{ fontSize: 11, color: "#A9AEB6" }}>
+                Needs: {l.needs}
+              </span>
             </div>
           ))}
         </div>

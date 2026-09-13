@@ -24,11 +24,19 @@ export function SheetHeader() {
       >
         The system behind the day.
       </h1>
-      <p style={{ margin: 0, maxWidth: "62ch", fontSize: 17, lineHeight: 1.55, color: "#5B6069" }}>
-        Zhamo is used eight hours a day at a front desk with clients waiting. Borders separate,
-        not shadows. Density is a feature. The only decoration is the type: enormous, tight
-        display against small, calm UI text — and one accent that tells you which business you
-        are in.
+      <p
+        style={{
+          margin: 0,
+          maxWidth: "62ch",
+          fontSize: 17,
+          lineHeight: 1.55,
+          color: "#5B6069",
+        }}
+      >
+        Zhamo is used eight hours a day at a front desk with clients waiting.
+        Borders separate, not shadows. Density is a feature. The only decoration
+        is the type: enormous, tight display against small, calm UI text — and
+        one accent that tells you which business you are in.
       </p>
     </header>
   );

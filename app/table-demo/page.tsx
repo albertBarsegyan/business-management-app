@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { MoreHorizontal, Pencil } from "lucide-react"
+import * as React from "react";
+import { MoreHorizontal, Pencil } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/shared/ui/avatar"
-import { Badge } from "@/shared/ui/badge"
-import { Button } from "@/shared/ui/button"
-import { Checkbox } from "@/shared/ui/checkbox"
+import { Avatar, AvatarFallback } from "@/shared/ui/avatar";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { Checkbox } from "@/shared/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -15,25 +15,25 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/shared/ui/table"
+} from "@/shared/ui/table";
 
 const WIDTH_PRESETS = [
   { label: "375 · phone", value: 375 },
   { label: "768 · tablet", value: 768 },
   { label: "1280 · desktop", value: 1280 },
   { label: "Full width", value: null },
-] as const
+] as const;
 
 function DemoFrame({
   title,
   description,
   children,
 }: {
-  title: string
-  description: string
-  children: React.ReactNode
+  title: string;
+  description: string;
+  children: React.ReactNode;
 }) {
-  const [width, setWidth] = React.useState<number | null>(null)
+  const [width, setWidth] = React.useState<number | null>(null);
 
   return (
     <section className="flex flex-col gap-3">
@@ -64,7 +64,7 @@ function DemoFrame({
         {children}
       </div>
     </section>
-  )
+  );
 }
 
 function ActionsCell() {
@@ -89,7 +89,7 @@ function ActionsCell() {
         <MoreHorizontal />
       </Button>
     </div>
-  )
+  );
 }
 
 const clientRows = [
@@ -138,7 +138,7 @@ const clientRows = [
     spend: "֏89,300",
     vip: false,
   },
-]
+];
 
 function initialsOf(name: string) {
   return name
@@ -146,7 +146,7 @@ function initialsOf(name: string) {
     .map((part) => part[0])
     .slice(0, 2)
     .join("")
-    .toUpperCase()
+    .toUpperCase();
 }
 
 const clientDetailRows = [
@@ -186,7 +186,7 @@ const clientDetailRows = [
     firstVisit: null,
     vip: false,
   },
-]
+];
 
 const teamRows = [
   {
@@ -217,13 +217,13 @@ const teamRows = [
     branch: "Northside — Komitas Ave.",
     status: "On leave" as const,
   },
-]
+];
 
 const statusVariant: Record<string, "default" | "secondary" | "outline"> = {
   Active: "default",
   Invited: "secondary",
   "On leave": "outline",
-}
+};
 
 const catalogRows = [
   {
@@ -282,14 +282,14 @@ const catalogRows = [
     stock: "—",
     updated: "Aug 12",
   },
-]
+];
 
 const settingsRows = [
   { setting: "Business name", value: "Zhamo Studio" },
   { setting: "Time zone", value: "Asia/Yerevan (UTC+4)" },
   { setting: "Online booking", value: "Enabled" },
   { setting: "Cancellation window", value: "24 hours" },
-]
+];
 
 export default function TableDemoPage() {
   return (
@@ -303,9 +303,9 @@ export default function TableDemoPage() {
         </h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
           Each section renders the same primitive with a different{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-xs">variant</code>
-          . Use the width buttons (or drag the container&apos;s resize handle)
-          to check behaviour at 375px, 768px, and 1280px.
+          <code className="rounded bg-muted px-1 py-0.5 text-xs">variant</code>.
+          Use the width buttons (or drag the container&apos;s resize handle) to
+          check behaviour at 375px, 768px, and 1280px.
         </p>
       </header>
 
@@ -536,5 +536,5 @@ export default function TableDemoPage() {
         </Table>
       </DemoFrame>
     </div>
-  )
+  );
 }

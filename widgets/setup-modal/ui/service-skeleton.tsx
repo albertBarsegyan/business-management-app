@@ -17,12 +17,51 @@ export function ServiceSkeleton() {
             gap: 10,
           }}
         >
-          <span style={{ width: 26, height: 26, borderRadius: 6, background: row.tile }} />
-          <span style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
-            <span style={{ height: 8, width: row.w1, borderRadius: 3, background: row.bar }} />
-            <span style={{ height: 7, width: row.w2, borderRadius: 3, background: row.barLight }} />
+          <span
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 6,
+              background: row.tile,
+            }}
+          />
+          <span
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 4,
+              flex: 1,
+            }}
+          >
+            <span
+              style={{
+                height: 8,
+                width: row.w1,
+                borderRadius: 3,
+                background: row.bar,
+              }}
+            />
+            <span
+              style={{
+                height: 7,
+                width: row.w2,
+                borderRadius: 3,
+                background: row.barLight,
+              }}
+            />
           </span>
-          {row.live && <span style={{ fontSize: 11.5, fontWeight: 600, color: "#16161A", whiteSpace: "nowrap" }}>{row.text}</span>}
+          {row.live && (
+            <span
+              style={{
+                fontSize: 11.5,
+                fontWeight: 600,
+                color: "#16161A",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {row.text}
+            </span>
+          )}
         </div>
       ))}
     </div>

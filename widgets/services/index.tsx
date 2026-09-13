@@ -1,68 +1,122 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { DataTable, PageHeader, PageHeaderButton, PageShell, Pill } from "@/widgets/day-calendar";
-import { categories, services, type ServiceRow } from "./model/data";
+import {
+  PageHeader,
+  PageHeaderButton,
+  PageShell,
+} from "@/widgets/day-calendar";
+import {
+  useServiceCategoriesQuery,
+  useServicesQuery,
+} from "@/shared/api/catalog/queries";
+import { AddServicePanel } from "./ui/add-service-panel";
+import {
+  LocationSettingsPanel,
+  type LocationSettingsPanelTarget,
+} from "./ui/location-settings-panel";
+import {
+  ServiceStepsPanel,
+  type StepsPanelTarget,
+} from "./ui/service-steps-panel";
+import { ServiceTable } from "./ui/service-table";
+import {
+  StaffAssignmentsPanel,
+  type StaffPanelTarget,
+} from "./ui/staff-assignments-panel";
+
+const ALL_CATEGORIES = "all";
 
 export function ServicesScreen() {
-  const [category, setCategory] = useState("All");
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState(ALL_CATEGORIES);
+  const [staffTarget, setStaffTarget] = useState<StaffPanelTarget | null>(null);
+  const [stepsTarget, setStepsTarget] = useState<StepsPanelTarget | null>(null);
+  const [locationTarget, setLocationTarget] =
+    useState<LocationSettingsPanelTarget | null>(null);
+  const categoriesQuery = useServiceCategoriesQuery();
+  const servicesQuery = useServicesQuery();
+  const categories = categoriesQuery.data ?? [];
 
-  const rows = useMemo(
-    () => (category === "All" ? services : services.filter((s) => s.category === category)),
-    [category]
-  );
+  const filteredServices = useMemo(() => {
+    if (!servicesQuery.data) return [];
+    if (categoryFilter === ALL_CATEGORIES) return servicesQuery.data;
+    return servicesQuery.data.filter(
+      (service) => service.categoryId === categoryFilter,
+    );
+  }, [servicesQuery.data, categoryFilter]);
 
   return (
     <PageShell>
       <PageHeader
         title="Services"
         subtitle="Manage the services your business offers, along with pricing and duration."
-        action={<PageHeaderButton>Add service</PageHeaderButton>}
+        action={
+          <PageHeaderButton onClick={() => setPanelOpen(true)}>
+            Add service
+          </PageHeaderButton>
+        }
       />
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {categories.map((c) => (
-          <button
-            key={c}
-            onClick={() => setCategory(c)}
-            style={{
-              height: 30,
-              padding: "0 12px",
-              border: `1px solid ${category === c ? "#16161A" : "#D5D9DE"}`,
-              borderRadius: 6,
-              background: category === c ? "#16161A" : "#FFFFFF",
-              color: category === c ? "#FFFFFF" : "#16161A",
-              fontFamily: "inherit",
-              fontSize: 12.5,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
+      {categories.length > 0 ? (
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {[{ id: ALL_CATEGORIES, name: "All" }, ...categories].map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setCategoryFilter(c.id)}
+              style={{
+                height: 30,
+                padding: "0 12px",
+                border: `1px solid ${categoryFilter === c.id ? "#16161A" : "#D5D9DE"}`,
+                borderRadius: 6,
+                background: categoryFilter === c.id ? "#16161A" : "#FFFFFF",
+                color: categoryFilter === c.id ? "#FFFFFF" : "#16161A",
+                fontFamily: "inherit",
+                fontSize: 12.5,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
-      <DataTable<ServiceRow>
-        rowKey={(row) => row.name}
-        columns={[
-          { label: "Service", render: (row) => <span style={{ fontWeight: 600 }}>{row.name}</span>, width: "1.6fr" },
-          { label: "Category", render: (row) => row.category, width: "0.9fr" },
-          { label: "Duration", render: (row) => row.duration, width: "1fr" },
-          { label: "Price", render: (row) => row.price, align: "right", width: "0.9fr" },
-          { label: "Staff", render: (row) => <span style={{ color: "#5B6069" }}>{row.staff}</span>, width: "1.3fr" },
-          {
-            label: "Online booking",
-            render: (row) =>
-              row.online ? (
-                <Pill bg="rgba(30,142,90,0.12)" color="#1E8E5A">On</Pill>
-              ) : (
-                <Pill bg="#EEF0F2" color="#8A9099">Off</Pill>
-              ),
-            width: "1fr",
-          },
-        ]}
-        rows={rows}
+      {servicesQuery.isPending ? (
+        <p style={{ padding: 24, color: "#8A9099", fontSize: 13.5 }}>
+          Loading services…
+        </p>
+      ) : servicesQuery.isError ? (
+        <p style={{ padding: 24, color: "#C7302F", fontSize: 13.5 }}>
+          Couldn&apos;t load services: {servicesQuery.error.message}
+        </p>
+      ) : (
+        <ServiceTable
+          services={filteredServices}
+          categories={categories}
+          onManageStaff={setStaffTarget}
+          onManageSteps={setStepsTarget}
+          onManageLocations={setLocationTarget}
+        />
+      )}
+
+      <AddServicePanel
+        open={panelOpen}
+        onClose={() => setPanelOpen(false)}
+        categories={categories}
+      />
+      <LocationSettingsPanel
+        target={locationTarget}
+        onClose={() => setLocationTarget(null)}
+      />
+      <ServiceStepsPanel
+        target={stepsTarget}
+        onClose={() => setStepsTarget(null)}
+      />
+      <StaffAssignmentsPanel
+        target={staffTarget}
+        onClose={() => setStaffTarget(null)}
       />
     </PageShell>
   );

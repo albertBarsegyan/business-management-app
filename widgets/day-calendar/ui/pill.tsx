@@ -1,4 +1,12 @@
-export function Pill({ children, bg, color }: { children: React.ReactNode; bg: string; color: string }) {
+export function Pill({
+  children,
+  bg,
+  color,
+}: {
+  children: React.ReactNode;
+  bg: string;
+  color: string;
+}) {
   return (
     <span
       style={{

@@ -1,8 +1,16 @@
 import type { ChipOption } from "../../model/use-landing-builder";
 
-export function ChipRow({ options, wide = false }: { options: ChipOption[]; wide?: boolean }) {
+export function ChipRow({
+  options,
+  wide = false,
+}: {
+  options: ChipOption[];
+  wide?: boolean;
+}) {
   return (
-    <div style={{ display: "flex", gap: 5, flexWrap: wide ? "wrap" : undefined }}>
+    <div
+      style={{ display: "flex", gap: 5, flexWrap: wide ? "wrap" : undefined }}
+    >
       {options.map((o) => (
         <span
           key={o.label}

@@ -1,35 +1,69 @@
 "use client";
 
-import { useState } from "react";
-import type { PanelMode, VisitStatus } from "./model/types";
+import { useEffect } from "react";
+import { useAppointmentPanel } from "./model/use-appointment-panel";
 import { CartColumn } from "./ui/cart-column";
 import { ClientColumn } from "./ui/client-column";
 import { ConflictBanner } from "./ui/conflict-banner";
-import { DimmedCalendarBackdrop } from "./ui/dimmed-calendar-backdrop";
-import { ModeSwitcher } from "./ui/mode-switcher";
 import { PanelFooter } from "./ui/panel-footer";
 import { PanelHeader } from "./ui/panel-header";
 import { SavedToast } from "./ui/saved-toast";
 import { TimingColumn } from "./ui/timing-column";
 
-export function AppointmentPanelScreen() {
-  const [mode, setMode] = useState<PanelMode>("new");
-  const [statusState, setStatusState] = useState<VisitStatus>("Pending");
+/**
+ * A slide-over sidebar for viewing/editing one appointment (or creating a
+ * new one when `appointmentId` is null). Meant to be mounted directly
+ * inside a calendar screen, over the real page content — not routed to as
+ * its own page.
+ */
+export function AppointmentSidebar({
+  appointmentId,
+  onClose,
+  onAppointmentSaved,
+}: {
+  appointmentId: string | null;
+  onClose: () => void;
+  onAppointmentSaved?: (appointmentId: string) => void;
+}) {
+  const state = useAppointmentPanel({
+    appointmentId,
+    onRequestClose: onClose,
+    onAppointmentSaved,
+  });
 
-  const isEdit = mode === "edit";
-  const isConflict = mode === "conflict";
-  const status: VisitStatus = isEdit ? "Confirmed" : statusState;
+  useEffect(() => {
+    if (!state.toastMessage) return;
+    const timer = setTimeout(() => state.clearToast(), 4000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.toastMessage]);
 
-  const headerTitle = isEdit ? "Anahit Grigoryan" : "New appointment";
-  const headerMeta = isEdit ? "13 August, 14:30 – 15:15 · Karen Sahakyan" : "13 August, Thursday · slot 14:30";
-  const footerTitle = isEdit ? "Edit appointment" : "New appointment";
-  const footerMeta = isEdit ? "Created 02.07.2026 by Lilit · last edited 2 min ago" : "45 min · 7 500 ֏ · Karen Sahakyan";
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
 
   return (
-    <div data-screen-label="Appointment panel" style={{ height: "100vh", minHeight: 780, position: "relative", overflow: "hidden", background: "#F5F6F8" }}>
-      <DimmedCalendarBackdrop />
-      <ModeSwitcher mode={mode} onSelect={setMode} />
-      {mode === "new" && <SavedToast />}
+    <div
+      data-screen-label="Appointment panel"
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 50,
+      }}
+    >
+      <div
+        onClick={onClose}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(20,20,26,0.42)",
+        }}
+      />
+      {state.toastMessage && <SavedToast message={state.toastMessage} />}
 
       <section
         style={{
@@ -43,19 +77,70 @@ export function AppointmentPanelScreen() {
           boxShadow: "-20px 0 60px rgba(10,10,14,0.22)",
           display: "flex",
           flexDirection: "column",
-          zIndex: 10,
         }}
       >
-        <PanelHeader title={headerTitle} meta={headerMeta} isEdit={isEdit} />
-        {isConflict && <ConflictBanner />}
+        {state.isLoading ? (
+          <div
+            style={{
+              flex: "1 1 auto",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 13,
+              color: "#8A9099",
+            }}
+          >
+            Loading appointment…
+          </div>
+        ) : state.notFound ? (
+          <div
+            style={{
+              flex: "1 1 auto",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 13,
+              color: "#C7302F",
+            }}
+          >
+            Appointment not found.
+          </div>
+        ) : (
+          <>
+            <PanelHeader state={state} />
+            {state.conflictAlternatives && <ConflictBanner state={state} />}
+            {state.formError && (
+              <p
+                style={{
+                  margin: "10px 18px 0",
+                  fontSize: 12.5,
+                  color: "#C7302F",
+                }}
+              >
+                {state.formError}
+              </p>
+            )}
 
-        <div className="zhamo-grid-3" style={{ flex: "1 1 auto", overflowY: "auto", padding: "14px 18px 18px", display: "grid", gridTemplateColumns: "1fr 1.15fr 1fr", gap: 14, alignItems: "start" }}>
-          <TimingColumn isEdit={isEdit} isConflict={isConflict} />
-          <CartColumn status={status} onSelectStatus={setStatusState} />
-          <ClientColumn isEdit={isEdit} />
-        </div>
+            <div
+              className="zhamo-grid-3"
+              style={{
+                flex: "1 1 auto",
+                overflowY: "auto",
+                padding: "14px 18px 18px",
+                display: "grid",
+                gridTemplateColumns: "1fr 1.15fr 1fr",
+                gap: 14,
+                alignItems: "start",
+              }}
+            >
+              <TimingColumn state={state} />
+              <CartColumn state={state} />
+              <ClientColumn state={state} />
+            </div>
 
-        <PanelFooter title={footerTitle} meta={footerMeta} isEdit={isEdit} isConflict={isConflict} />
+            <PanelFooter state={state} />
+          </>
+        )}
       </section>
     </div>
   );

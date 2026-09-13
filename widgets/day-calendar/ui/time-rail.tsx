@@ -1,8 +1,20 @@
 import type { TimeSlot } from "../model/slots";
 
-export function TimeRail({ slots, side }: { slots: TimeSlot[]; side: "left" | "right" }) {
+export function TimeRail({
+  slots,
+  side,
+}: {
+  slots: TimeSlot[];
+  side: "left" | "right";
+}) {
   return (
-    <div style={side === "left" ? { borderRight: "1px solid #E6E8EB", background: "#FAFBFC" } : { background: "#FAFBFC", borderLeft: "1px solid #E6E8EB" }}>
+    <div
+      style={
+        side === "left"
+          ? { borderRight: "1px solid #E6E8EB", background: "#FAFBFC" }
+          : { background: "#FAFBFC", borderLeft: "1px solid #E6E8EB" }
+      }
+    >
       {slots.map((s, i) => (
         <div
           key={i}
@@ -15,7 +27,15 @@ export function TimeRail({ slots, side }: { slots: TimeSlot[]; side: "left" | "r
             borderBottom: `1px solid ${s.line}`,
           }}
         >
-          <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 10.5, color: s.labelColor }}>{s.label}</span>
+          <span
+            style={{
+              fontFamily: "var(--font-zhamo-mono)",
+              fontSize: 10.5,
+              color: s.labelColor,
+            }}
+          >
+            {s.label}
+          </span>
         </div>
       ))}
     </div>

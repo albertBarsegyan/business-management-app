@@ -37,11 +37,24 @@ export function PreviewNavbar({ state }: { state: LandingBuilderState }) {
           A
         </span>
         {state.nav.showName && (
-          <span style={{ fontFamily: "var(--font-zhamo-display)", fontSize: 16, fontWeight: 700, letterSpacing: "-0.018em", color: state.ink }}>Studio Aram</span>
+          <span
+            style={{
+              fontFamily: "var(--font-zhamo-display)",
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: "-0.018em",
+              color: state.ink,
+            }}
+          >
+            Studio Aram
+          </span>
         )}
       </span>
       {state.navShowLinks && (
-        <span className="zhamo-navlinks" style={{ display: "flex", gap: 14, marginLeft: 10 }}>
+        <span
+          className="zhamo-navlinks"
+          style={{ display: "flex", gap: 14, marginLeft: 10 }}
+        >
           {state.navLinks.map((l) => (
             <span key={l} style={{ fontSize: 12.5, color: state.inkMuted }}>
               {l}
@@ -68,7 +81,20 @@ export function PreviewNavbar({ state }: { state: LandingBuilderState }) {
         </span>
       )}
       {state.navShowCta && (
-        <span style={{ marginLeft: "auto", height: 34, padding: "0 14px", borderRadius: 7, background: "#FFC935", color: "#17170F", fontSize: 13, fontWeight: 600, display: "inline-flex", alignItems: "center" }}>
+        <span
+          style={{
+            marginLeft: "auto",
+            height: 34,
+            padding: "0 14px",
+            borderRadius: 7,
+            background: "#FFC935",
+            color: "#17170F",
+            fontSize: 13,
+            fontWeight: 600,
+            display: "inline-flex",
+            alignItems: "center",
+          }}
+        >
           {state.nav.cta}
         </span>
       )}

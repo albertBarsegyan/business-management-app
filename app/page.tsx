@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarDays,
-  Menu,
-  Receipt,
-  Users,
-} from "lucide-react";
+import { ArrowRight, CalendarDays, Menu, Receipt, Users } from "lucide-react";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import {
@@ -64,7 +58,10 @@ export default function Home() {
     <div className="flex flex-1 flex-col bg-background">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+          <Link
+            href="/"
+            className="flex items-center gap-2 font-semibold tracking-tight"
+          >
             <span className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground text-sm font-bold">
               B
             </span>
@@ -108,7 +105,7 @@ export default function Home() {
             </h1>
             <p className="text-balance text-muted-foreground sm:text-lg">
               Scheduling, clients, and invoicing in a single, simple tool —
-              built for small teams who'd rather spend time on the work than
+              built for small teams who&#39;d rather spend time on the work than
               the admin.
             </p>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
@@ -118,22 +115,30 @@ export default function Home() {
                   <ArrowRight />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto"
+                asChild
+              >
                 <Link href="/sign-in">Sign in</Link>
               </Button>
             </div>
           </div>
         </section>
 
-        <section id="features" className="border-t border-border/60 bg-muted/30">
+        <section
+          id="features"
+          className="border-t border-border/60 bg-muted/30"
+        >
           <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-semibold tracking-tight">
-                Everything you need, nothing you don't
+                Everything you need, nothing you don&#39;t
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Three tools that work together instead of three tabs you have
-                to keep in sync.
+                Three tools that work together instead of three tabs you have to
+                keep in sync.
               </p>
             </div>
 
@@ -160,8 +165,8 @@ export default function Home() {
               Ready to get organized?
             </h2>
             <p className="max-w-md text-balance text-muted-foreground">
-              Start free — no credit card required. Upgrade whenever your
-              team grows.
+              Start free — no credit card required. Upgrade whenever your team
+              grows.
             </p>
             <Button size="lg" asChild>
               <Link href="/sign-up">

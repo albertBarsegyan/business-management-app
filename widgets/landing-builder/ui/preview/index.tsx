@@ -6,23 +6,76 @@ import { PreviewNavbar } from "./preview-navbar";
 import { PreviewSection } from "./preview-section";
 
 export function LivePreview({ state }: { state: LandingBuilderState }) {
-  const { wrapRef, frameRef, device, scale, frameH, enabledCount, pageBg, renderedSections, accent, coverBg, gutter, dark } = state;
-  const deviceLabel = (device === "phone" ? "390 px" : "1280 px") + (scale < 0.995 ? ` at ${Math.round(scale * 100)}%` : "");
+  const {
+    wrapRef,
+    frameRef,
+    device,
+    scale,
+    frameH,
+    enabledCount,
+    pageBg,
+    renderedSections,
+    accent,
+    coverBg,
+    gutter,
+    dark,
+  } = state;
+  const deviceLabel =
+    (device === "phone" ? "390 px" : "1280 px") +
+    (scale < 0.995 ? ` at ${Math.round(scale * 100)}%` : "");
   const frameWidth = device === "phone" ? "390px" : "1280px";
   const frameRadius = device === "phone" ? "18px" : "10px";
   const frameTransform = scale ? `scale(${scale})` : "none";
   const wrapHeight = frameH ? `${Math.ceil(frameH)}px` : "auto";
 
   return (
-    <div style={{ minWidth: 0, overflowY: "auto", background: "#EDEFF2", padding: 18, display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, alignSelf: "stretch" }}>
-        <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A9099" }}>
+    <div
+      style={{
+        minWidth: 0,
+        overflowY: "auto",
+        background: "#EDEFF2",
+        padding: 18,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 12,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          alignSelf: "stretch",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "var(--font-zhamo-mono)",
+            fontSize: 10,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "#8A9099",
+          }}
+        >
           Live preview · {deviceLabel} · {enabledCount} sections
         </span>
-        <span style={{ marginLeft: "auto", fontSize: 11.5, color: "#8A9099" }}>Click any section to edit it</span>
+        <span style={{ marginLeft: "auto", fontSize: 11.5, color: "#8A9099" }}>
+          Click any section to edit it
+        </span>
       </div>
 
-      <div ref={wrapRef} style={{ width: "100%", alignSelf: "stretch", flex: "0 0 auto", overflow: "hidden", position: "relative", height: wrapHeight }}>
+      <div
+        ref={wrapRef}
+        style={{
+          width: "100%",
+          alignSelf: "stretch",
+          flex: "0 0 auto",
+          overflow: "hidden",
+          position: "relative",
+          height: wrapHeight,
+        }}
+      >
         <div
           ref={frameRef}
           style={{
@@ -40,7 +93,12 @@ export function LivePreview({ state }: { state: LandingBuilderState }) {
           <PreviewNavbar state={state} />
           <PreviewHero state={state} />
           {renderedSections.map((sec) => (
-            <PreviewSection key={sec.key} sec={sec} accent={accent} coverBg={coverBg} />
+            <PreviewSection
+              key={sec.key}
+              sec={sec}
+              accent={accent}
+              coverBg={coverBg}
+            />
           ))}
           <PreviewFinalCta gutter={gutter} dark={dark} />
           <PreviewFooter state={state} />

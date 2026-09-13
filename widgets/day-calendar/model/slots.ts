@@ -7,9 +7,14 @@ export type TimeSlot = {
   fillMorning: string;
 };
 
+export const SLOT_HEIGHT_PX = 34;
+export const SLOT_MINUTES = 30;
+export const DAY_START_MINUTES = 540;
+export const DAY_END_MINUTES = 1320;
+
 export function buildSlots(): TimeSlot[] {
   const slots: TimeSlot[] = [];
-  for (let m = 540; m < 1320; m += 30) {
+  for (let m = DAY_START_MINUTES; m < DAY_END_MINUTES; m += SLOT_MINUTES) {
     const h = Math.floor(m / 60);
     const mm = m % 60;
     const onHour = mm === 0;

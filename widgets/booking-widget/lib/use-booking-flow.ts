@@ -55,8 +55,12 @@ export function useBookingFlow() {
   const [cart, setCart] = useState<Record<string, boolean>>(defaultCart);
   const [any, setAny] = useState(true);
   const [pickedSpecialist, setPickedSpecialist] = useState<string | null>(null);
+  const [contactName, setContactName] = useState("Anahit");
+  const [contactPhone, setContactPhone] = useState("77 214 508");
+  const [contactComment, setContactComment] = useState("");
 
-  const toggleService = (name: string) => setCart((c) => ({ ...c, [name]: !c[name] }));
+  const toggleService = (name: string) =>
+    setCart((c) => ({ ...c, [name]: !c[name] }));
 
   const next = () => {
     if (step === 4 && !sms) {
@@ -143,7 +147,11 @@ export function useBookingFlow() {
 
   const timeGroupsView = timeGroups.map((g) => ({
     ...g,
-    slots: g.slots.map((t) => ({ ...t, ...slotAppearance(t.state), pick: pickSlot })),
+    slots: g.slots.map((t) => ({
+      ...t,
+      ...slotAppearance(t.state),
+      pick: pickSlot,
+    })),
   }));
 
   const cartCount = Object.keys(cart).filter((k) => cart[k]).length;
@@ -166,7 +174,15 @@ export function useBookingFlow() {
   const dayFull = isStep3 && day === "15";
   const dayOpen = isStep3 && day !== "15";
 
-  const stepTitle = isStep4 ? (sms ? "Verify your number" : "Your details") : isStep5 ? (taken ? "That slot went" : "Confirmed") : stepTitles[step];
+  const stepTitle = isStep4
+    ? sms
+      ? "Verify your number"
+      : "Your details"
+    : isStep5
+      ? taken
+        ? "That slot went"
+        : "Confirmed"
+      : stepTitles[step];
 
   const jumps = jumpDefs.map((j) => ({ ...j, go: () => jump(j.key) }));
 
@@ -186,12 +202,23 @@ export function useBookingFlow() {
     dayOpen,
     stepNum: String(step),
     stepTitle,
-    indicator: [1, 2, 3, 4, 5].map((n) => ({ n, bg: n < step ? ACCENT : n === step ? "#FFC935" : "#E6E8EB" })),
-    embedIndicator: [1, 2, 3, 4, 5].map((n) => ({ n, bg: n < 3 ? ACCENT : n === 3 ? "#FFC935" : "#E6E8EB" })),
+    indicator: [1, 2, 3, 4, 5].map((n) => ({
+      n,
+      bg: n < step ? ACCENT : n === step ? "#FFC935" : "#E6E8EB",
+    })),
+    embedIndicator: [1, 2, 3, 4, 5].map((n) => ({
+      n,
+      bg: n < 3 ? ACCENT : n === 3 ? "#FFC935" : "#E6E8EB",
+    })),
     showBar: step === 1 || step === 2 || (step === 4 && !sms),
     cartTotal: step === 2 ? "Any specialist" : formatPrice(total),
     cartMeta: `${cartCount} services · ${mins} min`,
-    ctaLabel: step === 1 ? "Choose specialist" : step === 2 ? "Choose a time" : "Send code by SMS",
+    ctaLabel:
+      step === 1
+        ? "Choose specialist"
+        : step === 2
+          ? "Choose a time"
+          : "Send code by SMS",
     next,
     pickSunday,
     pickAny,
@@ -201,6 +228,17 @@ export function useBookingFlow() {
     dates,
     timeGroups: timeGroupsView,
     jumps,
+    trustLine: "★ 4.9 · 218 reviews · Open till 22:00",
+    anySpecialistMeta: "Fastest — 9 free times today",
+    contactName,
+    setContactName,
+    contactPhone,
+    setContactPhone,
+    contactComment,
+    setContactComment,
+    smsTargetPhone: "+374 77 214 508",
+    bookingUnavailable: false,
+    bookingUnavailableMessage: undefined as string | undefined,
   };
 }
 

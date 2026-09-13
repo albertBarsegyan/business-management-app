@@ -1,12 +1,14 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { PublicLandingPage } from "@/widgets/landing-builder";
-import { useBookingFlow } from "../lib/use-booking-flow";
+import { useCustomerBookingFlow } from "../lib/use-customer-booking-flow";
 import { DesktopEmbed } from "./desktop-embed";
+import { ManageBookingScreen } from "./manage-booking-screen";
 import { MobileWidget } from "./mobile-widget";
 
-export function CustomerBookingScreen() {
-  const flow = useBookingFlow();
+function BookingWizard() {
+  const flow = useCustomerBookingFlow();
 
   return (
     <PublicLandingPage
@@ -31,4 +33,14 @@ export function CustomerBookingScreen() {
       }
     />
   );
+}
+
+export function CustomerBookingScreen() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+
+  if (token) {
+    return <ManageBookingScreen token={token} />;
+  }
+  return <BookingWizard />;
 }

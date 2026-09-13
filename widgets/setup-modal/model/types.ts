@@ -2,11 +2,20 @@ export type SetupStep = 1 | 2 | 3 | 4;
 
 export type DayKey = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 
-export const dayKeys: DayKey[] = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+export const dayKeys: DayKey[] = [
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+];
 
 export type Duration = "30 m" | "1 h" | "1 h 30 m";
 
-export type HourPreset = "9:00–18:00" | "9:00–22:00" | "10:00–18:00" | "10:00–22:00" | "Custom hours";
+export type HourPreset =
+  "9:00–18:00" | "9:00–22:00" | "10:00–18:00" | "10:00–22:00" | "Custom hours";
 
 export const hourPresetValues: HourPreset[] = [
   "9:00–18:00",

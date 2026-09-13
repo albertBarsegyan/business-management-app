@@ -10,7 +10,6 @@ export function ZhamoSurfaceCard({
   return (
     <div
       style={{
-
         border: "1px solid #E6E8EB",
         borderRadius: 8,
         overflow: "hidden",

@@ -1,4 +1,4 @@
-import type { hoursRows } from "../../../model/data";
+import type { HoursRow } from "../../../model/types";
 
 export function HoursBlock({
   cols,
@@ -11,7 +11,7 @@ export function HoursBlock({
   mapBg,
 }: {
   cols: string;
-  rows: typeof hoursRows;
+  rows: HoursRow[];
   showMap: boolean;
   ink: string;
   inkMuted: string;
@@ -22,23 +22,60 @@ export function HoursBlock({
   return (
     <div style={{ display: "grid", gridTemplateColumns: cols, gap: 14 }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+        {rows.length === 0 && (
+          <span style={{ fontSize: 12.5, color: inkMuted }}>
+            No hours set yet
+          </span>
+        )}
         {rows.map((h) => (
-          <span key={h.d} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, fontSize: 12.5 }}>
+          <span
+            key={h.d}
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              gap: 12,
+              fontSize: 12.5,
+            }}
+          >
             <span style={{ color: inkMuted }}>{h.d}</span>
-            <span style={{ fontFamily: "var(--font-zhamo-mono)", color: ink }}>{h.t}</span>
+            <span style={{ fontFamily: "var(--font-zhamo-mono)", color: ink }}>
+              {h.t}
+            </span>
           </span>
         ))}
-        <span style={{ fontSize: 12.5, color: inkMuted, lineHeight: 1.5, paddingTop: 4 }}>
-          12 Abovyan St, Kentron
-          <br />
-          +374 10 543 220
-        </span>
-        <span style={{ height: 34, width: "fit-content", padding: "0 13px", border: `1px solid ${ghost}`, borderRadius: 7, fontSize: 12.5, fontWeight: 600, color: ink, display: "inline-flex", alignItems: "center" }}>
+        <span
+          style={{
+            height: 34,
+            width: "fit-content",
+            padding: "0 13px",
+            border: `1px solid ${ghost}`,
+            borderRadius: 7,
+            fontSize: 12.5,
+            fontWeight: 600,
+            color: ink,
+            display: "inline-flex",
+            alignItems: "center",
+          }}
+        >
           Get directions
         </span>
       </div>
       {showMap && (
-        <span style={{ minHeight: 150, borderRadius: 9, background: mapBg, border: `1px solid ${hairline}`, display: "flex", alignItems: "flex-end", padding: 9, fontFamily: "var(--font-zhamo-mono)", fontSize: 9.5, color: inkMuted }}>
+        <span
+          style={{
+            minHeight: 150,
+            borderRadius: 9,
+            background: mapBg,
+            border: `1px solid ${hairline}`,
+            display: "flex",
+            alignItems: "flex-end",
+            padding: 9,
+            fontFamily: "var(--font-zhamo-mono)",
+            fontSize: 9.5,
+            color: inkMuted,
+          }}
+        >
           MAP · pinned location
         </span>
       )}

@@ -18,11 +18,48 @@ export function TeamSkeleton() {
             position: "relative",
           }}
         >
-          <span style={{ width: 32, height: 32, borderRadius: "50%", background: c.avatar }} />
-          <span style={{ height: 8, width: "70%", borderRadius: 3, background: c.bar }} />
-          <span style={{ height: 7, width: "48%", borderRadius: 3, background: c.barLight }} />
+          <span
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: c.avatar,
+            }}
+          />
+          <span
+            style={{
+              height: 8,
+              width: "70%",
+              borderRadius: 3,
+              background: c.bar,
+            }}
+          />
+          <span
+            style={{
+              height: 7,
+              width: "48%",
+              borderRadius: 3,
+              background: c.barLight,
+            }}
+          />
           {c.live && (
-            <span style={{ position: "absolute", top: 10, right: 10, width: 18, height: 18, borderRadius: "50%", background: "#22C55E", color: "#FFFFFF", fontSize: 11, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            <span
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                width: 18,
+                height: 18,
+                borderRadius: "50%",
+                background: "#22C55E",
+                color: "#FFFFFF",
+                fontSize: 11,
+                fontWeight: 700,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               ✓
             </span>
           )}

@@ -1,6 +1,25 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useQueries, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@/shared/api/client";
+import { unwrap } from "@/shared/api/http";
+import { catalogKeys, useServicesQuery } from "@/shared/api/catalog/queries";
+import type { ServiceVariant } from "@/shared/api/catalog/types";
+import { useTeamMembersQuery } from "@/shared/api/team/queries";
+import { useVenueQuery } from "@/shared/api/venue/queries";
+import {
+  siteKeys,
+  useSitePagesQuery,
+  useSiteQuery,
+  useSiteSectionsQuery,
+} from "@/shared/api/site/queries";
+import type {
+  Site,
+  SitePage,
+  SiteSection,
+  SiteSectionType,
+} from "@/shared/api/site/types";
 import {
   accentSwatchHexes,
   bodySectionOrderAll,
@@ -12,15 +31,80 @@ import {
   heroTitleSizes,
   sectionMeta,
 } from "./data";
-import { buildRenderedSection, type RenderedSection, type RenderedSectionBase } from "./rendered-section";
+import {
+  buildRenderedSection,
+  type RenderedSection,
+  type RenderedSectionBase,
+  type RenderedSectionContent,
+} from "./rendered-section";
 import type {
   BodySectionKey,
   BodySectionPropsMap,
   BuilderProps,
   DeviceOption,
+  FooterProps,
+  HeroProps,
+  NavProps,
   SelectedKey,
+  ServiceListItem,
   SurfaceOption,
+  TeamCardItem,
 } from "./types";
+
+/** A slot is either a fixed, non-reorderable section (theme/nav/hero/footer)
+ * or one of the movable body sections — every slot round-trips to exactly
+ * one SiteSection row, keyed by `propsJson.kind`. */
+type SlotKey = "theme" | "nav" | "hero" | "footer" | BodySectionKey;
+
+const REAL_SECTION_TYPES: ReadonlySet<string> = new Set([
+  "hero",
+  "services",
+  "team",
+  "gallery",
+  "reviews",
+  "hours",
+  "faq",
+  "custom",
+]);
+
+/** The backend's section-type enum is a lot narrower than the builder's
+ * catalogue (no "nav"/"footer"/"theme"/"about"/"offers"/... entries) — this
+ * app maps everything without a direct match onto "custom" and relies on
+ * `propsJson.kind` (always present) to know what it actually is on read. */
+function slotToSectionType(slot: SlotKey): SiteSectionType {
+  return (REAL_SECTION_TYPES.has(slot) ? slot : "custom") as SiteSectionType;
+}
+
+function slotKind(section: SiteSection): string | undefined {
+  const kind = section.propsJson.kind;
+  return typeof kind === "string" ? kind : undefined;
+}
+
+function stripKind<T>(propsJson: Record<string, unknown>): T {
+  const rest = { ...propsJson };
+  delete rest.kind;
+  return rest as T;
+}
+
+function hueFromId(id: string): number {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++)
+    hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+  return hash % 360;
+}
+
+function formatDuration(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hours === 0) return `${mins} min`;
+  if (mins === 0) return `${hours} h`;
+  return `${hours} h ${mins} min`;
+}
+
+function formatPrice(variant: ServiceVariant): string {
+  const major = Number(variant.priceMinor) / 100;
+  return `${major.toLocaleString()} ${variant.currencyCode}`;
+}
 
 export interface ChipOption {
   label: string;
@@ -88,15 +172,337 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [selected, setSelected] = useState<SelectedKey>("hero");
   const [order, setOrder] = useState<BodySectionKey[]>(defaultOrder);
-  const [enabled, setEnabled] = useState<Partial<Record<BodySectionKey, boolean>>>(
-    Object.fromEntries(defaultOrder.map((k) => [k, true])) as Partial<Record<BodySectionKey, boolean>>
+  const [enabled, setEnabled] = useState<
+    Partial<Record<BodySectionKey, boolean>>
+  >(
+    Object.fromEntries(defaultOrder.map((k) => [k, true])) as Partial<
+      Record<BodySectionKey, boolean>
+    >,
   );
   const [props, setProps] = useState<BuilderProps>(defaultBuilderProps);
   const [scale, setScale] = useState(1);
   const [frameH, setFrameH] = useState(0);
 
+  const [hydrated, setHydrated] = useState(false);
+  const [sectionIdByKind, setSectionIdByKind] = useState<
+    Partial<Record<SlotKey, string>>
+  >({});
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<HTMLDivElement | null>(null);
+
+  const queryClient = useQueryClient();
+  const venueQuery = useVenueQuery();
+  const siteQuery = useSiteQuery();
+  const pagesQuery = useSitePagesQuery(Boolean(siteQuery.data));
+  const homePage: SitePage | null =
+    pagesQuery.data?.find((pg) => pg.isHome) ?? pagesQuery.data?.[0] ?? null;
+  const sectionsQuery = useSiteSectionsQuery(homePage?.id ?? null);
+
+  const servicesQuery = useServicesQuery();
+  const activeServices = useMemo(
+    () => (servicesQuery.data ?? []).filter((s) => s.status === "active"),
+    [servicesQuery.data],
+  );
+  const variantQueries = useQueries({
+    queries: activeServices.map((service) => ({
+      queryKey: catalogKeys.variants(service.id),
+      queryFn: () =>
+        unwrap<ServiceVariant[]>(
+          apiClient.get(`services/${service.id}/variants`),
+        ),
+    })),
+  });
+  // Recomputed each render rather than memoized: useQueries returns a new
+  // array reference every render regardless of whether the underlying data
+  // changed, so there's no dependency array that would actually skip work —
+  // and the list is small enough (a venue's active services) that this is
+  // cheap either way.
+  const servicesContent: ServiceListItem[] = [];
+  activeServices.forEach((service, i) => {
+    const variants = (variantQueries[i]?.data ?? []).filter(
+      (v) => v.status === "active",
+    );
+    for (const variant of variants) {
+      const duration = formatDuration(variant.durationMinutes);
+      const hue = hueFromId(variant.id);
+      servicesContent.push({
+        id: variant.id,
+        name: variant.name ? `${service.name} — ${variant.name}` : service.name,
+        meta: duration,
+        duration,
+        price: formatPrice(variant),
+        thumb: coverGradient(
+          `oklch(0.6 0.09 ${hue})`,
+          `oklch(0.53 0.09 ${hue})`,
+        ),
+      });
+    }
+  });
+
+  const teamQuery = useTeamMembersQuery();
+  const teamContent: TeamCardItem[] = useMemo(
+    () =>
+      (teamQuery.data ?? [])
+        .filter((m) => m.publicProfileVisible)
+        .map((m) => {
+          const hue = hueFromId(m.id);
+          return {
+            id: m.id,
+            name: m.displayName,
+            first: m.firstName,
+            role: m.positionTitle,
+            rating: "—",
+            photo: coverGradient(
+              `oklch(0.55 0.09 ${hue})`,
+              `oklch(0.48 0.09 ${hue})`,
+            ),
+          };
+        }),
+    [teamQuery.data],
+  );
+  const content: RenderedSectionContent = {
+    services: servicesContent,
+    team: teamContent,
+  };
+
+  // Hydrate local editor state from whatever's persisted, once. A brand-new
+  // venue has no site/page/sections yet — that's not an error, it just means
+  // the template defaults above stand as the starting point to save from.
+  // This is a one-time sync from an external system (the backend) into
+  // local editable state, not a derived-state anti-pattern — every setter
+  // below is guarded by the `hydrated` flag so it only ever runs once.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (hydrated) return;
+    if (siteQuery.isPending) return;
+    if (siteQuery.data === null) {
+      setHydrated(true);
+      return;
+    }
+    if (pagesQuery.isPending) return;
+    if (!homePage) {
+      setHydrated(true);
+      return;
+    }
+    if (sectionsQuery.isPending) return;
+    const sections = sectionsQuery.data ?? [];
+    if (sections.length === 0) {
+      setHydrated(true);
+      return;
+    }
+
+    const ids: Partial<Record<SlotKey, string>> = {};
+    for (const section of sections) {
+      const kind = slotKind(section);
+      if (kind) ids[kind as SlotKey] = section.id;
+    }
+    setSectionIdByKind(ids);
+
+    const themeSection = sections.find((s) => slotKind(s) === "theme");
+    if (themeSection) {
+      const themeProps = themeSection.propsJson as {
+        accent?: string;
+        surface?: SurfaceOption;
+      };
+      if (typeof themeProps.accent === "string") setAccent(themeProps.accent);
+      if (themeProps.surface === "light" || themeProps.surface === "dark") {
+        setSurface(themeProps.surface);
+      }
+    }
+    const navSection = sections.find((s) => slotKind(s) === "nav");
+    const heroSection = sections.find((s) => slotKind(s) === "hero");
+    const footerSection = sections.find((s) => slotKind(s) === "footer");
+    setProps((prev) => ({
+      ...prev,
+      ...(navSection ? { nav: stripKind<NavProps>(navSection.propsJson) } : {}),
+      ...(heroSection
+        ? { hero: stripKind<HeroProps>(heroSection.propsJson) }
+        : {}),
+      ...(footerSection
+        ? { footer: stripKind<FooterProps>(footerSection.propsJson) }
+        : {}),
+    }));
+
+    const bodyKindSet = new Set<string>(bodySectionOrderAll);
+    const bodySections = sections
+      .filter((s) => {
+        const kind = slotKind(s);
+        return kind !== undefined && bodyKindSet.has(kind);
+      })
+      .sort((a, b) => a.position - b.position);
+    if (bodySections.length > 0) {
+      setOrder(bodySections.map((s) => slotKind(s) as BodySectionKey));
+      setEnabled(
+        Object.fromEntries(
+          bodySections.map((s) => [slotKind(s) as BodySectionKey, s.enabled]),
+        ) as Partial<Record<BodySectionKey, boolean>>,
+      );
+      setProps((prev) => {
+        const next = { ...prev };
+        for (const s of bodySections) {
+          const key = slotKind(s) as BodySectionKey;
+          next[key] = stripKind(s.propsJson) as never;
+        }
+        return next;
+      });
+    }
+
+    setPublished(siteQuery.data?.status === "published");
+    setHydrated(true);
+  }, [
+    hydrated,
+    siteQuery.isPending,
+    siteQuery.data,
+    pagesQuery.isPending,
+    homePage,
+    sectionsQuery.isPending,
+    sectionsQuery.data,
+  ]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  async function saveSlot(
+    pageId: string,
+    kind: SlotKey,
+    propsJson: Record<string, unknown>,
+    slotEnabled: boolean,
+    position: number,
+  ): Promise<string> {
+    const existingId = sectionIdByKind[kind];
+    if (existingId) {
+      await unwrap(
+        apiClient.patch(`site/pages/${pageId}/sections/${existingId}`, {
+          json: { propsJson, enabled: slotEnabled, position },
+        }),
+      );
+      return existingId;
+    }
+    const created = await unwrap<SiteSection>(
+      apiClient.post(`site/pages/${pageId}/sections`, {
+        json: {
+          sectionType: slotToSectionType(kind),
+          propsJson,
+          enabled: slotEnabled,
+          position,
+        },
+      }),
+    );
+    return created.id;
+  }
+
+  async function saveAndPublish() {
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      if (!siteQuery.data) {
+        await unwrap<Site>(
+          apiClient.post("site", {
+            json: {
+              name: venueQuery.data?.name ?? "My site",
+              templateCode: "default",
+            },
+          }),
+        );
+      }
+      const page: SitePage =
+        homePage ??
+        (await unwrap<SitePage>(
+          apiClient.post("site/pages", {
+            json: {
+              slug: "home",
+              title: "Home",
+              pageType: "landing",
+              isHome: true,
+            },
+          }),
+        ));
+
+      const nextIds: Partial<Record<SlotKey, string>> = { ...sectionIdByKind };
+      nextIds.theme = await saveSlot(
+        page.id,
+        "theme",
+        { kind: "theme", accent, surface },
+        true,
+        0,
+      );
+      nextIds.nav = await saveSlot(
+        page.id,
+        "nav",
+        { kind: "nav", ...props.nav },
+        true,
+        0,
+      );
+      nextIds.hero = await saveSlot(
+        page.id,
+        "hero",
+        { kind: "hero", ...props.hero },
+        true,
+        0,
+      );
+      nextIds.footer = await saveSlot(
+        page.id,
+        "footer",
+        { kind: "footer", ...props.footer },
+        true,
+        0,
+      );
+      for (let i = 0; i < order.length; i++) {
+        const key = order[i];
+        nextIds[key] = await saveSlot(
+          page.id,
+          key,
+          { kind: key, ...props[key] },
+          Boolean(enabled[key]),
+          i,
+        );
+      }
+      setSectionIdByKind(nextIds);
+
+      await unwrap(apiClient.post("site/publish"));
+      setPublished(true);
+
+      // Publishing clones the draft into a fresh revision with a new page
+      // and new section rows (the just-published revision is frozen and
+      // never mutated again) — sectionIdByKind must repoint at those new
+      // ids or the next save would PATCH ids that no longer belong to the
+      // current draft page.
+      const newPages = await unwrap<SitePage[]>(apiClient.get("site/pages"));
+      const newPage = newPages.find((pg) => pg.isHome) ?? newPages[0];
+      if (newPage) {
+        const newSections = await unwrap<SiteSection[]>(
+          apiClient.get(`site/pages/${newPage.id}/sections`),
+        );
+        const ids: Partial<Record<SlotKey, string>> = {};
+        for (const section of newSections) {
+          const kind = slotKind(section);
+          if (kind) ids[kind as SlotKey] = section.id;
+        }
+        setSectionIdByKind(ids);
+      }
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: siteKeys.site }),
+        queryClient.invalidateQueries({ queryKey: siteKeys.draft }),
+        queryClient.invalidateQueries({ queryKey: siteKeys.pages }),
+        queryClient.invalidateQueries({ queryKey: siteKeys.sections(page.id) }),
+        ...(newPage
+          ? [
+              queryClient.invalidateQueries({
+                queryKey: siteKeys.sections(newPage.id),
+              }),
+            ]
+          : []),
+      ]);
+    } catch (error) {
+      setSaveError(
+        error instanceof Error ? error.message : "Couldn't save changes.",
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  }
 
   useEffect(() => {
     const measure = () => {
@@ -120,7 +526,10 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
     setPublished(false);
   }
 
-  function setBodyProp<K extends BodySectionKey>(key: K, patch: Partial<BodySectionPropsMap[K]>) {
+  function setBodyProp<K extends BodySectionKey>(
+    key: K,
+    patch: Partial<BodySectionPropsMap[K]>,
+  ) {
     setProps((prev) => ({ ...prev, [key]: { ...prev[key], ...patch } }));
     markDirty();
   }
@@ -172,7 +581,11 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
   }
   function applyRecommended() {
     setOrder(defaultOrder);
-    setEnabled(Object.fromEntries(bodySectionOrderAll.map((k) => [k, defaultOrder.includes(k)])) as Partial<Record<BodySectionKey, boolean>>);
+    setEnabled(
+      Object.fromEntries(
+        bodySectionOrderAll.map((k) => [k, defaultOrder.includes(k)]),
+      ) as Partial<Record<BodySectionKey, boolean>>,
+    );
     setPublished(false);
     setSelected("hero");
   }
@@ -233,10 +646,21 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
             meta: "",
             onSelect: select(key),
           };
-          return buildRenderedSection(key, base, p, accent, dark, device, sInk, sMuted, sHair);
+          return buildRenderedSection(
+            key,
+            base,
+            p,
+            accent,
+            dark,
+            device,
+            sInk,
+            sMuted,
+            sHair,
+            content,
+          );
         }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [order, enabled, props, accent, dark, device, selected, gutter]
+    [order, enabled, props, accent, dark, device, selected, gutter, content],
   );
 
   const navLinks = order
@@ -261,13 +685,21 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
       onMoveDown: () => moveDown(key),
     };
   };
-  const fixedRow = (key: "nav" | "hero" | "footer", label: string): StructureRow => ({
+  const fixedRow = (
+    key: "nav" | "hero" | "footer",
+    label: string,
+  ): StructureRow => ({
     key,
     label,
     grip: "◆",
     movable: false,
     locked: true,
-    meta: key === "nav" ? "logo, links, CTA" : key === "hero" ? "above the fold" : "contact, legal, social",
+    meta:
+      key === "nav"
+        ? "logo, links, CTA"
+        : key === "hero"
+          ? "above the fold"
+          : "contact, legal, social",
     selected: selected === key,
     on: true,
     onSelect: () => setSelected(key),
@@ -321,7 +753,10 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
     }
   }
 
-  const structure: StructureRow[] = [fixedRow("nav", "Navbar"), fixedRow("hero", "Hero")]
+  const structure: StructureRow[] = [
+    fixedRow("nav", "Navbar"),
+    fixedRow("hero", "Hero"),
+  ]
     .concat(order.map((k) => structureRow(k)))
     .concat([fixedRow("footer", "Footer")]);
 
@@ -336,10 +771,25 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
   }));
 
   const isBody = order.includes(selected as BodySectionKey);
-  const panelMap: Record<string, { kicker: string; title: string; hint: string }> = {
-    nav: { kicker: "Fixed · always first", title: "Navbar", hint: "Links come from your enabled sections. Mobile always collapses to a drawer." },
-    hero: { kicker: "Fixed · above the fold", title: "Hero", hint: "The one section a client always sees. Keep the promise and the button visible without scrolling." },
-    footer: { kicker: "Fixed · always last", title: "Footer", hint: "Contact, legal and the SMS list. The Zhamo badge is removable on paid plans." },
+  const panelMap: Record<
+    string,
+    { kicker: string; title: string; hint: string }
+  > = {
+    nav: {
+      kicker: "Fixed · always first",
+      title: "Navbar",
+      hint: "Links come from your enabled sections. Mobile always collapses to a drawer.",
+    },
+    hero: {
+      kicker: "Fixed · above the fold",
+      title: "Hero",
+      hint: "The one section a client always sees. Keep the promise and the button visible without scrolling.",
+    },
+    footer: {
+      kicker: "Fixed · always last",
+      title: "Footer",
+      hint: "Contact, legal and the SMS list. The Zhamo badge is removable on paid plans.",
+    },
   };
   const panel = panelMap[selected] ?? {
     kicker: "Body section · movable",
@@ -347,13 +797,28 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
     hint: sectionMeta[selected as BodySectionKey].body,
   };
 
-  function C(label: string, options: ChipOption[], hint?: string): ControlChips {
+  function C(
+    label: string,
+    options: ChipOption[],
+    hint?: string,
+  ): ControlChips {
     return { kind: "chips", label, options, hint };
   }
-  function S(label: string, switchLabel: string, on: boolean, onToggle: () => void, hint?: string): ControlSwitch {
+  function S(
+    label: string,
+    switchLabel: string,
+    on: boolean,
+    onToggle: () => void,
+    hint?: string,
+  ): ControlSwitch {
     return { kind: "switch", label, switchLabel, on, onToggle, hint };
   }
-  function TXT(label: string, value: string, onChange: (v: string) => void, hint?: string): ControlText {
+  function TXT(
+    label: string,
+    value: string,
+    onChange: (v: string) => void,
+    hint?: string,
+  ): ControlText {
     return { kind: "text", label, value, onChange, hint };
   }
 
@@ -370,10 +835,17 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
       ]),
       C(
         "Behaviour",
-        [chip("Sticky", p.sticky, () => setNavProp({ sticky: true })), chip("Static", !p.sticky, () => setNavProp({ sticky: false }))],
-        p.sticky ? "Follows the client down the page." : "Scrolls away with the hero."
+        [
+          chip("Sticky", p.sticky, () => setNavProp({ sticky: true })),
+          chip("Static", !p.sticky, () => setNavProp({ sticky: false })),
+        ],
+        p.sticky
+          ? "Follows the client down the page."
+          : "Scrolls away with the hero.",
       ),
-      S("Section links", "Show links from sections", p.showLinks, () => setNavProp({ showLinks: !p.showLinks })),
+      S("Section links", "Show links from sections", p.showLinks, () =>
+        setNavProp({ showLinks: !p.showLinks }),
+      ),
       TXT("CTA label", p.cta, (v) => setNavProp({ cta: v })),
     ];
   } else if (selected === "hero") {
@@ -381,20 +853,36 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
     const p = props.hero;
     specificControls = [
       C("Layout", [
-        chip("Full-bleed", p.layout === "fullbleed", () => setHeroProp({ layout: "fullbleed" })),
-        chip("Split", p.layout === "split", () => setHeroProp({ layout: "split" })),
-        chip("Centered", p.layout === "centered", () => setHeroProp({ layout: "centered" })),
+        chip("Full-bleed", p.layout === "fullbleed", () =>
+          setHeroProp({ layout: "fullbleed" }),
+        ),
+        chip("Split", p.layout === "split", () =>
+          setHeroProp({ layout: "split" }),
+        ),
+        chip("Centered", p.layout === "centered", () =>
+          setHeroProp({ layout: "centered" }),
+        ),
       ]),
       C("Height", [
-        chip("Compact", p.height === "compact", () => setHeroProp({ height: "compact" })),
-        chip("Standard", p.height === "standard", () => setHeroProp({ height: "standard" })),
-        chip("Tall", p.height === "tall", () => setHeroProp({ height: "tall" })),
+        chip("Compact", p.height === "compact", () =>
+          setHeroProp({ height: "compact" }),
+        ),
+        chip("Standard", p.height === "standard", () =>
+          setHeroProp({ height: "standard" }),
+        ),
+        chip("Tall", p.height === "tall", () =>
+          setHeroProp({ height: "tall" }),
+        ),
       ]),
       TXT("Headline", p.title, (v) => setHeroProp({ title: v })),
       TXT("Subline", p.sub, (v) => setHeroProp({ sub: v })),
       TXT("Button label", p.cta, (v) => setHeroProp({ cta: v })),
-      S("Secondary button", 'Show "Call us"', p.second, () => setHeroProp({ second: !p.second })),
-      S("Trust strip", "Rating, reviews, hours", p.trust, () => setHeroProp({ trust: !p.trust })),
+      S("Secondary button", 'Show "Call us"', p.second, () =>
+        setHeroProp({ second: !p.second }),
+      ),
+      S("Trust strip", "Rating, reviews, hours", p.trust, () =>
+        setHeroProp({ trust: !p.trust }),
+      ),
     ];
   } else if (selected === "footer") {
     specificTitle = "Footer";
@@ -402,21 +890,43 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
     specificControls = [
       C(
         "Columns",
-        [2, 3, 4].map((n) => chip(String(n), p.cols === n, () => setFooterProp({ cols: n })))
+        [2, 3, 4].map((n) =>
+          chip(String(n), p.cols === n, () => setFooterProp({ cols: n })),
+        ),
       ),
-      S("SMS list", "Signup row", p.signup, () => setFooterProp({ signup: !p.signup })),
-      S("Zhamo badge", "Powered by Zhamo", p.badge, () => setFooterProp({ badge: !p.badge }), "Removable on paid plans."),
+      S("SMS list", "Signup row", p.signup, () =>
+        setFooterProp({ signup: !p.signup }),
+      ),
+      S(
+        "Zhamo badge",
+        "Powered by Zhamo",
+        p.badge,
+        () => setFooterProp({ badge: !p.badge }),
+        "Removable on paid plans.",
+      ),
     ];
   } else if (selected === "services") {
     specificTitle = "Services";
     const p = props.services;
     specificControls = [
       C("Layout", [
-        chip("List", p.layout === "list", () => setBodyProp("services", { layout: "list" })),
-        chip("Cards", p.layout === "cards", () => setBodyProp("services", { layout: "cards" })),
-        chip("Table", p.layout === "table", () => setBodyProp("services", { layout: "table" })),
+        chip("List", p.layout === "list", () =>
+          setBodyProp("services", { layout: "list" }),
+        ),
+        chip("Cards", p.layout === "cards", () =>
+          setBodyProp("services", { layout: "cards" }),
+        ),
+        chip("Table", p.layout === "table", () =>
+          setBodyProp("services", { layout: "table" }),
+        ),
       ]),
-      S("Prices", "Show exact prices", p.prices, () => setBodyProp("services", { prices: !p.prices }), p.prices ? "" : 'Clients see "from" prices only.'),
+      S(
+        "Prices",
+        "Show exact prices",
+        p.prices,
+        () => setBodyProp("services", { prices: !p.prices }),
+        p.prices ? "" : 'Clients see "from" prices only.',
+      ),
     ];
   } else if (selected === "team") {
     specificTitle = "Team";
@@ -424,62 +934,127 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
     specificControls = [
       C(
         "Columns",
-        [2, 3, 4].map((n) => chip(String(n), p.cols === n, () => setBodyProp("team", { cols: n })))
+        [2, 3, 4].map((n) =>
+          chip(String(n), p.cols === n, () => setBodyProp("team", { cols: n })),
+        ),
       ),
-      S("Ratings", "Show star ratings", p.ratings, () => setBodyProp("team", { ratings: !p.ratings })),
+      S("Ratings", "Show star ratings", p.ratings, () =>
+        setBodyProp("team", { ratings: !p.ratings }),
+      ),
     ];
   } else if (selected === "gallery") {
     specificTitle = "Gallery";
     const p = props.gallery;
     specificControls = [
-      C("Layout", [chip("Grid", p.layout === "grid", () => setBodyProp("gallery", { layout: "grid" })), chip("Strip", p.layout === "strip", () => setBodyProp("gallery", { layout: "strip" }))]),
+      C("Layout", [
+        chip("Grid", p.layout === "grid", () =>
+          setBodyProp("gallery", { layout: "grid" }),
+        ),
+        chip("Strip", p.layout === "strip", () =>
+          setBodyProp("gallery", { layout: "strip" }),
+        ),
+      ]),
       C(
         "Grid columns",
-        [3, 4, 6].map((n) => chip(String(n), p.cols === n, () => setBodyProp("gallery", { cols: n }))),
-        "18 photos uploaded."
+        [3, 4, 6].map((n) =>
+          chip(String(n), p.cols === n, () =>
+            setBodyProp("gallery", { cols: n }),
+          ),
+        ),
+        "18 photos uploaded.",
       ),
     ];
   } else if (selected === "reviews") {
     specificTitle = "Reviews";
     const p = props.reviews;
     specificControls = [
-      C("Layout", [chip("Pull-quote", p.layout === "quote", () => setBodyProp("reviews", { layout: "quote" })), chip("Three cards", p.layout === "cards", () => setBodyProp("reviews", { layout: "cards" }))]),
-      S("Source", "Zhamo verified only", p.verified, () => setBodyProp("reviews", { verified: !p.verified })),
+      C("Layout", [
+        chip("Pull-quote", p.layout === "quote", () =>
+          setBodyProp("reviews", { layout: "quote" }),
+        ),
+        chip("Three cards", p.layout === "cards", () =>
+          setBodyProp("reviews", { layout: "cards" }),
+        ),
+      ]),
+      S("Source", "Zhamo verified only", p.verified, () =>
+        setBodyProp("reviews", { verified: !p.verified }),
+      ),
     ];
   } else if (selected === "about") {
     specificTitle = "About";
     const p = props.about;
     specificControls = [
       C("Photo side", [
-        chip("Photo right", p.align === "left", () => setBodyProp("about", { align: "left" })),
-        chip("Photo left", p.align === "right", () => setBodyProp("about", { align: "right" })),
-        chip("No photo", p.align === "center", () => setBodyProp("about", { align: "center" })),
+        chip("Photo right", p.align === "left", () =>
+          setBodyProp("about", { align: "left" }),
+        ),
+        chip("Photo left", p.align === "right", () =>
+          setBodyProp("about", { align: "right" }),
+        ),
+        chip("No photo", p.align === "center", () =>
+          setBodyProp("about", { align: "center" }),
+        ),
       ]),
+      TXT("Story", p.body, (v) => setBodyProp("about", { body: v })),
+    ];
+  } else if (selected === "custom") {
+    specificTitle = "Custom section";
+    const p = props.custom;
+    specificControls = [
+      TXT("Text", p.body, (v) => setBodyProp("custom", { body: v })),
     ];
   } else if (selected === "hours") {
     specificTitle = "Hours & location";
     const p = props.hours;
-    specificControls = [S("Map", "Show map", p.map, () => setBodyProp("hours", { map: !p.map }), "Hours are read from your work schedule — edit them there.")];
+    specificControls = [
+      S(
+        "Map",
+        "Show map",
+        p.map,
+        () => setBodyProp("hours", { map: !p.map }),
+        "Hours aren't configured yet.",
+      ),
+    ];
   } else if (selected === "offers") {
     specificTitle = "Offers";
     const p = props.offers;
-    specificControls = [C("Layout", [chip("Two cards", p.layout === "cards", () => setBodyProp("offers", { layout: "cards" })), chip("Full banner", p.layout === "banner", () => setBodyProp("offers", { layout: "banner" }))])];
+    specificControls = [
+      C("Layout", [
+        chip("Two cards", p.layout === "cards", () =>
+          setBodyProp("offers", { layout: "cards" }),
+        ),
+        chip("Full banner", p.layout === "banner", () =>
+          setBodyProp("offers", { layout: "banner" }),
+        ),
+      ]),
+    ];
   } else if (selected === "loyalty") {
     specificTitle = "Memberships";
     const p = props.loyalty;
     specificControls = [
       C(
         "Columns",
-        [2, 3].map((n) => chip(String(n), p.cols === n, () => setBodyProp("loyalty", { cols: n })))
+        [2, 3].map((n) =>
+          chip(String(n), p.cols === n, () =>
+            setBodyProp("loyalty", { cols: n }),
+          ),
+        ),
       ),
     ];
   } else {
     const key = selected as BodySectionKey;
     specificTitle = sectionMeta[key]?.name ?? "Options";
-    specificControls = [C("Content", [chip("Managed in this section's own screen", true, () => {})], "This block takes its content from your catalogue — layout only here.")];
+    specificControls = [
+      C(
+        "Content",
+        [chip("Managed in this section's own screen", true, () => {})],
+        "This block takes its content from your catalogue — layout only here.",
+      ),
+    ];
   }
 
-  const heroTitleSize = device === "phone" ? "32px" : heroTitleSizes[props.hero.height];
+  const heroTitleSize =
+    device === "phone" ? "32px" : heroTitleSizes[props.hero.height];
   const heroHeight = heroHeights[props.hero.height];
 
   const accentSwatches = accentSwatchHexes.map((hex) => ({
@@ -502,13 +1077,26 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
   ];
 
   const checks = [
-    { glyph: "✓", bg: "#22C55E", color: "#16161A", text: "Hero, navbar CTA and footer all point at the same booking flow." },
-    { glyph: "✓", bg: "#22C55E", color: "#16161A", text: "Hours match your work schedule — no bookable slot falls outside them." },
+    {
+      glyph: "✓",
+      bg: "#22C55E",
+      color: "#16161A",
+      text: "Hero, navbar CTA and footer all point at the same booking flow.",
+    },
+    {
+      glyph: "✓",
+      bg: "#22C55E",
+      color: "#16161A",
+      text: "Hours match your work schedule — no bookable slot falls outside them.",
+    },
     {
       glyph: "!",
       bg: "#F59E0B",
       color: "#8A6A05",
-      text: enabledCount > 6 ? `${enabledCount} sections is a long scroll — clients book fastest with five or fewer.` : "No cancellation policy text yet; clients see the default 2-hour rule.",
+      text:
+        enabledCount > 6
+          ? `${enabledCount} sections is a long scroll — clients book fastest with five or fewer.`
+          : "No cancellation policy text yet; clients see the default 2-hour rule.",
     },
   ];
 
@@ -521,7 +1109,10 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
     device,
     setDevice: (d: DeviceOption) => setDevice(d),
     published,
-    publish: () => setPublished((p) => !p),
+    publish: saveAndPublish,
+    isSaving,
+    saveError,
+    isLoading: !hydrated,
     libraryOpen,
     openLibrary: () => setLibraryOpen(true),
     closeLibrary: () => setLibraryOpen(false),
@@ -545,7 +1136,8 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
 
     nav: props.nav,
     navOutline: outline("nav"),
-    navBg: props.nav.bg === "solid" ? (dark ? "#101016" : "#FFFFFF") : "transparent",
+    navBg:
+      props.nav.bg === "solid" ? (dark ? "#101016" : "#FFFFFF") : "transparent",
     navShowLinks: props.nav.showLinks && device !== "phone",
     navShowBurger: device === "phone",
     navShowCta: device !== "phone",
@@ -570,23 +1162,47 @@ export function useLandingBuilder(options?: { interactive?: boolean }) {
     isBody,
     panelHeading: isBody ? props[selected as BodySectionKey].heading : "",
     setPanelHeading: (v: string) => {
-      if (isBody) setBodyProp(selected as BodySectionKey, { heading: v } as Partial<BodySectionPropsMap[BodySectionKey]>);
+      if (isBody)
+        setBodyProp(
+          selected as BodySectionKey,
+          { heading: v } as Partial<BodySectionPropsMap[BodySectionKey]>,
+        );
     },
     spacingOptions: (["compact", "normal", "roomy"] as const).map((v) =>
-      chip(v[0].toUpperCase() + v.slice(1), isBody && props[selected as BodySectionKey].spacing === v, () => {
-        if (isBody) setBodyProp(selected as BodySectionKey, { spacing: v } as Partial<BodySectionPropsMap[BodySectionKey]>);
-      })
+      chip(
+        v[0].toUpperCase() + v.slice(1),
+        isBody && props[selected as BodySectionKey].spacing === v,
+        () => {
+          if (isBody)
+            setBodyProp(
+              selected as BodySectionKey,
+              { spacing: v } as Partial<BodySectionPropsMap[BodySectionKey]>,
+            );
+        },
+      ),
     ),
-    bgOptions: ([["page", "Page"], ["tinted", "Tinted"], ["dark", "Dark"]] as const).map(([v, label]) =>
+    bgOptions: (
+      [
+        ["page", "Page"],
+        ["tinted", "Tinted"],
+        ["dark", "Dark"],
+      ] as const
+    ).map(([v, label]) =>
       chip(label, isBody && props[selected as BodySectionKey].bg === v, () => {
-        if (isBody) setBodyProp(selected as BodySectionKey, { bg: v } as Partial<BodySectionPropsMap[BodySectionKey]>);
-      })
+        if (isBody)
+          setBodyProp(
+            selected as BodySectionKey,
+            { bg: v } as Partial<BodySectionPropsMap[BodySectionKey]>,
+          );
+      }),
     ),
     bleedOn: isBody && props[selected as BodySectionKey].bleed,
     toggleBleed: () => {
       if (isBody) {
         const key = selected as BodySectionKey;
-        setBodyProp(key, { bleed: !props[key].bleed } as Partial<BodySectionPropsMap[BodySectionKey]>);
+        setBodyProp(key, { bleed: !props[key].bleed } as Partial<
+          BodySectionPropsMap[BodySectionKey]
+        >);
       }
     },
 

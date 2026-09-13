@@ -1,32 +1,44 @@
 export type MonthDay = {
+  date: Date;
   n: string;
-  bg: string;
-  color: string;
-  weight: "400" | "700";
-  load: string;
-  loadColor: string;
+  inCurrentMonth: boolean;
+  isToday: boolean;
+  isSelected: boolean;
 };
 
-const loads: Record<number, number> = {
-  3: 0.4, 4: 0.9, 5: 0.6, 6: 0.3, 7: 0.75, 10: 0.5, 11: 0.85, 12: 1, 13: 0.7,
-  14: 0.45, 17: 0.6, 18: 0.95, 19: 0.4, 20: 0.8, 21: 0.55, 24: 0.35, 25: 0.7,
-  26: 0.9, 27: 0.5,
-};
+function isSameDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
 
-export function buildMonthDays(accent: string): MonthDay[] {
+/** Builds a fixed 6-week (42-day) Monday-start grid for `monthAnchor`'s month. */
+export function buildMonthDays(
+  monthAnchor: Date,
+  selectedDate: Date,
+): MonthDay[] {
+  const year = monthAnchor.getFullYear();
+  const month = monthAnchor.getMonth();
+  const firstOfMonth = new Date(year, month, 1);
+  const firstWeekday = (firstOfMonth.getDay() + 6) % 7; // Monday = 0
+  const gridStart = new Date(year, month, 1 - firstWeekday);
+  const today = new Date();
+
   const days: MonthDay[] = [];
-  for (let i = -5; i <= 31; i++) {
-    const out = i < 1 || i > 31;
-    const n = out ? (i < 1 ? 26 + i + 5 : i - 31) : i;
-    const today = i === 13;
-    const load = loads[i] || 0;
+  for (let i = 0; i < 42; i++) {
+    const date = new Date(
+      gridStart.getFullYear(),
+      gridStart.getMonth(),
+      gridStart.getDate() + i,
+    );
     days.push({
-      n: String(n),
-      bg: today ? "#16161A" : "transparent",
-      color: today ? "#FFFFFF" : out ? "#C9CDD3" : "#16161A",
-      weight: today ? "700" : "400",
-      load: load ? `${Math.round(6 + load * 12)}px` : "0px",
-      loadColor: today ? "#FFC935" : load > 0.75 ? accent : load > 0.4 ? "oklch(0.8 0.09 350)" : "#DFE2E6",
+      date,
+      n: String(date.getDate()),
+      inCurrentMonth: date.getMonth() === month,
+      isToday: isSameDay(date, today),
+      isSelected: isSameDay(date, selectedDate),
     });
   }
   return days;

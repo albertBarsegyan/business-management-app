@@ -10,7 +10,10 @@ export function ComponentsSection() {
     <section style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <ZhamoSectionHeading title="Components" tag="05 — all states" />
       <ButtonsShowcase />
-      <div className="zhamo-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      <div
+        className="zhamo-grid-2"
+        style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}
+      >
         <FieldsShowcase />
         <ChoiceShowcase />
       </div>

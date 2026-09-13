@@ -13,11 +13,26 @@ export function WidgetHeader({ flow }: { flow: BookingFlow }) {
           padding: "10px 14px",
         }}
       >
-        <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 9.5, letterSpacing: "0.1em", color: "rgba(255,255,255,0.9)", textTransform: "uppercase" }}>
+        <span
+          style={{
+            fontFamily: "var(--font-zhamo-mono)",
+            fontSize: 9.5,
+            letterSpacing: "0.1em",
+            color: "rgba(255,255,255,0.9)",
+            textTransform: "uppercase",
+          }}
+        >
           cover photo · 1200×400
         </span>
       </div>
-      <div style={{ padding: "12px 16px 10px", display: "flex", gap: 12, alignItems: "flex-start" }}>
+      <div
+        style={{
+          padding: "12px 16px 10px",
+          display: "flex",
+          gap: 12,
+          alignItems: "flex-start",
+        }}
+      >
         <span
           style={{
             width: 46,
@@ -38,27 +53,72 @@ export function WidgetHeader({ flow }: { flow: BookingFlow }) {
         >
           {flow.biz.initial}
         </span>
-        <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
-          <span style={{ fontFamily: "var(--font-zhamo-display)", fontSize: 21, fontWeight: 700, letterSpacing: "-0.018em", lineHeight: 1.1 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+            minWidth: 0,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "var(--font-zhamo-display)",
+              fontSize: 21,
+              fontWeight: 700,
+              letterSpacing: "-0.018em",
+              lineHeight: 1.1,
+            }}
+          >
             {flow.biz.name}
           </span>
-          <span style={{ fontSize: 12, color: "#5B6069" }}>{flow.biz.address}</span>
-          <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
-            <span style={{ color: "#8A6A05", fontWeight: 600 }}>★ 4.9</span>
-            <span style={{ color: "#8A9099" }}>· 218 reviews</span>
-            <span style={{ color: "#17753C", fontWeight: 600 }}>· Open till 22:00</span>
-          </span>
+          {flow.biz.address && (
+            <span style={{ fontSize: 12, color: "#5B6069" }}>
+              {flow.biz.address}
+            </span>
+          )}
+          {flow.trustLine && (
+            <span style={{ fontSize: 12, color: "#8A6A05", fontWeight: 600 }}>
+              {flow.trustLine}
+            </span>
+          )}
         </div>
       </div>
-      <div style={{ padding: "0 16px 10px", display: "flex", flexDirection: "column", gap: 7 }}>
+      <div
+        style={{
+          padding: "0 16px 10px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 7,
+        }}
+      >
         <div style={{ display: "flex", gap: 4 }}>
           {flow.indicator.map((s) => (
-            <span key={s.n} style={{ flex: 1, height: 3, borderRadius: 2, background: s.bg }} />
+            <span
+              key={s.n}
+              style={{ flex: 1, height: 3, borderRadius: 2, background: s.bg }}
+            />
           ))}
         </div>
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
-          <span style={{ fontSize: 12.5, fontWeight: 600 }}>{flow.stepTitle}</span>
-          <span style={{ fontFamily: "var(--font-zhamo-mono)", fontSize: 10.5, color: "#8A9099" }}>STEP {flow.stepNum}/5</span>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            justifyContent: "space-between",
+          }}
+        >
+          <span style={{ fontSize: 12.5, fontWeight: 600 }}>
+            {flow.stepTitle}
+          </span>
+          <span
+            style={{
+              fontFamily: "var(--font-zhamo-mono)",
+              fontSize: 10.5,
+              color: "#8A9099",
+            }}
+          >
+            STEP {flow.stepNum}/5
+          </span>
         </div>
       </div>
     </div>
