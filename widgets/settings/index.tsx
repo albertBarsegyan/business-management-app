@@ -9,6 +9,7 @@ import type { VenueDetails } from "@/entities/venue/api/get-venue";
 import { formatAddress } from "@/shared/lib/format-address";
 import { formatTime, weekdayLabel } from "@/shared/lib/weekdays";
 import { PageHeader, PageShell } from "@/widgets/day-calendar";
+import { TeamAccessSection } from "./ui/team-access-section";
 
 export function SettingsScreen({
   venue,
@@ -160,6 +161,8 @@ export function SettingsScreen({
           </div>
         )}
       </div>
+
+      <TeamAccessSection />
 
       <div
         style={{
