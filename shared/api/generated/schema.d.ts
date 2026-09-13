@@ -196,6 +196,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/venues/memberships": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Venues_listMemberships"];
+        put?: never;
+        post: operations["Venues_inviteMembership"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/locations": {
         parameters: {
             query?: never;
@@ -1371,6 +1387,30 @@ export interface components {
             venue: components["schemas"]["VenueResponseDto"];
             location: components["schemas"]["LocationResponseDto"];
             membershipId: string;
+        };
+        MembershipRoleSummaryDto: {
+            code: string;
+            name: string;
+        };
+        MembershipResponseDto: {
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            userId: string;
+            displayName: string;
+            email: string | null;
+            avatarAssetId: string | null;
+            /** @enum {string} */
+            status: "invited" | "active" | "suspended" | "revoked";
+            /** Format: date-time */
+            joinedAt: string | null;
+            roles: components["schemas"]["MembershipRoleSummaryDto"][];
+        };
+        InviteMembershipDto: {
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            roleCode: "manager" | "receptionist" | "professional" | "marketer" | "accountant";
         };
         CreateLocationDto: {
             name: string;
@@ -3027,6 +3067,66 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VenueResponseDto"];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    Venues_listMemberships: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MembershipResponseDto"][];
+                };
+            };
+            /** @description Validation or business-rule error. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponseDto"];
+                };
+            };
+        };
+    };
+    Venues_inviteMembership: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InviteMembershipDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MembershipResponseDto"];
                 };
             };
             /** @description Validation or business-rule error. */
